@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Note Taking App</title>
-    <link href="./css/styles.css" rel="stylesheet">
+    <link href="./css/output.css" rel="stylesheet">
     <style>
         /* Custom style for setting textarea height */
         .custom-height {
@@ -17,37 +17,37 @@
     </style>
 </head>
 
-<body class="bg-zinc-900 min-h-screen flex flex-col ">
+<body class="bg-gray-100 min-h-screen flex flex-col">
     <div class="flex-1 grid grid-cols-1 md:grid-cols-4">
         <!-- Column 1: Header, Navigation bar, and Footer -->
-        <div class="md:col-span-1 flex flex-col bg-zinc-900 text-white">
-            <header class="text-5xl p-4 border-b-4 border-black">
+        <div class="md:col-span-1 flex flex-col bg-gray-100 text-white border border-gray-500">
+            <header class="text-5xl p-4 border-b border-white">
                 <h1>Notes</h1>
             </header>
 
             <!-- Dropdown Navigation Menu -->
-            <nav class="bg-zinc-900 p-4 flex-grow">
+            <nav class="bg-gray-100 p-4">
                 <button id="menuButton"
-                    class="w-full text-left p-2 bg-zinc-900 text-white hover:bg-gray-700 focus:outline-none">
+                    class="w-full text-left p-2 bg-gray-100 text-white hover:bg-gray-700 focus:outline-none">
                     Menu
                 </button>
-                <ul id="menu" class="hidden mt-2">
-                    <li><a href="#" class="block text-white hover:text-gray-400">Settings</a></li>
-                    <li class="mb-2"><a href="#" class="block text-white hover:text-gray-400">Logout</a></li>
+                <ul id="menu" class="hidden mt-1">
+                    <li><a href="#" class="block text-white bg-purple-800">Settings</a></li>
+                    <li class="mb-2"><a href="#" class="block text-white bg-purple-800">Logout</a></li>
                 </ul>
             </nav>
 
             <!-- Expandable Notes Menu -->
-            <div class="bg-zinc-900 p-4 flex-grow">
+            <div class="bg-gray-100 p-4">
                 <button id="notesButton"
-                    class="w-full text-left p-2 bg-zinc-900 text-white hover:bg-gray-600 focus:outline-none">
+                    class="w-full text-left p-2 bg-gray-100 text-white hover:bg-purple-800 focus:outline-none">
                     Notes
                 </button>
-                <ul id="notesMenu" class="hidden mt-2">
+                <ul id="notesMenu" class="hidden mt-1">
                     <!-- Example notes (these would be dynamically loaded from a database) -->
-                    <li class="mb-2"><a href="#" class="block text-white hover:text-gray-400">Note 1</a></li>
-                    <li class="mb-2"><a href="#" class="block text-white hover:text-gray-400">Note 2</a></li>
-                    <li class="mb-2"><a href="#" class="block text-white hover:text-gray-400">Note 3</a></li>
+                    <li class="mb-2"><a href="#" class="block text-white bg-purple-800">Note 1</a></li>
+                    <li class="mb-2"><a href="#" class="block text-white bg-purple-800">Note 2</a></li>
+                    <li class="mb-2"><a href="#" class="block text-white bg-purple-800">Note 3</a></li>
                 </ul>
             </div>
         </div>
@@ -57,8 +57,14 @@
             <div class="flex justify-between items-center mb-4">
                 <div class="w-1/3">
                     <input type="text" id="noteTitle" name="title" placeholder="Title"
-                        class="border-gray-300 border py-2 px-4 w-full bg-zinc-900 text-white">
+                        class="border-gray-300 border py-2 px-4 w-full bg-gray-100 text-white">
                 </div>
+                <!-- This will be the Note info Box, Id etc... -->
+                <div class="border-gray-300 border py-2 px-4 w-1/3 bg-gray-100 text-white">
+                    Note ID:<p class="text-wrap" id="noteID"></p>
+                    Creation Date:<p id="noteDate"></p>
+                </div>
+                <!----------------------------------------------->
                 <div>
                     <button id="getButton" class="bg-purple-700 hover:bg-purple-500 text-white font-bold py-2 px-4 ">
                         GetID
@@ -72,7 +78,7 @@
                 <div class="w-full custom-height">
                     <!-- Using Tailwind's width and custom height utilities -->
                     <textarea id="noteContent" name="note" placeholder="Note"
-                        class="w-full h-full border-gray-300 border py-1 px-4 resize-none bg-zinc-900 text-white"></textarea>
+                        class="w-full h-full border-gray-300 border py-1 px-4 resize-none bg-darkGray text-white"></textarea>
                 </div>
             </div>
         </main>
@@ -83,5 +89,3 @@
     </div>
     <script src="script.js"></script>
 </body>
-
-</html>

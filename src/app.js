@@ -9,57 +9,61 @@ const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static('../public')); // Add this line to serve static files
+app.use(express.static('../public'));
 
+// Get all notes
 app.get("/notes", async (req, res) => {
     try {
         const notes = await Note.find(); // Filter by user here if necessary
         res.status(200).json(notes);
     } catch (error) {
-        res.status(500).json({ message: "Server error" });
+        res.status(500).json({ message: "Server error", error: error.message });
     }
 });
 
+// Create a new note
 app.put("/notes", async (req, res) => {
     const { title, content } = req.body;
 
     if (!title || !content) {
-        return res.status(400).json({ message: "Please provide title and/or content" });
+        return res.status(400).json({ message: "Please provide title and content" });
     }
 
     try {
         const note = await Note.create({
-            title: req.body.title,
-            content: req.body.content,
+            title: title,
+            content: content,
             createDate: new Date()
         });
         res.status(201).json(note);
     } catch (error) {
-        res.status(500).json({ message: "Failed to save note" });
+        res.status(500).json({ message: "Failed to save note", error: error.message });
     }
 });
 
+// Update an existing note
 app.patch("/notes/:id", async (req, res) => {
-    if (!req.params.id) {
+    const { id } = req.params;
+    const { title, content } = req.body;
+
+    if (!id) {
         return res.status(400).json({ message: "Please provide a note ID" });
     }
-    try {
-        await Note.findByIdAndUpdate({
-            _id: req.params.id
-        }, {
-            title: req.body.title,
-            content: req.body.content
-        })
 
-        const note = await Note.findById({ _id: req.params.id });
+    try {
+        const note = await Note.findByIdAndUpdate(
+            id,
+            { title: title, content: content },
+            { new: true, useFindAndModify: false }
+        );
 
         if (!note) {
             return res.status(404).json({ message: "Note not found" });
         }
 
-        return res.status(200).json({ message: "Note updated" });
+        res.status(200).json(note);
     } catch (error) {
-        res.status(500).json({ message: "Failed to update note" });
+        res.status(500).json({ message: "Failed to update note", error: error.message });
     }
 });
 
@@ -74,6 +78,6 @@ const start = async () => {
         console.error(error);
         process.exit(1);
     }
-}
+};
 
 start();

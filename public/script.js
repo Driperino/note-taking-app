@@ -1,6 +1,8 @@
 const API_URL = "http://localhost:3000"
-let currentNoteID = null
+//This Variable NEEDS to be set BEFORE saving a note, otherwise it will not work
+let currentNoteID = '' //Might replace this later on with a more robust solution
 
+//Get note
 async function getNote() {
     try {
         const response = await fetch(`${API_URL}/notes`)
@@ -10,12 +12,17 @@ async function getNote() {
         //Area IDs
         const noteTitle = document.getElementById('noteTitle')
         const contentArea = document.getElementById('noteContent')
+        const idArea = document.getElementById('noteID')
+        const noteDate = document.getElementById('noteDate')
 
         if (data.length) {
             console.log(data[0].title, data[0].content)
-            noteTitle.value = data[0].title
-            contentArea.innerHTML = data[0].content
-            currentNoteID = data[0]._id
+            noteTitle.value = data[0].title //Update the title area
+            contentArea.innerHTML = data[0].content //Update the content area
+            currentNoteID = data[0]._id //Update the gloval variable
+            idArea.dataset.noteId = currentNoteID //Update the ID area
+            idArea.innerHTML = currentNoteID //Use global variable to update the ID area
+            noteDate.innerHTML = data[0].createDate //Update the date area
         } else {
             noteTitle.innerHTML = "Click the 'New Note' button to create a new note"
             contentArea.innerHTML = "Sad Note Taking App noises..."
@@ -26,54 +33,43 @@ async function getNote() {
         console.error('Error fetching notes:', error)
     }
 }
-
+//Get note on Get button click
 document.getElementById("getButton").addEventListener("click", async () => {
     await getNote();
+    console.log(currentNoteID)
 });
 
+
+//Save note
 async function saveNote() {
-    const noteId = currentNoteID
+    const noteId = currentNoteID; // Assuming `currentNoteID` is defined somewhere in your script
     const noteTitle = document.getElementById('noteTitle').value;
     const noteContent = document.getElementById('noteContent').value;
 
     try {
-        let method = 'PUT'; // Default to creating a new note
-
-        // Check if noteId is provided and try to fetch the existing note
-        if (noteId) {
-            const existingNoteResponse = await fetch(`${API_URL}/notes/${noteId}`);
-            if (existingNoteResponse.ok) {
-                method = 'PATCH'; // Use PATCH if the note with noteId exists
-            }
-        }
-
-        const response = await fetch(`${API_URL}/notes`, {
-            method: method,
+        await fetch(`${API_URL}/notes`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ _id: noteId, title: noteTitle, content: noteContent })
+            body: JSON.stringify({
+                title: noteTitle,
+                content: noteContent
+            })
         });
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log(data);
-        console.log(`Note ${method === 'PATCH' ? 'updated' : 'saved'}`);
-
     } catch (error) {
-        console.error('Error saving note:', error);
+        console.error('Error saving note:', error)
     }
 }
 
-
-document.getElementById("saveButton").addEventListener("click", async () => {
-    await saveNote();
+document.addEventListener('DOMContentLoaded', () => {
+    const saveButton = document.getElementById('saveButton');
+    if (saveButton) {
+        saveButton.addEventListener('click', async () => {
+            await saveNote();
+        });
+    }
 });
-
-
 
 //Expanding menus 
 document.getElementById('menuButton').addEventListener('click', function () {
