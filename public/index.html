@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Note Taking App</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="./css/styles.css" rel="stylesheet">
     <style>
         /* Custom style for setting textarea height */
         .custom-height {
@@ -17,32 +17,30 @@
     </style>
 </head>
 
-<body class="bg-black min-h-screen">
-    <div class="grid grid-cols-1 md:grid-cols-4 min-h-screen">
+<body class="bg-zinc-900 min-h-screen flex flex-col">
+    <div class="flex-1 grid grid-cols-1 md:grid-cols-4">
         <!-- Column 1: Header, Navigation bar, and Footer -->
-        <div class="md:col-span-1 flex flex-col bg-gray-950 text-white">
+        <div class="md:col-span-1 flex flex-col bg-zinc-900 text-white">
             <header class="text-5xl p-4 border-b-2 border-black">
                 <h1>Notes</h1>
             </header>
 
             <!-- Dropdown Navigation Menu -->
-            <nav class="bg-gray-950 p-4 flex-grow">
+            <nav class="bg-zinc-900 p-4 flex-grow">
                 <button id="menuButton"
-                    class="w-full text-left p-2 bg-gray-950 text-white hover:bg-gray-700 focus:outline-none">
+                    class="w-full text-left p-2 bg-zinc-900 text-white hover:bg-gray-700 focus:outline-none">
                     Menu
                 </button>
                 <ul id="menu" class="hidden mt-2">
-                    <li class="mb-2"><a href="#" class="block text-white hover:text-gray-400">Home</a></li>
-                    <li class="mb-2"><a href="#" class="block text-white hover:text-gray-400">Notes</a></li>
-                    <li class="mb-2"><a href="#" class="block text-white hover:text-gray-400">Archive</a></li>
                     <li><a href="#" class="block text-white hover:text-gray-400">Settings</a></li>
+                    <li class="mb-2"><a href="#" class="block text-white hover:text-gray-400">Logout</a></li>
                 </ul>
             </nav>
 
             <!-- Expandable Notes Menu -->
-            <div class="bg-gray-950 p-4 flex-grow">
+            <div class="bg-zinc-900 p-4 flex-grow">
                 <button id="notesButton"
-                    class="w-full text-left p-2 bg-gray-950 text-white hover:bg-gray-600 focus:outline-none">
+                    class="w-full text-left p-2 bg-zinc-900 text-white hover:bg-gray-600 focus:outline-none">
                     Notes
                 </button>
                 <ul id="notesMenu" class="hidden mt-2">
@@ -52,10 +50,6 @@
                     <li class="mb-2"><a href="#" class="block text-white hover:text-gray-400">Note 3</a></li>
                 </ul>
             </div>
-
-            <footer class=" text-white text-center py-4 mt-auto">
-                <p>&copy; 2024 Vincent Winkler</p>
-            </footer>
         </div>
 
         <!-- Column 2-4: Main content -->
@@ -63,11 +57,10 @@
             <div class="flex justify-between items-center mb-4">
                 <div class="w-1/3">
                     <input type="text" id="title" name="title" placeholder="Title"
-                        class="border-gray-300 border py-2 px-4 w-full bg-black text-white">
+                        class="border-gray-300 border py-2 px-4 w-full bg-zinc-900 text-white">
                 </div>
                 <div>
-                    <button id="saveButton"
-                        class="bg-purple-700 hover:bg-purple-500 text-white font-bold py-2 px-4 rounded">
+                    <button id="saveButton" class="bg-purple-700 hover:bg-purple-500 text-white font-bold py-2 px-4 ">
                         Save
                     </button>
                 </div>
@@ -76,10 +69,14 @@
                 <div class="w-full custom-height">
                     <!-- Using Tailwind's width and custom height utilities -->
                     <textarea id="note" name="note" placeholder="Note"
-                        class="w-full h-full border-gray-300 border py-1 px-4 resize-none bg-black text-white"></textarea>
+                        class="w-full h-full border-gray-300 border py-1 px-4 resize-none bg-zinc-900 text-white"></textarea>
                 </div>
             </div>
         </main>
+        <!-- Footer -->
+        <footer class="text-white text-center py-4 mt-auto">
+            <p>&copy; 2024 Vincent Winkler</p>
+        </footer>
     </div>
     <script src="script.js"></script>
 </body>
