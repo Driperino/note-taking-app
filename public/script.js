@@ -7,21 +7,22 @@ async function getNotes() {
         const data = await response.json()
         console.log(data)
 
+        //Area IDs
+        const noteTitle = document.getElementById('noteTitle')
+        const contentArea = document.getElementById('noteContent')
+
         if (data.length) {
-            data.forEach(note => {
-                const noteElement = document.createElement("div")
-                noteElement.className = "note"
-                noteElement.innerHTML = `
-                <h3>${note.title}</h3>
-                <p>${note.content}</p>
-            `
-                document.body.appendChild(noteElement)
-            })
+            console.log(data[0].title, data[0].content)
+            noteTitle.value = data[0].title
+            contentArea.innerHTML = data[0].content
         } else {
+            noteTitle.innerHTML = "Click the 'New Note' button to create a new note"
+            contentArea.innerHTML = "Sad Note Taking App noises..."
+            console.log("No notes found")
 
         }
     } catch (error) {
-        console.error(error)
+        console.error('Error fetching notes:', error)
     }
 }
 
