@@ -28,16 +28,38 @@ app.put("/notes", async (req, res) => {
     }
 
     try {
-        const note = new Note({
-            title,
-            content,
+        const note = await Note.create({
+            title: req.body.title,
+            content: req.body.content,
             createDate: new Date()
         });
-
-        await note.save();
         res.status(201).json(note);
     } catch (error) {
         res.status(500).json({ message: "Failed to save note" });
+    }
+});
+
+app.patch("/notes/:id", async (req, res) => {
+    if (!req.params.id) {
+        return res.status(400).json({ message: "Please provide a note ID" });
+    }
+    try {
+        await Note.findByIdAndUpdate({
+            _id: req.params.id
+        }, {
+            title: req.body.title,
+            content: req.body.content
+        })
+
+        const note = await Note.findById({ _id: req.params.id });
+
+        if (!note) {
+            return res.status(404).json({ message: "Note not found" });
+        }
+
+        return res.status(200).json({ message: "Note updated" });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to update note" });
     }
 });
 
