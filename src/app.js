@@ -21,6 +21,20 @@ app.get("/notes", async (req, res) => {
     }
 });
 
+// Get a single note by ID
+app.get("/notes/:id", async (req, res) => {
+    const { id } = req.params;
+    try {
+        const note = await Note.findById(id);
+        if (!note) {
+            return res.status(404).json({ message: "Note not found" });
+        }
+        res.status(200).json(note);
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
+
 // Create a new note
 app.put("/notes", async (req, res) => {
     const { title, content } = req.body;
@@ -64,6 +78,26 @@ app.patch("/notes/:id", async (req, res) => {
         res.status(200).json(note);
     } catch (error) {
         res.status(500).json({ message: "Failed to update note", error: error.message });
+    }
+});
+
+app.delete("/notes/:id", async (req, res) => {
+    const { id } = req.params;
+
+    if (!id) {
+        return res.status(400).json({ message: "Please provide a note ID" });
+    }
+
+    try {
+        const note = await Note.findByIdAndDelete(id);
+
+        if (!note) {
+            return res.status(404).json({ message: "Note not found" });
+        }
+
+        res.status(200).json({ message: "Note deleted" });
+    } catch (error) {
+        res.status(500).json({ message: "Failed to delete note", error: error.message });
     }
 });
 
