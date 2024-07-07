@@ -223,9 +223,14 @@ document.addEventListener('DOMContentLoaded', () => {
             noteContentTextarea.value = note.content // Display note content in textarea
             noteidArea.dataset.noteId = note._id // Store note ID as a data attribute
             noteidArea.innerHTML = note._id // Display note ID in ID area
-            noteDateArea.innerHTML = note.createDate // Display note creation date in date area
             currentNoteID = note._id // Update current note ID
             console.log(`noteId: ${noteId}`, note) // Log note details (optional)
+
+            // Date manipulatione
+            const date = new Date(note.createDate) // Convert note creation date to Date object
+            const localDate = date.toLocaleDateString() // Display note creation date in date area
+            const localTime = date.toLocaleTimeString() // Display note creation time in date area
+            noteDateArea.innerHTML = `${localDate} at ${localTime}` // Display note creation date in date area
         } catch (error) {
             console.error('Error fetching note details:', error)
         }

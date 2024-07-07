@@ -18,3 +18,8 @@
             display: none;
             /* Chrome, Safari, Opera */
         }
+
+        .focus-border:focus {
+            border-color: white;
+            outline: none;
+        }

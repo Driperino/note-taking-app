@@ -9,19 +9,19 @@
     <link href="./css/styles.css" rel="stylesheet">
 </head>
 
-<body class="bg-gray-100 min-h-screen flex flex-col overflow-y-hidden scrollbar-hidden text-purple-800">
-    <div class="grid grid-cols-1 md:grid-cols-5">
-        <!-- Column 1: Header, Navigation bar, and Footer -->
-        <div
-            class="md:col-span-1 flex flex-col bg-gray-100 border border-gray-500 overflow-y-auto h-screen scrollbar-hidden">
-            <header class="text-5xl p-4 border-gray-500 border-gray-500">
+<body class="bg-gray-100 min-h-screen flex overflow-hidden text-purple-800">
+    <!-- Sidebar -->
+    <div
+        class="w-64 bg-gray-100 border-r border-gray-500 h-screen overflow-y-auto scrollbar-hidden fixed flex flex-col justify-between">
+        <div>
+            <header class="text-5xl p-4 border-b border-gray-500">
                 <h1 class="flex justify-center">Notes</h1>
             </header>
 
             <!-- Dropdown Navigation Menu -->
             <nav class="bg-gray-100 p-4">
                 <button id="menuButton"
-                    class="w-full flex items-center justify-between p-2 bg-gray-100 hover:text-purple-300 focus:outline-none border-gray-500 border-b">
+                    class="w-full flex items-center justify-between p-2 bg-gray-100 hover:text-purple-300 focus:outline-none border-b border-gray-500">
                     Menu
                     <svg class="ml-auto h-8 w-8" width="24" height="24" viewBox="0 0 32 32" stroke-width="2"
                         stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -43,7 +43,7 @@
             <!-- Expandable Notes Menu -->
             <div class="bg-gray-100 p-4">
                 <button id="notesButton"
-                    class="w-full flex items-center justify-between p-2 bg-gray-100 hover:text-purple-300 focus:outline-none border-gray-500 border-b">
+                    class="w-full flex items-center justify-between p-2 bg-gray-100 hover:text-purple-300 focus:outline-none border-b border-gray-500">
                     Notes
                     <svg class="ml-auto h-8 w-8" width="24" height="24" viewBox="0 0 32 32" stroke-width="2"
                         stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -60,62 +60,56 @@
             </div>
         </div>
 
-        <main class="col-span-1 md:col-span-3 p-4 flex flex-col">
-            <!-- Top Row -->
-            <div class="flex justify-between items-center mb-4">
-                <!-- Column 2: Note Title -->
-                <div class="col-start-2 col-span-1">
-                    <input type="text" id="noteTitle" name="title" placeholder="Title"
-                        class="border-gray-500 border-2 py-2 px-4 w-full bg-gray-500 placeholder-purple-700">
-                </div>
-
-                <!-- Columns 3-4: New, Save, Delete Buttons -->
-                <div class="col-start-3 col-span-2 flex justify-end items-center">
-                    <button id="newButton"
-                        class="bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 mr-2">
-                        New
-                    </button>
-                    <button id="saveButton"
-                        class="bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 mr-2">
-                        Save
-                    </button>
-                    <button id="deleteButton"
-                        class="bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4">
-                        Delete
-                    </button>
-                </div>
-                <div class="mt-4 text-center">
-                    <p id="noteStatus"></p>
-                </div>
-            </div>
-
-            <!-- Info Box in Column 5 -->
-            <div class="col-start-5 col-span-1 p-4">
-                <div class="py-2 px-4 bg-gray-100 border border-gray-500">
-                    <p class="font-bold text-purple-800">Note Info</p>
-                    <p>Note ID: <span id="noteID"></span></p>
-                    <p>Creation Date: <span id="noteDate"></span></p>
-                </div>
-            </div>
-
-            <!-- Textarea for Note Content -->
-            <div class="justify-center">
-                <div class="w-full custom-height pt-8">
-                    <textarea id="noteContent" name="note" placeholder="Note"
-                        class="w-full h-full border-gray-500 border-2 py-1 px-4 resize-none bg-gray-500 placeholder-purple-700"></textarea>
-                </div>
-            </div>
-        </main>
-
-        <!--Settings-->
-        <div class="hidden flex col-start-2 col-span-4">
-
-        </div>
         <!-- Footer -->
-        <footer class="col-start-1 col-span-1 py-4">
+        <footer class="py-4 text-center border-t border-gray-500">
             <p>&copy; 2024 Vincent Winkler</p>
         </footer>
     </div>
+
+    <!-- Main content -->
+    <div class="ml-64 flex-1 p-4 flex flex-col h-screen overflow-hidden">
+        <main class="grid grid-cols-4 grid-rows-24 overflow-hidden">
+
+            <div class="col-span-2 row-span-1 flex items-center">
+                <!-- Input for Note Title -->
+                <input type="text" id="noteTitle" name="title" placeholder="Title"
+                    class="w-full border-gray-500 border-2 m-2 py-2 px-4 bg-gray-500 placeholder-purple-700 focus:border-purple-100">
+
+                <!-- Buttons for New, Save, and Delete -->
+                <div class="col-start-3 flex ml-2 space-x-1 col-span-1">
+                    <button id="newButton"
+                        class="bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                        New
+                    </button>
+                    <button id="saveButton"
+                        class="bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                        Save
+                    </button>
+                    <button id="deleteButton"
+                        class="bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                        Delete
+                    </button>
+                </div>
+
+            </div>
+            <div class="col-start-3 col-span-1 mt-4 text-center">
+                <p id="noteStatus"></p>
+            </div>
+            <!-- Info Box  -->
+            <div class="col-start-4 col-span-1 row-span-3 bg-gray-100 border border-gray-500 p-1 ml-4">
+                <p class="font-bold text-purple-800">Note Info</p>
+                <p>Note ID: <span id="noteID"></span></p>
+                <p>Creation Date: <span id="noteDate"></span></p>
+            </div>
+
+            <!-- Textarea for Note Content -->
+            <div class="col-span-3 row-span-22">
+                <textarea id="noteContent" name="note" placeholder="Note"
+                    class="w-full h-full border-gray-500 border-2 py-1 m-2 px-4 resize-none bg-gray-500 placeholder-purple-700 focus:border-purple-100"></textarea>
+            </div>
+        </main>
+    </div>
+
     <script src="script.js"></script>
 </body>
 
