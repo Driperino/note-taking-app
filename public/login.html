@@ -10,8 +10,32 @@
 </head>
 
 <body class="bg-gray-100 min-h-screen flex flex-col justify-center items-center">
-    <div id="container"
-        class="rounded-sm pr-4 mr-4 border-purple-400 bg-green-100 flex flex-col items-center my-auto text-purple-800">
+    <!--Login of register selection-->
+    <div id="main"
+        class="  rounded-sm pr-4 mr-4 border-purple-400 bg-green-100 flex flex-col items-center my-auto text-purple-800">
+        <header class="flex items-center">
+            <h1 class="text-3xl mt-4 font-bold">Notes</h1>
+        </header>
+        <main class="flex flex-col items-center mt-4">
+            <div class="w-64">
+                <button id="registerSelectButton" type="submit"
+                    class="w-full p-2 m-2 bg-purple-200 text-white font-bold border border-purple-500 rounded-sm hover:bg-purple-400 focus:outline-none focus:bg-purple-600">
+                    Register
+                </button>
+            </div>
+            <div class="w-64">
+                <button id="loginSelectButton" type="submit"
+                    class="w-full p-2 m-2 bg-purple-200 text-white font-bold border border-purple-500 rounded-sm hover:bg-purple-400 focus:outline-none focus:bg-purple-600">
+                    Login
+                </button>
+            </div>
+        </main>
+    </div>
+
+
+    <!-- Login Form -->
+    <div id="login"
+        class=" hidden rounded-sm pr-4 mr-4 border-purple-400 bg-green-100 flex flex-col items-center my-auto text-purple-800">
         <header class="flex items-center">
             <h1 class="text-3xl mt-4 font-bold">Login</h1>
         </header>
@@ -30,9 +54,46 @@
                     Login
                 </button>
             </div>
+            <div class="w-32">
+                <button id="backButton" type="submit"
+                    class="w-full p-2 m-2 bg-purple-200 text-white font-bold border border-purple-500 rounded-sm hover:bg-purple-400 focus:outline-none focus:bg-purple-600">
+                    Back
+                </button>
+            </div>
         </main>
     </div>
-    <script src="./js/login.js"></script>
+    <!-- Register Form -->
+    <div id="register"
+        class=" hidden rounded-sm pr-4 mr-4 border-purple-400 bg-green-100 flex flex-col items-center my-auto text-purple-800">
+        <header class="flex items-center">
+            <h1 class="text-3xl mt-4 font-bold">Register</h1>
+        </header>
+        <main class="flex flex-col items-center mt-4">
+            <div class="w-64">
+                <input type="text" placeholder="Username"
+                    class="w-full p-2 m-2 border bg-gray-500 rounded-sm focus:outline-none placeholder-purple-700 focus:border-purple-500">
+            </div>
+            <div class="w-64">
+                <input type="password" placeholder="Password"
+                    class="w-full p-2 m-2 border bg-gray-500 rounded-sm focus:outline-none placeholder-purple-700 focus:border-purple-500">
+            </div>
+            <div class="w-64">
+                <button id="registerButton" type="submit"
+                    class="w-full p-2 m-2 bg-purple-200 text-white font-bold border border-purple-500 rounded-sm hover:bg-purple-400 focus:outline-none focus:bg-purple-600">
+                    Register
+                </button>
+            </div>
+            <div class="w-32">
+                <button id="backButtonTwo" type="submit"
+                    class="w-full p-2 m-2 bg-purple-200 text-white font-bold border border-purple-500 rounded-sm hover:bg-purple-400 focus:outline-none focus:bg-purple-600">
+                    Back
+                </button>
+            </div>
+        </main>
+    </div>
+
+
+    <script src="login.js"></script>
     <footer class="mt-auto mb-4">
         <p class="text-sm text-gray-500">© 2024 Vincent Winkler</p>
     </footer>
