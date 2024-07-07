@@ -2,7 +2,7 @@
 const API_URL = "http://localhost:3000"
 
 //This Variable NEEDS to be set BEFORE saving a note, otherwise it will not work
-let currentNoteID = '' //Might replace this later on with a more robust solution
+let currentNoteID = 'false' //Might replace this later on with a more robust solution
 
 //Display *temporary* confirmation text function
 function displayText(text) {
@@ -23,7 +23,7 @@ function clearText() {
 //Expanding menus 
 //Menu button
 document.getElementById('menuButton').addEventListener('click', function () {
-    var menu = document.getElementById('menu');
+    const menu = document.getElementById('menu');
     if (menu.classList.contains('hidden')) {
         menu.classList.remove('hidden');
     } else {
@@ -32,7 +32,7 @@ document.getElementById('menuButton').addEventListener('click', function () {
 });
 //Notes button
 document.getElementById('notesButton').addEventListener('click', function () {
-    var notesMenu = document.getElementById('notesMenu');
+    const notesMenu = document.getElementById('notesMenu');
     if (notesMenu.classList.contains('hidden')) {
         notesMenu.classList.remove('hidden');
     } else {
@@ -99,7 +99,7 @@ async function saveNote() {
             })
             displayText(`${noteTitle} Created`)
         } catch (error) {
-            console.error(`Error creating Note ${noteTitle}`, error)
+            console.error(`Error creating Note: ${noteTitle}`, error)
             displayText("Error creating note")
         }
     } else {
@@ -176,9 +176,9 @@ async function deleteNote() {
 //Event Listeners
 //Had to do this for scoping reasons
 document.addEventListener('DOMContentLoaded', () => {
-    const notesMenu = document.getElementById('notesMenu');
-    const noteContentTextarea = document.getElementById('noteContent');
-    const noteTitleArea = document.getElementById('noteTitle');
+    const notesMenu = document.getElementById('notesMenu')
+    const noteContentTextarea = document.getElementById('noteContent')
+    const noteTitleArea = document.getElementById('noteTitle')
     const noteidArea = document.getElementById('noteID')
     const noteDateArea = document.getElementById('noteDate')
 
@@ -187,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch('/notes');
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error('Network response was not ok')
             }
             const notes = await response.json();
 
@@ -195,39 +195,39 @@ document.addEventListener('DOMContentLoaded', () => {
             notesMenu.innerHTML = '';
 
             notes.forEach(note => {
-                const li = document.createElement('li');
-                li.classList.add('mb-2');
-                const a = document.createElement('a');
-                a.href = '#';
-                a.classList.add('block', 'text-purple-900', 'bg-darkGray-100', 'hover:text-purple-300');
-                a.textContent = note.title; // Adjust based on your note structure
-                a.dataset.noteId = note._id; // Store note ID as a data attribute
-                a.addEventListener('click', handleNoteClick);
-                li.appendChild(a);
-                notesMenu.appendChild(li);
-            });
+                const li = document.createElement('li')
+                li.classList.add('mb-2')
+                const a = document.createElement('a')
+                a.href = '#'
+                a.classList.add('block', 'text-purple-900', 'bg-darkGray-100', 'hover:text-purple-300')
+                a.textContent = note.title // Adjust based on your note structure
+                a.dataset.noteId = note._id // Store note ID as a data attribute
+                a.addEventListener('click', handleNoteClick)
+                li.appendChild(a)
+                notesMenu.appendChild(li)
+            })
         } catch (error) {
-            console.error('Error fetching notes:', error);
+            console.error('Error fetching notes:', error)
         }
     }
 
     async function handleNoteClick(event) {
         const noteId = event.target.dataset.noteId;
         try {
-            const response = await fetch(`/notes/${noteId}`);
+            const response = await fetch(`/notes/${noteId}`)
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error('Network response was not ok')
             }
             const note = await response.json();
             noteTitleArea.value = note.title; // Display note title in title area
-            noteContentTextarea.value = note.content; // Display note content in textarea
-            noteidArea.dataset.noteId = note._id; // Store note ID as a data attribute
-            noteidArea.innerHTML = note._id; // Display note ID in ID area
-            noteDateArea.innerHTML = note.createDate; // Display note creation date in date area
-            currentNoteID = note._id; // Update current note ID
-            console.log(`noteId: ${noteId}`, note); // Log note details (optional)
+            noteContentTextarea.value = note.content // Display note content in textarea
+            noteidArea.dataset.noteId = note._id // Store note ID as a data attribute
+            noteidArea.innerHTML = note._id // Display note ID in ID area
+            noteDateArea.innerHTML = note.createDate // Display note creation date in date area
+            currentNoteID = note._id // Update current note ID
+            console.log(`noteId: ${noteId}`, note) // Log note details (optional)
         } catch (error) {
-            console.error('Error fetching note details:', error);
+            console.error('Error fetching note details:', error)
         }
     }
 
@@ -235,28 +235,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     //new
-    const newButton = document.getElementById('newButton');
+    const newButton = document.getElementById('newButton')
     if (newButton) {
         newButton.addEventListener('click', async () => {
-            await newNote();
-            await fetchNotes();
+            await newNote()
+            await fetchNotes()
             clearText()
         });
     }
     //save
-    const saveButton = document.getElementById('saveButton');
+    const saveButton = document.getElementById('saveButton')
     if (saveButton) {
         saveButton.addEventListener('click', async () => {
-            await saveNote();
-            await fetchNotes();
+            await saveNote()
+            await fetchNotes()
         });
     }
     //delete
-    const deleteButton = document.getElementById('deleteButton');
+    const deleteButton = document.getElementById('deleteButton')
     if (deleteButton) {
         deleteButton.addEventListener('click', async () => {
-            await deleteNote();
-            await fetchNotes();
+            await deleteNote()
+            await fetchNotes()
             clearText()
         });
     }
