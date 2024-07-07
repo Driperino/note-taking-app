@@ -77,7 +77,7 @@ async function saveNote() {
                     content: noteContent
                 })
             })
-            displayText(`Note ${noteTitle} Saved`)
+            displayText(`${noteTitle} Saved`)
         } catch (error) {
             console.error(`Error saving Note ${noteTitle}`, error)
             displayText("Error saving note")
@@ -97,7 +97,7 @@ async function saveNote() {
                     createDate: new Date()
                 })
             })
-            displayText(`Note ${noteTitle} Created`)
+            displayText(`${noteTitle} Created`)
         } catch (error) {
             console.error(`Error creating Note ${noteTitle}`, error)
             displayText("Error creating note")
@@ -125,7 +125,7 @@ async function deleteNote() {
                     content: noteContent
                 })
             })
-            displayText(`Note ${noteTitle} deleted`)
+            displayText(`${noteTitle} deleted`)
         } catch (error) {
             console.error(`Error deleting Note ${noteTitle}`, error)
             displayText("Error deleting note")
@@ -172,7 +172,8 @@ async function deleteNote() {
     }
 } */
 //------------------------------------------------------------------------------
-//Event Listeners---------------------------------------------------------------
+
+//Event Listeners
 //Had to do this for scoping reasons
 document.addEventListener('DOMContentLoaded', () => {
     const notesMenu = document.getElementById('notesMenu');
@@ -241,23 +242,22 @@ document.addEventListener('DOMContentLoaded', () => {
             await fetchNotes();
             clearText()
         });
-
-        //save
-        const saveButton = document.getElementById('saveButton');
-        if (saveButton) {
-            saveButton.addEventListener('click', async () => {
-                await saveNote();
-                await fetchNotes();
-            });
-        }
-        //delete
-        const deleteButton = document.getElementById('deleteButton');
-        if (deleteButton) {
-            deleteButton.addEventListener('click', async () => {
-                await deleteNote();
-                await fetchNotes();
-                clearText()
-            });
-        }
+    }
+    //save
+    const saveButton = document.getElementById('saveButton');
+    if (saveButton) {
+        saveButton.addEventListener('click', async () => {
+            await saveNote();
+            await fetchNotes();
+        });
+    }
+    //delete
+    const deleteButton = document.getElementById('deleteButton');
+    if (deleteButton) {
+        deleteButton.addEventListener('click', async () => {
+            await deleteNote();
+            await fetchNotes();
+            clearText()
+        });
     }
 });

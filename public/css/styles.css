@@ -1,0 +1,20 @@
+        /* Custom style for setting textarea height */
+        .custom-height {
+            height: 90vh;
+            /* 90% of the viewport height */
+            min-height: 200px;
+            /* Minimum height to ensure content visibility */
+        }
+
+        /* Hide scrollbar for specific container */
+        .scrollbar-hidden {
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE and Edge */
+        }
+
+        .scrollbar-hidden::-webkit-scrollbar {
+            display: none;
+            /* Chrome, Safari, Opera */
+        }

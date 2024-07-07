@@ -6,43 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Note Taking App</title>
     <link href="./css/output.css" rel="stylesheet">
-    <style>
-        /* Custom style for setting textarea height */
-        .custom-height {
-            height: 90vh;
-            /* 90% of the viewport height */
-            min-height: 200px;
-            /* Minimum height to ensure content visibility */
-        }
-
-        /* Hide scrollbar for specific container */
-        .scrollbar-hidden {
-            scrollbar-width: none;
-            /* Firefox */
-            -ms-overflow-style: none;
-            /* IE and Edge */
-        }
-
-        .scrollbar-hidden::-webkit-scrollbar {
-            display: none;
-            /* Chrome, Safari, Opera */
-        }
-    </style>
+    <link href="./css/styles.css" rel="stylesheet">
 </head>
 
 <body class="bg-gray-100 min-h-screen flex flex-col overflow-y-hidden scrollbar-hidden text-purple-800">
-    <div class="flex-1 grid grid-cols-1 md:grid-cols-4">
+    <div class="flex-1 grid grid-cols-1 md:grid-cols-5">
         <!-- Column 1: Header, Navigation bar, and Footer -->
         <div
-            class="md:col-span-1 flex flex-col bg-gray-100 border border-purple-100 overflow-y-auto h-screen scrollbar-hidden">
-            <header class="text-5xl p-4 border-purple-100 border-b-2 border-white">
+            class="md:col-span-1 flex flex-col bg-gray-100 border border-darkBlue-200 overflow-y-auto h-screen scrollbar-hidden">
+            <header class="text-5xl p-4 border-gray-500 border-white">
                 <h1 class="flex justify-center">Notes</h1>
             </header>
 
             <!-- Dropdown Navigation Menu -->
             <nav class="bg-gray-100 p-4">
                 <button id="menuButton"
-                    class="w-full flex items-center justify-between p-2 bg-gray-100 hover:text-purple-300 focus:outline-none border-purple-100 border-b">
+                    class="w-full flex items-center justify-between p-2 bg-gray-100 hover:text-purple-300 focus:outline-none border-gray-500 border-b">
                     Menu
                     <svg class="ml-auto h-8 w-8" width="24" height="24" viewBox="0 0 32 32" stroke-width="2"
                         stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -64,7 +43,7 @@
             <!-- Expandable Notes Menu -->
             <div class="bg-gray-100 p-4">
                 <button id="notesButton"
-                    class="w-full flex items-center justify-between p-2 bg-gray-100 hover:text-purple-300 focus:outline-none border-purple-100 border-b-1">
+                    class="w-full flex items-center justify-between p-2 bg-gray-100 hover:text-purple-300 focus:outline-none border-gray-500 border-b-1">
                     Notes
                     <svg class="ml-auto h-8 w-8" width="24" height="24" viewBox="0 0 32 32" stroke-width="2"
                         stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -86,10 +65,10 @@
             <div class="flex justify-between items-center mb-4">
                 <div class="w-1/3">
                     <input type="text" id="noteTitle" name="title" placeholder="Title"
-                        class="border-purple-100 border-2 py-2 px-4 w-full bg-gray-500 placeholder-purple-700">
+                        class="border-gray-500 border-2 py-2 px-4 w-full bg-gray-500 placeholder-purple-700">
                 </div>
                 <!-- This will be the Note info Box, Id etc... -->
-                <div class="border-purple-100 border-2 py-2 px-4 w-1/3 bg-gray-500 placeholder-purple-700">
+                <div class="border-gray-500 border-2 py-2 px-4 w-1/3 bg-gray-500 placeholder-purple-700">
                     Note ID:<p class="text-wrap" id="noteID"></p>
                     Creation Date:<p id="noteDate"></p>
                 </div>
@@ -98,15 +77,15 @@
                     <div class="mb-4">
 
                         <button id="newButton"
-                            class="bg-purple-100 border-purple-100 border-2 hover:bg-purple-300 font-bold py-2 px-4 ">
+                            class="bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 ">
                             New
                         </button>
                         <button id="saveButton"
-                            class="bg-purple-100 border-purple-100 border-2 hover:bg-purple-300 font-bold py-2 px-4 ">
+                            class="bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 ">
                             Save
                         </button>
                         <button id="deleteButton"
-                            class="bg-purple-100 border-purple-100 border-2 hover:bg-purple-300 font-bold py-2 px-4 ">
+                            class="bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 ">
                             Delete
                         </button>
                     </div>
@@ -119,12 +98,12 @@
                 <div class="w-full custom-height pt-12">
                     <!-- Using Tailwind's width and custom height utilities -->
                     <textarea id="noteContent" name="note" placeholder="Note"
-                        class="w-full h-full border-purple-100 border-2 py-1 px-4 resize-none bg-gray-500 placeholder-purple-700"></textarea>
+                        class="w-full h-full border-gray-500 border-2 py-1 px-4 resize-none bg-gray-500 placeholder-purple-700"></textarea>
                 </div>
             </div>
         </main>
         <!-- Footer -->
-        <footer class=text-center py-4 mt-auto">
+        <footer class="flex flex-col col-span-1 text-center py-4 mt-auto">
             <p>&copy; 2024 Vincent Winkler</p>
         </footer>
     </div>
