@@ -25,9 +25,23 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    password: {
+    passwordSalt: {
         type: String,
         required: true
+    },
+    passwordHash: {
+        type: String,
+        required: true
+    },
+    createDate: {
+        type: Date,
+        default: Date.now,
+        required: true
+    },
+    lastLogin: {
+        type: Date,
+        default: Date.now,
+        required: false
     }
 });
 
