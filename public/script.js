@@ -11,6 +11,15 @@ function displayText(text) {
     setTimeout(function () { statusText.innerHTML = "" }, 3000)
 }
 
+function clearText() {
+    document.getElementById('noteTitle').value = ''
+    document.getElementById('noteContent').value = ''
+    currentNoteID = ''
+    document.getElementById('noteID').innerHTML = ''
+    document.getElementById('noteID').dataset.noteId = ''
+    document.getElementById('noteDate').innerHTML = ''
+}
+
 //Expanding menus 
 //Menu button
 document.getElementById('menuButton').addEventListener('click', function () {
@@ -33,43 +42,23 @@ document.getElementById('notesButton').addEventListener('click', function () {
 
 
 ///API Functions-----------------------------------------------------------------
-//Get note function
-async function getNote() {
-    try {
-        const response = await fetch(`${API_URL}/notes`)
-        const data = await response.json()
-        console.log(data)
+//New Note function
+/*
+    if theres a note ask if you want to save the note
+    then clear all the fields
 
-        //Area IDs
-        const noteTitle = document.getElementById('noteTitle')
-        const contentArea = document.getElementById('noteContent')
-        const idArea = document.getElementById('noteID')
-        const noteDate = document.getElementById('noteDate')
+    if no note just clear all the fields
+*/
+async function newNote() {
+    if (currentNoteID) {
+        if (confirm("You have a note open, would you still like to create a new note?")) {
 
-        //status text
-        const getStatus = document.getElementById('noteStatus')
-
-        if (data.length) {
-            console.log(data[0].title, data[0].content)
-            noteTitle.value = data[0].title //Update the title area
-            contentArea.innerHTML = data[0].content //Update the content area
-            currentNoteID = data[0]._id //Update the gloval variable
-            idArea.dataset.noteId = currentNoteID //Update the ID area
-            idArea.innerHTML = currentNoteID //Use global variable to update the ID area
-            noteDate.innerHTML = data[0].createDate //Update the date area
-            displayText("Note Aquired")
+            displayText("New Note Created")
         } else {
-            noteTitle.innerHTML = "Click the 'New Note' button to create a new note"
-            contentArea.innerHTML = "Sad Note Taking App noises..."
-            console.log("No notes found")
-            displayText("No notes found")
-
+            console.log("User chose not to create a new note")
         }
-    } catch (error) {
-        console.error('Error fetching notes:', error)
     }
 }
-
 
 //Save Note function
 async function saveNote() {
@@ -93,13 +82,31 @@ async function saveNote() {
             console.error(`Error saving Note ${noteTitle}`, error)
             displayText("Error saving note")
         }
+    } else if (!currentNoteID) {
+        try {
+            const noteTitle = document.getElementById('noteTitle').value
+            const noteContent = document.getElementById('noteContent').value
+            const response = await fetch(`${API_URL}/notes/${currentNoteID}`, {
+                method: 'Put',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: noteTitle,
+                    content: noteContent,
+                    createDate: new Date()
+                })
+            })
+            displayText(`Note ${noteTitle} Created`)
+        } catch (error) {
+            console.error(`Error creating Note ${noteTitle}`, error)
+            displayText("Error creating note")
+        }
     } else {
-        displayText("No note to save")
-        console.log("No note to save")
+        console.log("Cannot Create new note, id already loaded.")
     }
+
 }
-
-
 
 //Delete Note function
 async function deleteNote() {
@@ -128,7 +135,42 @@ async function deleteNote() {
         console.log("No note to delete")
     }
 }
-
+//Get note function DEPRICATED WAS FOR TESTINGGGGG
+/* async function getNote() {
+    try {
+        const response = await fetch(`${API_URL}/notes`)
+        const data = await response.json()
+        console.log(data)
+ 
+        //Area IDs
+        const noteTitle = document.getElementById('noteTitle')
+        const contentArea = document.getElementById('noteContent')
+        const idArea = document.getElementById('noteID')
+        const noteDate = document.getElementById('noteDate')
+ 
+        //status text
+        const getStatus = document.getElementById('noteStatus')
+ 
+        if (data.length) {
+            console.log(data[0].title, data[0].content)
+            noteTitle.value = data[0].title //Update the title area
+            contentArea.innerHTML = data[0].content //Update the content area
+            currentNoteID = data[0]._id //Update the gloval variable
+            idArea.dataset.noteId = currentNoteID //Update the ID area
+            idArea.innerHTML = currentNoteID //Use global variable to update the ID area
+            noteDate.innerHTML = data[0].createDate //Update the date area
+            displayText("Note Aquired")
+        } else {
+            noteTitle.innerHTML = "Click the 'New Note' button to create a new note"
+            contentArea.innerHTML = "Sad Note Taking App noises..."
+            console.log("No notes found")
+            displayText("No notes found")
+ 
+        }
+    } catch (error) {
+        console.error('Error fetching notes:', error)
+    }
+} */
 //------------------------------------------------------------------------------
 //Event Listeners---------------------------------------------------------------
 //Had to do this for scoping reasons
@@ -191,12 +233,13 @@ document.addEventListener('DOMContentLoaded', () => {
     fetchNotes();
 
 
-    //get
-    const getButton = document.getElementById('getButton');
-    if (getButton) {
-        getButton.addEventListener('click', async () => {
-            await getNote();
+    //new
+    const newButton = document.getElementById('newButton');
+    if (newButton) {
+        newButton.addEventListener('click', async () => {
+            await newNote();
             await fetchNotes();
+            clearText()
         });
 
         //save
@@ -213,6 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
             deleteButton.addEventListener('click', async () => {
                 await deleteNote();
                 await fetchNotes();
+                clearText()
             });
         }
     }
