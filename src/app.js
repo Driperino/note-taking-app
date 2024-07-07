@@ -65,7 +65,9 @@ app.patch("/notes/:id", async (req, res) => {
     if (!id) {
         return res.status(400).json({ message: "Please provide a note ID" });
     }
-
+    if (!title || !content) {
+        return res.status(400).json({ message: "Please provide title and content" });
+    }
     try {
         const note = await Note.findByIdAndUpdate(
             id,
