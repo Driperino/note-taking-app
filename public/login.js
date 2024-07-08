@@ -161,9 +161,9 @@ document.getElementById('loginButton').addEventListener('click', async (event) =
         body: JSON.stringify({ username, password })
     });
 
-    if (response.redirected) {
-        window.location.href = response.url;
-    }
+    // if (response.redirected) {
+    //     window.location.href = response.url;
+    // }
 
     if (response >= 400) {
         const data = await response.text();

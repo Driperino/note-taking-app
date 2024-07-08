@@ -54,6 +54,7 @@ document.getElementById('notesButton').addEventListener('click', function () {
 */
 async function newNote() {
     if (currentNoteID) { // Check if currentNoteID is truthy (not empty or false)
+        //I want to make a good looking confirmation box but this will do for now...
         if (confirm("You have a note open, would you still like to create a new note?")) { // Show a confirmation dialog
             displayText("New Note Created") // Display confirmation text
         } else {
