@@ -14,6 +14,11 @@ const noteSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
         required: true
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true
     }
 });
 
@@ -42,7 +47,16 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
         required: false
+    },
+    verified: {
+        type: Boolean,
+        required: false
+    },
+    email: {
+        type: String,
+        required: false
     }
+
 });
 
 const User = mongoose.model('User', userSchema);

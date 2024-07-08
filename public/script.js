@@ -187,9 +187,14 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch('/notes');
             if (!response.ok) {
-                throw new Error('Network response was not ok')
+                throw new Error('Failed to Fetch Notes. !response throw', error)
             }
             const notes = await response.json();
+            console.log('Notes:', notes) // Log notes
+            if (!notes) {
+                console.log('No notes found') // Log notes
+                throw new Error('No notes found', error)
+            }
 
             // Clear notesMenu before populating it
             notesMenu.innerHTML = '';

@@ -92,3 +92,74 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+//API
+const API_URL = 'http://localhost:3000';
+
+document.getElementById('registerButton').addEventListener('click', async (event) => {
+    event.preventDefault();
+    console.log('Register button clicked');
+
+    const username = document.getElementById('registerUsername').value;
+    const password = document.getElementById('registerPassword').value;
+
+    console.log(`Username: ${username}, Password: ${password}`);
+
+    const response = await fetch(`${API_URL}/auth/register`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+    });
+
+    if (response.redirected) {
+        window.location.href = response.url;
+    }
+
+    if (response.status >= 400) {
+        const data = await response.text();
+        console.log(data);
+    } else {
+        console.log("User registered successfully");
+    }
+});
+
+
+document.getElementById('loginButton').addEventListener('click', async (event) => {
+    event.preventDefault();
+    console.log('Login button clicked');
+
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+
+    if (username || password) {
+        console.log(`Username: ${username}, Password: ${password}`);//REMOVE THIS ONCE IT'S WORKING!!!!!!!!!!!!!!
+    }
+
+    if (!username || !password) {
+        console.log('Please provide a username and password');
+        return;
+    } else {
+        console.log(`Username: ${username}, Password: ${password}`);//REMOVE THIS ONCE IT'S WORKING!!!!!!!!!!!!!!
+    }
+
+    const response = await fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+    });
+
+    if (response.redirected) {
+        window.location.href = response.url;
+    }
+
+    if (response >= 400) {
+        const data = await response.text();
+        console.log(`Error: ${data}`);
+        document.getElementById('loginUsername').innerHTML = '';
+        document.getElementById('loginPassword').innerHTML = '';
+    }
+});
+

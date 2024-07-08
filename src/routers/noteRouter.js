@@ -4,13 +4,15 @@ const { Note } = require("../models/models.js");
 const router = express.Router();
 
 
-// Get all notes
+// Get filtered notes
 router.get("/notes", async (req, res) => {
     try {
-        const notes = await Note.find(); // Filter by user here if necessary
+        const notes = await Note.find({
+            user: req.user._id
+        });
         res.status(200).json(notes);
     } catch (error) {
-        res.status(500).json({ message: "Server error", error: error.message });
+        res.status(500).json({ message: "Server error in GET note router ", error: error.message });
     }
 });
 
@@ -40,8 +42,10 @@ router.put("/notes", async (req, res) => {
         const note = await Note.create({
             title: title,
             content: content,
-            createDate: new Date()
+            createDate: new Date(),
+            user: req.user._id
         });
+        console.log(note);
         res.status(201).json(note);
     } catch (error) {
         res.status(500).json({ message: "Failed to save note", error: error.message });
@@ -62,7 +66,7 @@ router.patch("/notes/:id", async (req, res) => {
     try {
         const note = await Note.findByIdAndUpdate(
             id,
-            { title: title, content: content },
+            { title: title, content: content, user: req.user._id },
             { new: true, useFindAndModify: false }
         );
 
