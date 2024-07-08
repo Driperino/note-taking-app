@@ -12,6 +12,14 @@ require('dotenv').config(); // Loading environment variables
 const app = express(); // Creating an instance of express
 const port = process.env.PORT || 3000; // Setting the port for the server
 
+const loggedIn = (req, res, next) => {
+    if (req.user) {
+        next();
+    } else {
+        res.redirect('/app/login.html');
+    }
+};
+
 app.use(cors()); // Using cors middleware for enabling cross-origin requests
 app.use(express.json()); // Parsing incoming JSON data
 app.use(express.urlencoded({ extended: true })) // Parsing URL-encoded data

@@ -75,12 +75,17 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`${view} selected`)
         changeView(view);
     });
-
+    // Theese two need to be combined into one function later on :/
     // Event listener for resetSelectorButton
     resetSelectorButtonOne.addEventListener('click', () => {
         view = 'reset';
         console.log(`${view} selected`);
         changeView(view);
+        // Clear all input forms
+        document.getElementById('registerUsername').value = '';
+        document.getElementById('registerPassword').value = '';
+        document.getElementById('loginUsername').value = '';
+        document.getElementById('loginPassword').value = '';
     });
 
     // Event listener for resetSelectorButtonTwo (if it exists)
@@ -89,6 +94,11 @@ document.addEventListener('DOMContentLoaded', () => {
             view = 'reset';
             console.log(`${view} selected`);
             changeView(view);
+            // Clear all input forms
+            document.getElementById('registerUsername').value = '';
+            document.getElementById('registerPassword').value = '';
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
         });
     }
 });

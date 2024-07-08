@@ -594,6 +594,10 @@ video {
   grid-row: span 3 / span 3;
 }
 
+.row-start-4 {
+  grid-row-start: 4;
+}
+
 .m-2 {
   margin: 0.5rem;
 }
@@ -641,6 +645,10 @@ video {
 
 .mt-auto {
   margin-top: auto;
+}
+
+.ml-5 {
+  margin-left: 1.25rem;
 }
 
 .block {
