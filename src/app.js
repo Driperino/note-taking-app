@@ -36,7 +36,7 @@ app.use(session({
     cookie: {
         secure: false,
         maxAge: 60000
-    } // change to true if using HTTPS
+    } // change secure to true if using HTTPS
 }));
 
 // Passport middleware initialization - must come after session middleware

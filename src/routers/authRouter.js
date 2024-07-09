@@ -3,9 +3,6 @@ const { User } = require("../models/models.js");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const crypto = require('crypto');
-const session = require('express-session');
-const { error } = require("console");
-const { fail } = require("assert");
 
 const router = express.Router();
 
@@ -49,19 +46,6 @@ passport.deserializeUser(function (user, cb) {
         return cb(null, user);
     });
 });
-
-router.use(session({
-    secret: 'u8nrO4qpry10sai35PSh3b',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        secure: false, // Change to true if using HTTPS
-        maxAge: 60000 // Session max age in milliseconds
-    }
-}));
-
-router.use(passport.initialize());
-router.use(passport.session());
 
 // Register a new user
 router.post("/register", async (req, res, next) => {
