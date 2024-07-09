@@ -1,4 +1,5 @@
 const express = require("express");
+
 const { Note } = require("../models/models.js");
 
 const router = express.Router();
@@ -16,7 +17,7 @@ router.get("/notes", async (req, res) => {
     }
 });
 
-// Get a single note by ID
+//Get a single note by ID
 router.get("/notes/:id", async (req, res) => {
     const { id } = req.params;
     try {

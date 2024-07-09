@@ -28,6 +28,7 @@ const Note = mongoose.model('Note', noteSchema);
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
+        unique: true,
         required: true
     },
     passwordSalt: {

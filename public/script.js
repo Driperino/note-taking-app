@@ -138,41 +138,27 @@ async function deleteNote() {
     }
 }
 
-// Get note function DEPRECATED WAS FOR TESTING
-/* async function getNote() {
+//logout function
+async function logout() {
     try {
-        const response = await fetch(`${API_URL}/notes`)
-        const data = await response.json()
-        console.log(data)
+        const response = await fetch(`${API_URL}/auth/logout`, { // Send a POST request to the API endpoint for logging out
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
 
-        // Area IDs
-        const noteTitle = document.getElementById('noteTitle')
-        const contentArea = document.getElementById('noteContent')
-        const idArea = document.getElementById('noteID')
-        const noteDate = document.getElementById('noteDate')
-
-        // Status text
-        const getStatus = document.getElementById('noteStatus')
-
-        if (data.length) {
-            console.log(data[0].title, data[0].content)
-            noteTitle.value = data[0].title // Update the title area
-            contentArea.innerHTML = data[0].content // Update the content area
-            currentNoteID = data[0]._id // Update the global variable
-            idArea.dataset.noteId = currentNoteID // Update the ID area
-            idArea.innerHTML = currentNoteID // Use global variable to update the ID area
-            noteDate.innerHTML = data[0].createDate // Update the date area
-            displayText("Note Acquired") // Display confirmation text
-        } else {
-            noteTitle.innerHTML = "Click the 'New Note' button to create a new note"
-            contentArea.innerHTML = "Sad Note Taking App noises..."
-            console.log("No notes found")
-            displayText("No notes found")
+        if (response.redirected) {
+            window.location.href = response.url;
         }
+
     } catch (error) {
-        console.error('Error fetching notes:', error)
+        console.error('Error logging out', error) // Log an error message to the console
+        displayText("Error logging out") // Display error message
     }
-} */
+}
+
+
 //------------------------------------------------------------------------------
 
 // Event Listeners
@@ -183,6 +169,28 @@ document.addEventListener('DOMContentLoaded', () => {
     const noteTitleArea = document.getElementById('noteTitle') // Get the element with ID 'noteTitle'
     const noteidArea = document.getElementById('noteID') // Get the element with ID 'noteID'
     const noteDateArea = document.getElementById('noteDate') // Get the element with ID 'noteDate'
+    const useridArea = document.getElementById('userID') // Get the element with ID 'userID'
+    const userDateArea = document.getElementById('lastLogin') // Get the element with ID 'userDate'
+
+    //--------------------------------------------------------------------------------
+    //Do this when adding auth checking
+    //Function to load User info
+    // async function fetchUserInfo() {
+    //     try {
+    //         const response = await fetch('/auth/users'); // Send a GET request to the API endpoint for fetching user info
+    //         if (!response.ok) {
+    //             throw new Error('Failed to Fetch User Info. !response throw', error) // Throw an error if the response is not ok
+    //         }
+    //         const user = await response.json(); // Parse the response as JSON
+
+    //         useridArea.innerHTML = user._id // Display user ID in ID area
+    //         userDateArea.innerHTML = user.lastLogin // Display user last login in date area
+    //     } catch (error) {
+    //         console.error('Error fetching user info:', error) // Log an error message to the console
+    //     }
+    // }
+    //--------------------------------------------------------------------------------
+
 
     // Function to fetch notes from backend and populate notesMenu
     async function fetchNotes() {
@@ -223,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`/notes/${noteId}`) // Send a GET request to the API endpoint for fetching a specific note
             if (!response.ok) {
-                throw new Error('Network response was not ok') // Throw an error if the response is not ok
+                throw new Error('Error fetching response from /notes/${noteid}') // Throw an error if the response is not ok
             }
             const note = await response.json(); // Parse the response as JSON
             noteTitleArea.value = note.title; // Display note title in title area
@@ -242,8 +250,8 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error fetching note details:', error) // Log an error message to the console
         }
     }
-
-    fetchNotes();
+    //fetchUserInfo(); // Fetch user info when the page loads
+    fetchNotes();  // Fetch notes when the page loads
 
     // New button
     const newButton = document.getElementById('newButton')
@@ -271,6 +279,15 @@ document.addEventListener('DOMContentLoaded', () => {
             await deleteNote()
             await fetchNotes()
             clearText()
+        });
+    }
+
+    // Logout button
+    const logoutButton = document.getElementById('logoutButton')
+    if (logoutButton) {
+        logoutButton.addEventListener('click', async () => {
+            await logout()
+            console.log('User logged out') // Log a message to the console
         });
     }
 });
