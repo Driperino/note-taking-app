@@ -36,7 +36,7 @@
 
                 <ul id="menu" class="hidden mt-1">
                     <li><a id="settingsButton" class="block hover:text-purple-300">Settings</a></li>
-                    <li class="mb-2"><button id="logoutButton" class="block hover:text-purple-300">Logout</button></li>
+                    <li class="mb-2"><a href="login.html" logoutButton" class="block hover:text-purple-300">Logout</a>
                     </li>
                 </ul>
             </nav>
@@ -57,7 +57,6 @@
                     </svg>
                 </button>
                 <ul id="notesMenu" class="hidden mt-1">
-                    <!-- Placeholder for notes menu items -->
                 </ul>
             </div>
         </div>
@@ -75,20 +74,20 @@
             <div class="col-span-2 row-span-1 flex items-center">
                 <!-- Input for Note Title -->
                 <input type="text" id="noteTitle" name="title" placeholder="Title"
-                    class="rounded-sm w-full border-gray-500 border-2 m-2 py-2 px-4 bg-gray-500 placeholder-purple-700 focus:outline-none">
+                    class="rounded-sm w-full border-gray-500 border m-2 py-2 px-4 bg-gray-500 placeholder-purple-700 focus:outline-none">
 
                 <!-- Buttons for New, Save, and Delete -->
                 <div class="col-start-3 flex ml-2 space-x-1 col-span-1">
                     <button id="newButton"
-                        class="bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                        class="bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
                         New
                     </button>
                     <button id="saveButton"
-                        class="bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                        class="bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
                         Save
                     </button>
                     <button id="deleteButton"
-                        class="bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                        class="bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
                         Delete
                     </button>
                 </div>
@@ -114,7 +113,7 @@
             <!-- Textarea for Note Content -->
             <div class="col-span-3 row-span-22">
                 <textarea id="noteContent" name="note" placeholder="Note"
-                    class="rounded-sm w-full h-full border-gray-500 border-2 py-1 m-2 px-4 resize-none bg-gray-500 placeholder-purple-700 focus:outline-none"></textarea>
+                    class="rounded-sm w-full h-full border-gray-500 border py-1 m-2 px-4 resize-none bg-gray-500 placeholder-purple-700 focus:outline-none"></textarea>
             </div>
         </main>
     </div>
@@ -125,7 +124,7 @@
             <div class="border-r border-gray-500 flex items-center justify-between">
                 <h2 class="text-3xl mb-1">Settings</h2>
                 <button id="closeSettings"
-                    class="bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">Back</button>
+                    class="bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none">Back</button>
             </div>
 
             <div class="border-t border-gray-500"></div>
@@ -133,18 +132,18 @@
             <div class="w-full md:w-2/3 flex flex-col md:pl-4 mt-4 md:mt-0 mr-4">
                 <p class="text-left mb-2">Username</p>
                 <input type="text" id="updateUsername" name="username" placeholder="Username"
-                    class="mb-2 rounded-sm border-gray-500 border-2 py-2 px-4 bg-gray-500 placeholder-purple-700 focus:border-purple-100">
+                    class="mb-2 rounded-sm border-gray-500 border py-2 px-4 bg-gray-500 placeholder-purple-700 focus:outline-none">
                 <button id="updateUsernameButton"
-                    class="mb-2 bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                    class="mb-2 bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none">
                     Update Username
                 </button>
             </div>
             <div class="w-full md:w-2/3 flex flex-col md:pl-4 mt-4 md:mt-0">
                 <p class="text-left mb-2">Email</p>
                 <input type="email" id="updateEmail" name="email" placeholder="Email"
-                    class="mb-2 rounded-sm border-gray-500 border-2 py-2 px-4 bg-gray-500 placeholder-purple-700 focus:border-purple-100">
+                    class="mb-2 rounded-sm border-gray-500 border py-2 px-4 bg-gray-500 placeholder-purple-700 focus:outline-none">
                 <button id="updateEmailButton"
-                    class="mb-2 bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                    class="mb-2 bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none">
                     Update Email
                 </button>
             </div>
@@ -155,13 +154,13 @@
                 <div class="w-full md:w-2/3 flex flex-col md:mr-4">
                     <p class="text-left mb-2">Change Password</p>
                     <input type="password" id="oldPassword" name="oldPassword" placeholder="Old Password"
-                        class="mb-2 rounded-sm border-gray-500 border-2 py-2 px-4 bg-gray-500 placeholder-purple-700 focus:border-purple-100">
+                        class="mb-2 rounded-sm border-gray-500 border py-2 px-4 bg-gray-500 placeholder-purple-700 focus:outline-none">
                     <input type="password" id="newPassword" name="newPassword" placeholder="New Password"
-                        class="mb-2 rounded-sm border-gray-500 border-2 py-2 px-4 bg-gray-500 placeholder-purple-700 focus:border-purple-100">
+                        class="mb-2 rounded-sm border-gray-500 border py-2 px-4 bg-gray-500 placeholder-purple-700 focus:outline-none">
                     <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password"
-                        class="mb-2 rounded-sm border-gray-500 border-2 py-2 px-4 bg-gray-500 placeholder-purple-700 focus:border-purple-100">
+                        class="mb-2 rounded-sm border-gray-500 border py-2 px-4 bg-gray-500 placeholder-purple-700 focus:outline-none">
                     <button id="changePasswordButton"
-                        class="mb-2 bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                        class="mb-2 bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none">
                         Change Password
                     </button>
                 </div>
@@ -175,9 +174,9 @@
                     <p class="text-left mb-2">Delete Account</p>
                     <input type="password" id="confirmDeletePassword" name="confirmPassword"
                         placeholder="Confirm Password"
-                        class="mb-2 rounded-sm border-gray-500 border-2 py-2 px-4 bg-gray-500 placeholder-purple-700 focus:border-purple-100">
+                        class="mb-2 rounded-sm border-gray-500 border py-2 px-4 bg-gray-500 placeholder-purple-700 focus:outline-none">
                     <button id="confirmDeleteButton"
-                        class="mb-2 bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                        class="mb-2 bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:outline-none">
                         Delete Account
                     </button>
                 </div>
