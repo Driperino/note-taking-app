@@ -36,8 +36,7 @@
 
                 <ul id="menu" class="hidden mt-1">
                     <li><a id="settingsButton" class="block hover:text-purple-300">Settings</a></li>
-                    <li class="mb-2"><button id="logoutButton" class="block hover:text-purple-300">Logout</a>
-                    </li>
+                    <li class="mb-2"><button id="logoutButton" class="block hover:text-purple-300">Logout</button></li>
                 </ul>
             </nav>
 
@@ -57,6 +56,7 @@
                     </svg>
                 </button>
                 <ul id="notesMenu" class="hidden mt-1">
+                    <!-- Placeholder for notes menu items -->
                 </ul>
             </div>
         </div>
@@ -68,7 +68,7 @@
     </div>
 
     <!-- Main content -->
-    <div class="ml-64 flex-1 p-4 flex flex-col h-screen overflow-hidden">
+    <div id='main' class="ml-64 flex-1 p-4 flex flex-col h-screen overflow-hidden">
         <main class="grid grid-cols-4 grid-rows-24 overflow-hidden">
 
             <div class="col-span-2 row-span-1 flex items-center">
@@ -117,6 +117,76 @@
             </div>
         </main>
     </div>
+
+    <!-- Settings Panel -->
+    <div id="settings" class="hidden ml-64 flex-1 p-4 flex flex-col h-screen overflow-hidden">
+        <div class="flex flex-col space-y-4 overflow-hidden">
+            <div class="border-r border-gray-500 flex items-center justify-between">
+                <h2 class="text-3xl mb-1">Settings</h2>
+                <button id="closeSettings"
+                    class="bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">Back</button>
+            </div>
+
+            <div class="border-t border-gray-500"></div>
+            <!-- Update Username and Email -->
+            <div class="w-full md:w-2/3 flex flex-col md:pl-4 mt-4 md:mt-0 mr-4">
+                <p class="text-left mb-2">Username</p>
+                <input type="text" id="updateUsername" name="username" placeholder="Username"
+                    class="mb-2 rounded-sm border-gray-500 border-2 py-2 px-4 bg-gray-500 placeholder-purple-700 focus:border-purple-100">
+                <button id="updateUsernameButton"
+                    class="mb-2 bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                    Update Username
+                </button>
+            </div>
+            <div class="w-full md:w-2/3 flex flex-col md:pl-4 mt-4 md:mt-0">
+                <p class="text-left mb-2">Email</p>
+                <input type="email" id="updateEmail" name="email" placeholder="Email"
+                    class="mb-2 rounded-sm border-gray-500 border-2 py-2 px-4 bg-gray-500 placeholder-purple-700 focus:border-purple-100">
+                <button id="updateEmailButton"
+                    class="mb-2 bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                    Update Email
+                </button>
+            </div>
+            <!-- Horizontal line -->
+            <div class="mb-4 border-t border-gray-500"></div>
+            <!-- Change Password -->
+            <div class="flex flex-col md:flex-row">
+                <div class="w-full md:w-2/3 flex flex-col md:mr-4">
+                    <p class="text-left mb-2">Change Password</p>
+                    <input type="password" id="oldPassword" name="oldPassword" placeholder="Old Password"
+                        class="mb-2 rounded-sm border-gray-500 border-2 py-2 px-4 bg-gray-500 placeholder-purple-700 focus:border-purple-100">
+                    <input type="password" id="newPassword" name="newPassword" placeholder="New Password"
+                        class="mb-2 rounded-sm border-gray-500 border-2 py-2 px-4 bg-gray-500 placeholder-purple-700 focus:border-purple-100">
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password"
+                        class="mb-2 rounded-sm border-gray-500 border-2 py-2 px-4 bg-gray-500 placeholder-purple-700 focus:border-purple-100">
+                    <button id="changePasswordButton"
+                        class="mb-2 bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                        Change Password
+                    </button>
+                </div>
+
+            </div>
+            <!-- Horizontal line -->
+            <div class="mb-4 border-t border-gray-500"></div>
+            <!-- Delete Account -->
+            <div class="flex flex-col md:flex-row">
+                <div class="w-full md:w-2/3 flex flex-col md:mr-4">
+                    <p class="text-left mb-2">Delete Account</p>
+                    <input type="password" id="confirmDeletePassword" name="confirmPassword"
+                        placeholder="Confirm Password"
+                        class="mb-2 rounded-sm border-gray-500 border-2 py-2 px-4 bg-gray-500 placeholder-purple-700 focus:border-purple-100">
+                    <button id="confirmDeleteButton"
+                        class="mb-2 bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                        Delete Account
+                    </button>
+                </div>
+            </div>
+            <!-- Horizontal line -->
+            <div class="mb-4 border-t border-gray-500"></div>
+        </div>
+    </div>
+
+
 
     <script src="script.js"></script>
 </body>
