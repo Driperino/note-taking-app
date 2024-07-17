@@ -3,6 +3,7 @@ const { User } = require("../models/models.js");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const crypto = require('crypto');
+const session = require("express-session");
 
 const router = express.Router();
 
@@ -31,7 +32,8 @@ passport.use(new LocalStrategy(async function verify(username, password, cb) {
         return cb(error);
     }
 }));
-
+//------------------------------------------------------------
+// Configure Session Management
 passport.serializeUser((user, cb) => {
     process.nextTick(function () {
         return cb(null, {
@@ -45,6 +47,33 @@ passport.deserializeUser(function (user, cb) {
     process.nextTick(function () {
         return cb(null, user);
     });
+});
+//------------------------------------------------------------
+// Login route
+router.post('/login', (req, res, next) => {
+    passport.authenticate('local', async (err, user, info) => {
+        if (err) {
+            console.log(`Error while Authenticathing login in: ${err}`);
+            return next(err);
+        }
+        req.login(user, async (err) => {
+            if (err) {
+                console.log(`Error while logging in: ${err}`);
+                return next(err);
+            }
+
+            // Update lastLogin field
+            user.lastLogin = new Date();
+            try {
+                await user.save();
+                console.log(`User ${user.username} logged in successfully.`);
+                console.log(user.sessionID);
+                return res.redirect('/app');
+            } catch (err) {
+                return next(err);
+            }
+        });
+    })(req, res, next);
 });
 
 // Register a new user
@@ -90,57 +119,38 @@ router.post("/register", async (req, res, next) => {
 
     });
 });
-
-// Login route
-router.post('/login', (req, res, next) => {
-    passport.authenticate('local', async (err, user, info) => {
-        if (err) {
-            console.log(`Error while Authenticathing login in: ${err}`);
-            return next(err);
-        }
-        // if (!user) {
-        //     return res.redirect('/app/login.html');
-        // }
-
-        req.login(user, async (err) => {
-            if (err) {
-                console.log(`Error while logging in: ${err}`);
-                return next(err);
-            }
-
-            // Update lastLogin field
-            user.lastLogin = new Date();
-            try {
-                await user.save();
-                return res.redirect('/app');
-            } catch (err) {
-                return next(err);
-            }
+// get user info
+router.get("/user", (req, res) => {
+    if (req.isAuthenticated()) {
+        return res.status(200).json({
+            id: req.user.id, // Use req.user._id for MongoDB _id
+            username: req.user.username,
+            lastLogin: req.user.lastLogin,
+            sessionID: req.sessionID
         });
-    })(req, res, next);
+    } else {
+        return res.status(401).send("Unauthorized");
+    }
 });
 
 
 
-// router.post('/login', async (req, res, next) => {
-//     passport.authenticate('local', (err, user, info) => {
-//         if (err) return next(err);
-//         if (!user) return res.redirect('/app/login.html');
 
-//         req.login(user, async (err) => {
-//             if (err) return next(err);
+// Logout route
+router.post("/logout", (req, res) => {
+    req.logout(error => {
+        if (error) {
+            console.log(`Error while logging out: ${error}`);
+            return next(error);
+        }
+        console.log(`User ${req.username} logged out successfully.`);
+        console.log(`session ID ${req.sessionID}`);
+        return res.redirect('/app/login.html');
+    }
+    );
+});
 
-//             // Update lastLogin field
-//             user.lastLogin = new Date();
-//             await user.save((err) => {
-//                 if (err) return next(err);
-//                 return res.redirect('/app');
-//             });
-//         });
-//     })(req, res, next);
-// });
-
-
+module.exports = router;
 
 
 // passport.authenticate('local', (err, user, info) => {
@@ -160,19 +170,7 @@ router.post('/login', (req, res, next) => {
 //         console.log(`User ${user.username} logged in successfully.`);
 //         return res.redirect('/app');
 //     });
-// })(req, res, next);
+// })//(req, res, next);
 
-// Logout route
-router.post("/logout", (req, res) => {
-    req.logout(error => {
-        if (error) {
-            console.log(`Error while logging out: ${error}`);
-            return next(error);
-        }
-        console.log("User logged out successfully.");
-        return res.redirect('/app/login.html');
-    }
-    );
-});
 
-module.exports = router;
+

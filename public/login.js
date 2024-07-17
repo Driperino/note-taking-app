@@ -1,4 +1,3 @@
-// Selectors
 // Define the initial view as 'main'
 let view = 'main';
 console.log(`${view} is the Current View`)
@@ -235,3 +234,44 @@ document.getElementById('loginButton').addEventListener('click', async (event) =
         window.location.href = response.url;
     }
 });
+
+// Testing User info
+
+async function getTestUserInfo() {
+    const response = await fetch(`${API_URL}/`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (response.status >= 400) {
+        const data = await response.text();
+        console.log(`Error during login: ${data}`);
+    } else {
+        console.log(`User info retrieved successfully!`);
+    }
+}
+
+async function testUserInfo() {
+    const userID = document.getElementById('userID').value;
+    const lastLogin = document.getElementById('lastLogin').value;
+    const sessionID = document.getElementById('sessionID').value;
+
+    const user = getTestUserInfo();
+
+    if (!userID) {
+        console.log('Not Logged in OR error in retrieving user info');
+        return;
+    } else if (userID) {
+
+        userID = user._id;
+        lastLogin = user.lastLogin;
+
+
+
+        console.log(`User ID: ${userID}, Last Login: ${lastLogin}, Session ID: ${sessionID}`);
+    }
+
+
+}
