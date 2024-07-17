@@ -1,4 +1,3 @@
-// Selectors
 // Define the initial view as 'main'
 let view = 'main';
 console.log(`${view} is the Current View`)
@@ -102,74 +101,177 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
-//API
+//API----------------------------------------------------------------------------------------------------------------
 const API_URL = 'http://localhost:3000';
 
+// Register button API 
 document.getElementById('registerButton').addEventListener('click', async (event) => {
     event.preventDefault();
     console.log('Register button clicked');
 
     const username = document.getElementById('registerUsername').value;
     const password = document.getElementById('registerPassword').value;
+    const errorMessage = document.getElementById('registerError');
 
-    console.log(`Username: ${username}, Password: ${password}`);
+    const minLen = 8;
 
-    const response = await fetch(`${API_URL}/auth/register`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ username, password })
-    });
-
-    if (response.redirected) {
-        window.location.href = response.url;
+    if (password.length < minLen) {
+        console.log(`Password must be at least ${minLen} characters long`);
+        errorMessage.innerHTML = "Password must be at least 8 characters long";
+        return;
     }
 
-    if (response.status >= 400) {
-        const data = await response.text();
-        console.log(data);
-    } else {
-        console.log("User registered successfully");
-    }
-});
-
-
-document.getElementById('loginButton').addEventListener('click', async (event) => {
-    event.preventDefault();
-    console.log('Login button clicked');
-
-    const username = document.getElementById('loginUsername').value;
-    const password = document.getElementById('loginPassword').value;
-
+    // Logging for debugging purposes ------------------------------------------------
     if (username || password) {
         console.log(`Username: ${username}, Password: ${password}`);//REMOVE THIS ONCE IT'S WORKING!!!!!!!!!!!!!!
     }
-
     if (!username || !password) {
         console.log('Please provide a username and password');
         return;
     } else {
         console.log(`Username: ${username}, Password: ${password}`);//REMOVE THIS ONCE IT'S WORKING!!!!!!!!!!!!!!
     }
+    //--------------------------------------------------------------------------------
+
+    const response = await fetch(`${API_URL}/auth/register`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            username,
+            password
+        })
+    })
+
+    if (response.status >= 400) {
+        const data = await response.text();
+        console.log(`Error during register: ${data}`);
+        errorMessage.innerHTML = "Username already exists. Please try again.";
+    } else {
+        console.log(`User ${username} registered successfully!`);
+        if (response.redirected) {
+            window.location.href = response.url;
+            console.log(`redirecting to ${response.url}`)
+        }
+    }
+});
+
+
+
+// const response = await fetch(`${API_URL}/auth/register`, {
+//     method: 'POST',
+//     headers: {
+//         'Content-Type': 'application/json'
+//     },
+//     body: JSON.stringify({ username, password })
+// });
+
+// if (response.redirected) {
+//     window.location.href = response.url;
+// }
+
+// if (response.status >= 400) {
+//     const data = await response.text();
+//     console.log(data);
+// } else {
+//     console.log("User registered successfully");
+// }
+
+//Login Button API
+document.getElementById('loginButton').addEventListener('click', async (event) => {
+    event.preventDefault();
+    console.log('Login button clicked');
+
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+    const date = new Date();
+    const errorMessage = document.getElementById('loginError');
+
+    const minLen = 8;
+    // Check if the password is at least 8 characters long
+    if (password.length < minLen) {
+        console.log(`Password must be at least ${minLen} characters long`);
+        errorMessage.innerHTML = "Password must be at least 8 characters long";
+        document.getElementById('loginPassword').innerHTML = '';
+        return;
+    }
+
+    // Logging for debugging purposes ------------------------------------------------
+    if (username || password) {
+        console.log(`Username: ${username}, Password: ${password}`);//FIXME REMOVE THIS ONCE IT'S WORKING!!!!!!!!!!!!!!
+    }
+    if (!username || !password) {
+        console.log('Please provide a username and password');
+        return;
+    } else {
+        console.log(`Username: ${username}, Password: ${password}`);//FIXME REMOVE THIS ONCE IT'S WORKING!!!!!!!!!!!!!!
+    }
+    //--------------------------------------------------------------------------------
 
     const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ username, password })
-    });
+        body: JSON.stringify({
+            username,
+            password,
+            lastLogin: date
+        })
+    })
 
-    // if (response.redirected) {
-    //     window.location.href = response.url;
-    // }
-
-    if (response >= 400) {
+    if (response.status >= 400) {
         const data = await response.text();
-        console.log(`Error: ${data}`);
+        console.log(`Error during login: ${data}`);
+        errorMessage.innerHTML = "Invalid username or password. Please try again.";
         document.getElementById('loginUsername').innerHTML = '';
         document.getElementById('loginPassword').innerHTML = '';
+    } else {
+        console.log(`User ${username} logged in successfully!`);
+    }
+    if (response.redirected) {
+        window.location.href = response.url;
     }
 });
 
+// Testing User info
+
+async function getTestUserInfo() {
+    const response = await fetch(`${API_URL}/`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (response.status >= 400) {
+        const data = await response.text();
+        console.log(`Error during login: ${data}`);
+    } else {
+        console.log(`User info retrieved successfully!`);
+    }
+}
+
+async function testUserInfo() {
+    const userID = document.getElementById('userID').value;
+    const lastLogin = document.getElementById('lastLogin').value;
+    const sessionID = document.getElementById('sessionID').value;
+
+    const user = getTestUserInfo();
+
+    if (!userID) {
+        console.log('Not Logged in OR error in retrieving user info');
+        return;
+    } else if (userID) {
+
+        userID = user._id;
+        lastLogin = user.lastLogin;
+
+
+
+        console.log(`User ID: ${userID}, Last Login: ${lastLogin}, Session ID: ${sessionID}`);
+    }
+
+
+}

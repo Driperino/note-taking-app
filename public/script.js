@@ -1,5 +1,3 @@
-//const { get } = require("mongoose") // Commented out, not used in the code
-
 const API_URL = "http://localhost:3000" // API URL for the backend server
 
 // This Variable NEEDS to be set BEFORE saving a note, otherwise it will not work
@@ -43,15 +41,33 @@ document.getElementById('notesButton').addEventListener('click', function () {
     }
 });
 
+// Settings Menu button
 
-/// API Functions -----------------------------------------------------------------
+document.getElementById('settingsButton').addEventListener('click', function () {
+    const settingsMenu = document.getElementById('settings'); // Get the element with ID 'settingsMenu'
+    const main = document.getElementById('main'); // Get the element with ID 'main'
 
-// New Note function
-/*
-    If there's a note, ask if you want to save the note,
-    then clear all the fields.
-    If no note, just clear all the fields.
-*/
+    if (settingsMenu.classList.contains('hidden')) { // Check if the element has the class 'hidden'
+        settingsMenu.classList.remove('hidden'); // Remove the class 'hidden' from the element
+        main.classList.add('hidden'); // Add the class 'hidden' to the element
+    }
+});
+
+// Close Settings Menu button
+
+document.getElementById('closeSettings').addEventListener('click', function () {
+    const settingsMenu = document.getElementById('settings'); // Get the element with ID 'settingsMenu'
+    const main = document.getElementById('main'); // Get the element with ID 'main'
+
+    if (main.classList.contains('hidden')) { // Check if the element has the class 'hidden'
+        settingsMenu.classList.add('hidden'); // Remove the class 'hidden' from the element
+        main.classList.remove('hidden'); // Add the class 'hidden' to the element
+    }
+});
+
+
+// /// API Functions -----------------------------------------------------------------
+
 async function newNote() {
     if (currentNoteID) { // Check if currentNoteID is truthy (not empty or false)
         //I want to make a good looking confirmation box but this will do for now...
@@ -65,48 +81,53 @@ async function newNote() {
 
 // Save Note function
 async function saveNote() {
-    if (currentNoteID) { // Check if currentNoteID is truthy (not empty or false)
-        try {
-            const noteTitle = document.getElementById('noteTitle').value // Get the value of the element with ID 'noteTitle'
-            const noteContent = document.getElementById('noteContent').value // Get the value of the element with ID 'noteContent'
-            const response = await fetch(`${API_URL}/notes/${currentNoteID}`, { // Send a PATCH request to the API endpoint for updating a note
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    _id: currentNoteID,
-                    title: noteTitle,
-                    content: noteContent
-                })
+    try {
+        const noteTitle = document.getElementById('noteTitle').value // Get the value of the element with ID 'noteTitle'
+        const noteContent = document.getElementById('noteContent').value // Get the value of the element with ID 'noteContent'
+        const response = await fetch(`${API_URL}/notes/${currentNoteID}`, { // Send a PATCH request to the API endpoint for updating a note
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                _id: currentNoteID,
+                title: noteTitle,
+                content: noteContent,
             })
-            displayText(`${noteTitle} Saved`) // Display confirmation text
-        } catch (error) {
-            console.error(`Error saving Note ${noteTitle}`, error) // Log an error message to the console
-            displayText("Error saving note") // Display error message
-        }
-    } else if (!currentNoteID) { // Check if currentNoteID is falsy (empty or false)
-        try {
-            const noteTitle = document.getElementById('noteTitle').value // Get the value of the element with ID 'noteTitle'
-            const noteContent = document.getElementById('noteContent').value // Get the value of the element with ID 'noteContent'
-            const response = await fetch(`${API_URL}/notes/${currentNoteID}`, { // Send a PUT request to the API endpoint for creating a new note
-                method: 'Put',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    title: noteTitle,
-                    content: noteContent,
-                    createDate: new Date()
-                })
-            })
-            displayText(`${noteTitle} Created`) // Display confirmation text
-        } catch (error) {
-            console.error(`Error creating Note: ${noteTitle}`, error) // Log an error message to the console
-            displayText("Error creating note") // Display error message
-        }
+        })
+
+        currentNoteID = response._id // Update current note ID
+        displayText(`${noteTitle} Saved`) // Display confirmation text
+    } catch (error) {
+        console.error(`Error saving Note ${noteTitle}`, error) // Log an error message to the console
+        displayText("Error saving note") // Display error message
+    }
+}
+
+// Create Note function
+async function createNote() {
+    const noteTitle = document.getElementById('noteTitle').value;
+    const noteContent = document.getElementById('noteContent').value;
+
+    const response = await fetch(`${API_URL}/notes`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            title: noteTitle,
+            content: noteContent
+        }),
+        credentials: 'include' // Ensure credentials are included
+    });
+
+    if (response.ok) {
+        const note = await response.json();
+        console.log('Note created:', note);
+        displayText(`${note.title} created`);
     } else {
-        console.log("Cannot Create new note, id already loaded.") // Log a message to the console
+        console.error('Failed to create note:', response.status, response.statusText);
+        displayText('Failed to create note');
     }
 }
 
@@ -138,41 +159,27 @@ async function deleteNote() {
     }
 }
 
-// Get note function DEPRECATED WAS FOR TESTING
-/* async function getNote() {
+//logout function
+async function logout() {
     try {
-        const response = await fetch(`${API_URL}/notes`)
-        const data = await response.json()
-        console.log(data)
+        const response = await fetch(`${API_URL}/auth/logout`, { // Send a POST request to the API endpoint for logging out
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
 
-        // Area IDs
-        const noteTitle = document.getElementById('noteTitle')
-        const contentArea = document.getElementById('noteContent')
-        const idArea = document.getElementById('noteID')
-        const noteDate = document.getElementById('noteDate')
-
-        // Status text
-        const getStatus = document.getElementById('noteStatus')
-
-        if (data.length) {
-            console.log(data[0].title, data[0].content)
-            noteTitle.value = data[0].title // Update the title area
-            contentArea.innerHTML = data[0].content // Update the content area
-            currentNoteID = data[0]._id // Update the global variable
-            idArea.dataset.noteId = currentNoteID // Update the ID area
-            idArea.innerHTML = currentNoteID // Use global variable to update the ID area
-            noteDate.innerHTML = data[0].createDate // Update the date area
-            displayText("Note Acquired") // Display confirmation text
-        } else {
-            noteTitle.innerHTML = "Click the 'New Note' button to create a new note"
-            contentArea.innerHTML = "Sad Note Taking App noises..."
-            console.log("No notes found")
-            displayText("No notes found")
+        if (response.redirected) {
+            window.location.href = response.url;
         }
+
     } catch (error) {
-        console.error('Error fetching notes:', error)
+        console.error('Error logging out', error) // Log an error message to the console
+        displayText("Error logging out") // Display error message
     }
-} */
+}
+
+
 //------------------------------------------------------------------------------
 
 // Event Listeners
@@ -183,6 +190,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const noteTitleArea = document.getElementById('noteTitle') // Get the element with ID 'noteTitle'
     const noteidArea = document.getElementById('noteID') // Get the element with ID 'noteID'
     const noteDateArea = document.getElementById('noteDate') // Get the element with ID 'noteDate'
+    const useridArea = document.getElementById('userID') // Get the element with ID 'userID'
+    const userDateArea = document.getElementById('lastLogin') // Get the element with ID 'userDate'
+    const sessionIDArea = document.getElementById('sessionID') // Get the element with ID 'sessionID'
+
+    // Function to load User info
+    async function fetchUserInfo() {
+        try {
+            const response = await fetch('/auth/user'); // Send a GET request to the API endpoint for fetching user info
+            if (!response.ok) {
+                throw new Error('Failed to fetch user info'); // Throw an error if the response is not ok
+            }
+            const user = await response.json(); // Parse the response as JSON
+
+            useridArea.innerHTML = user.id; // Display user ID in ID area
+            sessionIDArea.innerHTML = user.sessionID; // Display session ID in session ID area
+        } catch (error) {
+            console.error('Error fetching user info:', error); // Log an error message to the console
+            displayText("Error fetching user info"); // Display error message
+        }
+    }
 
     // Function to fetch notes from backend and populate notesMenu
     async function fetchNotes() {
@@ -193,9 +220,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             const notes = await response.json(); // Parse the response as JSON
             console.log('Notes:', notes) // Log notes
+
             if (!notes) {
                 console.log('No notes found') // Log notes
                 throw new Error('No notes found', error) // Throw an error if no notes are found
+                displayText("No notes found") // Display error message
             }
 
             // Clear notesMenu before populating it
@@ -209,7 +238,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 a.classList.add('block', 'text-purple-900', 'bg-darkGray-100', 'hover:text-purple-300') // Add classes to the <a> element
                 a.textContent = note.title // Set the text content of the <a> element to the note title
                 a.dataset.noteId = note._id // Store note ID as a data attribute
-                a.addEventListener('click', handleNoteClick) // Add a click event listener to the <a> element
+                a.addEventListener('click', selectNote) // Add a click event listener to the <a> element
                 li.appendChild(a) // Append the <a> element to the <li> element
                 notesMenu.appendChild(li) // Append the <li> element to the notesMenu
             })
@@ -217,41 +246,45 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error fetching notes:', error) // Log an error message to the console
         }
     }
-
-    async function handleNoteClick(event) {
+    // Select Note from List
+    async function selectNote(event) {
         const noteId = event.target.dataset.noteId; // Get the note ID from the data attribute of the clicked element
         try {
-            const response = await fetch(`/notes/${noteId}`) // Send a GET request to the API endpoint for fetching a specific note
+            const response = await fetch(`/notes/${noteId}`); // Send a GET request to fetch a specific note
             if (!response.ok) {
-                throw new Error('Network response was not ok') // Throw an error if the response is not ok
+                throw new Error(`Error fetching response from /notes/${noteId}`); // Throw an error if the response is not ok
             }
             const note = await response.json(); // Parse the response as JSON
+
+            // Assuming these elements are defined correctly in your HTML or script
             noteTitleArea.value = note.title; // Display note title in title area
-            noteContentTextarea.value = note.content // Display note content in textarea
-            noteidArea.dataset.noteId = note._id // Store note ID as a data attribute
-            noteidArea.innerHTML = note._id // Display note ID in ID area
-            currentNoteID = note._id // Update current note ID
-            console.log(`noteId: ${noteId}`, note) // Log note details (optional)
+            noteContentTextarea.value = note.content; // Display note content in textarea
+            noteidArea.dataset.noteId = note._id; // Store note ID as a data attribute
+            noteidArea.innerHTML = note._id; // Display note ID in ID area
+            currentNoteID = note._id; // Update current note ID
+            console.log(`noteId: ${noteId}`, note); // Log note details (optional)
 
             // Date manipulation
-            const date = new Date(note.createDate) // Convert note creation date to Date object
-            const localDate = date.toLocaleDateString() // Display note creation date in date area
-            const localTime = date.toLocaleTimeString() // Display note creation time in date area
-            noteDateArea.innerHTML = `${localDate} at ${localTime}` // Display note creation date in date area
+            const date = new Date(note.createDate); // Convert note creation date to Date object
+            const localDate = date.toLocaleDateString(); // Display note creation date in date area
+            const localTime = date.toLocaleTimeString(); // Display note creation time in date area
+            noteDateArea.innerHTML = `${localDate} at ${localTime}`; // Display note creation date in date area
         } catch (error) {
-            console.error('Error fetching note details:', error) // Log an error message to the console
+            console.error('Error fetching note details:', error); // Log an error message to the console
         }
     }
 
-    fetchNotes();
+    fetchUserInfo(); // Fetch user info when the page loads
+    fetchNotes();  // Fetch notes when the page loads
 
     // New button
     const newButton = document.getElementById('newButton')
     if (newButton) {
         newButton.addEventListener('click', async () => {
-            await newNote()
-            await fetchNotes()
-            clearText()
+            await newNote();
+            await fetchNotes();
+            await fetchUserInfo();
+            clearText();
         });
     }
 
@@ -259,8 +292,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveButton = document.getElementById('saveButton')
     if (saveButton) {
         saveButton.addEventListener('click', async () => {
-            await saveNote()
-            await fetchNotes()
+            if (currentNoteID === 'false' || currentNoteID === '') {
+                await createNote();
+            } else {
+                await saveNote();
+                await fetchNotes();
+                await fetchUserInfo();
+            }
         });
     }
 
@@ -268,9 +306,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const deleteButton = document.getElementById('deleteButton')
     if (deleteButton) {
         deleteButton.addEventListener('click', async () => {
-            await deleteNote()
-            await fetchNotes()
-            clearText()
+            await deleteNote();
+            await fetchNotes();
+            await fetchUserInfo();
+            clearText();
+        });
+    }
+
+    // Logout button
+    const logoutButton = document.getElementById('logoutButton')
+    if (logoutButton) {
+        logoutButton.addEventListener('click', async () => {
+            await logout();
+            console.log('User logged out'); // Log a message to the console
         });
     }
 });

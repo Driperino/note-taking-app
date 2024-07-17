@@ -14,22 +14,30 @@
     <div id="main"
         class="  rounded-sm pr-4 mr-4 border-purple-400 bg-green-100 flex flex-col items-center my-auto text-purple-800">
         <header class="flex items-center">
-            <h1 class="text-3xl mt-4 font-bold">Notes</h1>
+            <h1 class="text-3xl mt-6 font-bold">Notes</h1>
         </header>
-        <main class="flex flex-col items-center mt-4">
+        <!--Dividing line-->
+        <div class="w-64">
+            <hr class="ml-4 my-3  border-gray-500">
+        </div>
+        <div class="flex flex-col items-center mt-2">
             <div class="w-64">
                 <button id="registerSelectButton" type="submit"
-                    class="w-full p-2 m-2 bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                    class="w-full p-2 m-2 bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
                     Register
                 </button>
             </div>
             <div class="w-64">
                 <button id="loginSelectButton" type="submit"
-                    class="w-full p-2 m-2 bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                    class="w-full p-2 m-2 mb-4 bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
                     Login
                 </button>
             </div>
-        </main>
+            <!--Dividing line-->
+            <div class="w-64">
+                <hr class="ml-4 mt- mb-4 border-gray-500">
+            </div>
+        </div>
     </div>
 
 
@@ -37,38 +45,86 @@
     <div id="login"
         class=" hidden rounded-sm pr-4 mr-4 border-purple-400 bg-green-100 flex flex-col items-center my-auto text-purple-800">
         <header class="flex items-center">
-            <h1 class="text-3xl mt-4 font-bold">Login</h1>
+            <h1 class="text-3xl mt-6 mb-4 font-bold">Login</h1>
         </header>
-        <main class="flex flex-col items-center mt-4">
+        <!--Dividing line-->
+        <div class="w-64">
+            <hr class="ml-4 my-1 border-gray-500">
+        </div>
+        <!--Login fields-->
+        <div class="flex flex-col items-center mt-4">
             <div class="w-64">
                 <input id="loginUsername" type="text" placeholder="Username"
                     class="w-full p-2 m-2 border bg-gray-500 rounded-sm focus:outline-none placeholder-purple-700 focus:border-purple-500">
             </div>
+            <!--Password field-->
             <div class="w-64">
                 <input id="loginPassword" type="password" placeholder="Password"
                     class="w-full p-2 m-2 border bg-gray-500 rounded-sm focus:outline-none placeholder-purple-700 focus:border-purple-500">
             </div>
+            <!--Login Submit button-->
             <div class="w-64">
                 <button id="loginButton" type="submit"
-                    class="w-full p-2 m-2 bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                    class="w-full p-2 m-2 bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
                     Login
                 </button>
             </div>
+            <!--Error message-->
+            <div class="w-64">
+                <p id="loginError" class="ml-4 flex text-center justify-center text-purple-400 drop-shadow-md"></p>
+            </div>
+            <!--Dividing line-->
+            <div class="w-64">
+                <hr class="ml-4 my-4 border-gray-500">
+            </div>
+            <!--Social Media login Buttons-->
+            <!--Google Button-->
+            <div class="ml-4 w-64 mb-2 flex justify-center items-center">
+                <button id="loginGoogleButton" type="submit"
+                    class="w-full p-2 border font-bold border-gray-500 bg-purple-100 hover:bg-purple-300 rounded-sm focus:outline-none focus:border-purple-500 flex items-center justify-center">
+                    <img class="w-4 h-4 mr-2" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy"
+                        alt="google logo">
+                    <span class="mr-2 drop-shadow-lg">
+                        Login with Google
+                    </span>
+                </button>
+            </div>
+            <!--Github Button-->
+            <div class="ml-4 w-64 mb-2 flex justify-center items-center">
+                <button id="loginGithubButton" type="submit"
+                    class="w-full p-2 border font-bold border-gray-500 bg-purple-100 hover:bg-purple-300 rounded-sm focus:outline-none focus:border-purple-500 flex items-center justify-center">
+                    <img class="w-4 h-4 mr-2" src="https://www.svgrepo.com/show/217753/github.svg" loading="lazy"
+                        alt="github logo">
+                    <span class="mr-2 drop-shadow-lg">
+                        Login with Github
+                    </span>
+                </button>
+            </div>
+            <!--Dividing line-->
+            <div class="w-64">
+                <hr class="ml-4 my-4 border-gray-500">
+            </div>
+            <!--Back Button-->
             <div class="w-32">
                 <button id="backButton" type="submit"
-                    class="w-full p-2 m-2 bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                    class="w-full p-2 m-2 bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
                     Back
                 </button>
             </div>
-        </main>
+        </div>
     </div>
-    <!-- Register Form -->
+    <!--Register Form -->
     <div id="register"
         class=" hidden rounded-sm pr-4 mr-4 border-purple-400 bg-green-100 flex flex-col items-center my-auto text-purple-800">
         <header class="flex items-center">
-            <h1 class="text-3xl mt-4 font-bold">Register</h1>
+            <h1 class="text-3xl mt-6 mb-4 font-bold">Register</h1>
         </header>
-        <main class="flex flex-col items-center mt-4">
+        <!--Dividing line-->
+        <div class="w-64">
+            <hr class="ml-4 my-2 border-gray-500">
+        </div>
+        <!--Register fields-->
+        <div class="flex flex-col items-center mt-4">
             <div class="w-64">
                 <input id="registerUsername" type="text" placeholder="Username"
                     class="w-full p-2 m-2 border bg-gray-500 rounded-sm focus:outline-none placeholder-purple-700 focus:border-purple-500">
@@ -77,19 +133,56 @@
                 <input id="registerPassword" type="password" placeholder="Password"
                     class="w-full p-2 m-2 border bg-gray-500 rounded-sm focus:outline-none placeholder-purple-700 focus:border-purple-500">
             </div>
+            <!--Submit button-->
             <div class="w-64">
                 <button id="registerButton" type="submit"
-                    class="w-full p-2 m-2 bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                    class="w-full p-2 m-2 bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
                     Register
                 </button>
             </div>
+            <!--Error message-->
+            <div class="w-64">
+                <p id="registerError" class="ml-4 flex text-center justify-center text-purple-400 drop-shadow-md"></p>
+            </div>
+            <!--Dividing line-->
+            <div class="w-64">
+                <hr class="ml-4 my-4 border-gray-500">
+            </div>
+            <!--Social Media Register Buttons-->
+            <!--Google Button-->
+            <div class="ml-4 w-64 mb-2 flex justify-center items-center">
+                <button id="registerGoogleButton" type="submit"
+                    class="w-full p-2 border font-bold border-gray-500 bg-purple-100 hover:bg-purple-300 rounded-sm focus:outline-none focus:border-purple-500 flex items-center justify-center">
+                    <img class="w-4 h-4 mr-2" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy"
+                        alt="google logo">
+                    <span class="mr-2 drop-shadow-lg">
+                        Register with Google
+                    </span>
+                </button>
+            </div>
+            <!--Github Button-->
+            <div class="ml-4 w-64 mb-2 flex justify-center items-center">
+                <button id="registerGithubButton" type="submit"
+                    class="w-full p-2 border font-bold border-gray-500 bg-purple-100 hover:bg-purple-300 rounded-sm focus:outline-none focus:border-purple-500 flex items-center justify-center">
+                    <img class="w-4 h-4 mr-2" src="https://www.svgrepo.com/show/217753/github.svg" loading="lazy"
+                        alt="github logo">
+                    <span class="mr-2 drop-shadow-lg">
+                        Register with Github
+                    </span>
+                </button>
+            </div>
+            <!--Dividing line-->
+            <div class="w-64">
+                <hr class="ml-4 my-4 border-gray-500">
+            </div>
+            <!-- Back Button-->
             <div class="w-32">
                 <button id="backButtonTwo" type="submit"
-                    class="w-full p-2 m-2 bg-purple-100 border-gray-500 border-2 hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                    class="w-full p-2 m-2 bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
                     Back
                 </button>
             </div>
-        </main>
+        </div>
     </div>
 
 
