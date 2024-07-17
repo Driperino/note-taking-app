@@ -68,6 +68,17 @@ document.getElementById('closeSettings').addEventListener('click', function () {
 
 // /// API Functions -----------------------------------------------------------------
 
+async function newNote() {
+    if (currentNoteID) { // Check if currentNoteID is truthy (not empty or false)
+        //I want to make a good looking confirmation box but this will do for now...
+        if (confirm("You have a note open, would you still like to create a new note?")) { // Show a confirmation dialog
+            displayText("New Note Created") // Display confirmation text
+        } else {
+            console.log("User chose not to create a new note") // Log a message to the console
+        }
+    }
+}
+
 // Save Note function
 async function saveNote() {
     try {
@@ -113,11 +124,12 @@ async function createNote() {
     if (response.ok) {
         const note = await response.json();
         console.log('Note created:', note);
+        displayText(`${note.title} created`);
     } else {
         console.error('Failed to create note:', response.status, response.statusText);
+        displayText('Failed to create note');
     }
 }
-
 
 // Delete Note function
 async function deleteNote() {
@@ -181,7 +193,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const useridArea = document.getElementById('userID') // Get the element with ID 'userID'
     const userDateArea = document.getElementById('lastLogin') // Get the element with ID 'userDate'
     const sessionIDArea = document.getElementById('sessionID') // Get the element with ID 'sessionID'
-    //--------------------------------------------------------------------------------
 
     // Function to load User info
     async function fetchUserInfo() {
@@ -193,14 +204,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const user = await response.json(); // Parse the response as JSON
 
             useridArea.innerHTML = user.id; // Display user ID in ID area
-            userDateArea.value = user.lastLogin; // Display user last login in date area
             sessionIDArea.innerHTML = user.sessionID; // Display session ID in session ID area
         } catch (error) {
             console.error('Error fetching user info:', error); // Log an error message to the console
+            displayText("Error fetching user info"); // Display error message
         }
     }
-    //--------------------------------------------------------------------------------
-
 
     // Function to fetch notes from backend and populate notesMenu
     async function fetchNotes() {
@@ -215,6 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!notes) {
                 console.log('No notes found') // Log notes
                 throw new Error('No notes found', error) // Throw an error if no notes are found
+                displayText("No notes found") // Display error message
             }
 
             // Clear notesMenu before populating it
@@ -236,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error fetching notes:', error) // Log an error message to the console
         }
     }
-
+    // Select Note from List
     async function selectNote(event) {
         const noteId = event.target.dataset.noteId; // Get the note ID from the data attribute of the clicked element
         try {
@@ -264,32 +274,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
-    // async function handleNoteClick(event) {
-    //     const noteId = event.target.dataset.noteId; // Get the note ID from the data attribute of the clicked element
-    //     try {
-    //         const response = await fetch(`/notes/${noteId}`) // Send a GET request to the API endpoint for fetching a specific note
-    //         if (!response.ok) {
-    //             throw new Error('Error fetching response from /notes/${noteid}') // Throw an error if the response is not ok
-    //         }
-    //         const note = await response.json(); // Parse the response as JSON
-    //         noteTitleArea.value = note.title; // Display note title in title area
-    //         noteContentTextarea.value = note.content // Display note content in textarea
-    //         noteidArea.dataset.noteId = note._id // Store note ID as a data attribute
-    //         noteidArea.innerHTML = note._id // Display note ID in ID area
-    //         currentNoteID = note._id // Update current note ID
-    //         console.log(`noteId: ${noteId}`, note) // Log note details (optional)
-
-    //         // Date manipulation
-    //         const date = new Date(note.createDate) // Convert note creation date to Date object
-    //         const localDate = date.toLocaleDateString() // Display note creation date in date area
-    //         const localTime = date.toLocaleTimeString() // Display note creation time in date area
-    //         noteDateArea.innerHTML = `${localDate} at ${localTime}` // Display note creation date in date area
-    //     } catch (error) {
-    //         console.error('Error fetching note details:', error) // Log an error message to the console
-    //     }
-    // }
-
     fetchUserInfo(); // Fetch user info when the page loads
     fetchNotes();  // Fetch notes when the page loads
 
@@ -297,9 +281,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const newButton = document.getElementById('newButton')
     if (newButton) {
         newButton.addEventListener('click', async () => {
-            await newNote()
-            await fetchNotes()
-            clearText()
+            await newNote();
+            await fetchNotes();
+            await fetchUserInfo();
+            clearText();
         });
     }
 
@@ -307,11 +292,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveButton = document.getElementById('saveButton')
     if (saveButton) {
         saveButton.addEventListener('click', async () => {
-            if (currentNoteID === 'false') {
-                createNote()
+            if (currentNoteID === 'false' || currentNoteID === '') {
+                await createNote();
             } else {
-                await saveNote()
-                await fetchNotes()
+                await saveNote();
+                await fetchNotes();
+                await fetchUserInfo();
             }
         });
     }
@@ -320,9 +306,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const deleteButton = document.getElementById('deleteButton')
     if (deleteButton) {
         deleteButton.addEventListener('click', async () => {
-            await deleteNote()
-            await fetchNotes()
-            clearText()
+            await deleteNote();
+            await fetchNotes();
+            await fetchUserInfo();
+            clearText();
         });
     }
 
@@ -330,8 +317,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutButton = document.getElementById('logoutButton')
     if (logoutButton) {
         logoutButton.addEventListener('click', async () => {
-            await logout()
-            console.log('User logged out') // Log a message to the console
+            await logout();
+            console.log('User logged out'); // Log a message to the console
         });
     }
 });

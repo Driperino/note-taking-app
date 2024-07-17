@@ -38,7 +38,8 @@ passport.serializeUser((user, cb) => {
     process.nextTick(function () {
         return cb(null, {
             id: user._id,
-            username: user.username
+            username: user.username,
+            lastLogin: user.lastLogin
         })
     });
 });
@@ -67,7 +68,6 @@ router.post('/login', (req, res, next) => {
             try {
                 await user.save();
                 console.log(`User ${user.username} logged in successfully.`);
-                console.log(user.sessionID);
                 return res.redirect('/app');
             } catch (err) {
                 return next(err);
