@@ -66,7 +66,7 @@ document.getElementById('closeSettings').addEventListener('click', function () {
 });
 
 
-// /// API Functions -----------------------------------------------------------------
+//------ API Functions -----------------------------------------------------------------
 
 async function newNote() {
     if (currentNoteID) { // Check if currentNoteID is truthy (not empty or false)
@@ -191,7 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const noteidArea = document.getElementById('noteID') // Get the element with ID 'noteID'
     const noteDateArea = document.getElementById('noteDate') // Get the element with ID 'noteDate'
     const useridArea = document.getElementById('userID') // Get the element with ID 'userID'
-    const userDateArea = document.getElementById('lastLogin') // Get the element with ID 'userDate'
     const sessionIDArea = document.getElementById('sessionID') // Get the element with ID 'sessionID'
 
     // Function to load User info
@@ -276,8 +275,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     fetchUserInfo(); // Fetch user info when the page loads
     fetchNotes();  // Fetch notes when the page loads
+    //--------------------------------------------------------------------------------------------
+    //Buttons
 
-    // New button
+    // New Note button
     const newButton = document.getElementById('newButton')
     if (newButton) {
         newButton.addEventListener('click', async () => {
@@ -288,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Save button
+    // Save Note button
     const saveButton = document.getElementById('saveButton')
     if (saveButton) {
         saveButton.addEventListener('click', async () => {
@@ -302,7 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Delete button
+    // Delete Note button
     const deleteButton = document.getElementById('deleteButton')
     if (deleteButton) {
         deleteButton.addEventListener('click', async () => {
