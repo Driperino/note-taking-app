@@ -1,4 +1,4 @@
-# Note Taking App
+# Note-Taking App
 
 A simple note-taking application built with Node.js, Express, MongoDB, and Tailwind CSS.
 
@@ -6,12 +6,13 @@ A simple note-taking application built with Node.js, Express, MongoDB, and Tailw
 
 - [Overview](#overview)
 - [Features](#features)
-- [Demo](#demo)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
   - [Configuration](#configuration)
+- [Running the Application](#running-the-application)
 - [Usage](#usage)
+- [Project Structure](#project-structure)
 - [API Endpoints](#api-endpoints)
 - [Contributing](#contributing)
 - [License](#license)
@@ -28,10 +29,6 @@ This project is a web-based note-taking application that allows users to create,
 - Secure password hashing with bcrypt
 - Session management with Express Session and Passport
 
-## Demo
-
-![Demo](demo.gif)
-
 ## Getting Started
 
 Follow these instructions to get a copy of the project up and running on your local machine for development and testing purposes.
@@ -45,48 +42,84 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 1. Clone the repository:
 
-   ```
-   git clone https://github.com/your/repository.git
-   cd repository-name
+   ```bash
+   git clone https://github.com/Driperino/note-taking-app.git
+   cd note-taking-app
    ```
 
-   Install dependencies:
+2. Install the dependencies:
 
-2. Install:
-
-   ```
+   ```bash
    npm install
    ```
 
-3. Configuration:
+3. Set up environment variables:
 
-   Create a .env file in the root directory based on .env.example.
-   Update .env file with your MongoDB connection URI and a session secret.
-
-4. Start the server:
+   Create a `.env` file in the root directory and add the following:
 
    ```
+   PORT=3000
+   ```
+
+4. Start the MongoDB server:
+
+   Make sure your MongoDB server is running. You can start it using the following command if you installed MongoDB as a service:
+
+   ```bash
+   mongod
+   ```
+
+## Running the Application
+
+1. Start the application:
+
+   ```bash
    npm start
    ```
 
-   Open your web browser and navigate to http://localhost:3000.
+2. Open your browser and navigate to `http://localhost:3000/app/login.html` to access the login page.
 
-### Usage
+## Usage
 
-Register a new account or use the provided test account.
+- Register a new account or use the provided test account.
+- Start taking notes!
 
-Start taking notes!
+## Project Structure
 
-API Endpoints
-Authentication
-POST /auth/register: Register a new user.
-POST /auth/login: Log in an existing user.
-GET /auth/logout: Log out the current user.
-Notes
-GET /notes: Fetch all notes for the current user.
-GET /notes/:id: Fetch a specific note by ID.
-PUT /notes: Create a new note.
-PATCH /notes/:id: Update an existing note by ID.
-DELETE /notes/:id: Delete a note by ID.
-Contributing
+- `src/`
+  - `models/`: Contains Mongoose models for `User` and `Note`.
+  - `routers/`: Contains the `authRouter` and `noteRouter` for handling authentication and note-related routes.
+  - `public/`: Contains static files such as HTML, CSS, and JavaScript.
+  - `app.js`: Main application file to start the server.
+
+## API Endpoints
+
+### Authentication
+
+- **POST /auth/register**: Register a new user.
+- **POST /auth/login**: Log in an existing user.
+- **GET /auth/logout**: Log out the current user.
+
+### Notes
+
+- **GET /notes**: Fetch all notes for the current user.
+- **GET /notes/:id**: Fetch a specific note by ID.
+- **PUT /notes**: Create a new note.
+- **PATCH /notes/:id**: Update an existing note by ID.
+- **DELETE /notes/:id**: Delete a note by ID.
+
+## Contributing
+
 Contributions are welcome! Please feel free to submit a pull request or open an issue for bugs, feature requests, or suggestions.
+
+## Dependencies
+
+- [Express](https://expressjs.com/)
+- [Mongoose](https://mongoosejs.com/)
+- [Passport](http://www.passportjs.org/)
+- [cors](https://www.npmjs.com/package/cors)
+- [dotenv](https://www.npmjs.com/package/dotenv)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
