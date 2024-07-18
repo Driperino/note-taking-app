@@ -386,6 +386,8 @@ if (saveButton) {
     saveButton.addEventListener('click', async () => {
         if (currentNoteID === 'false' || currentNoteID === '') {
             await createNote();
+            await fetchNotes();
+            await fetchUserInfo();
         } else {
             await saveNote();
             await fetchNotes();
