@@ -13,6 +13,7 @@ const settingsArea = document.getElementById('settings') // Get the element with
 
 // This Variable NEEDS to be set BEFORE saving a note, otherwise it will not work
 let currentNoteID = 'false' // Current note ID, initially set to 'false'
+
 let loggedInUser = 'false' // Current user, initially set to 'false'
 
 // Display *temporary* confirmation text function
@@ -41,19 +42,91 @@ function clearFields(container) {
         input.innerHTML = '';
     });
 }
+// confirmation box function
+function customConfirm(message, callback) {
+    // Create modal container
+    const modal = document.createElement('div');
+    modal.id = 'confirm-modal';
+    modal.className = 'fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-85 z-50';
 
+    // Create modal content
+    const modalContent = document.createElement('div');
+    modalContent.className = 'bg-white rounded-lg shadow-lg p-6';
+    modalContent.style.width = '33%'; // Equivalent to Tailwind's w-1/3
+
+    // Create modal message
+    const modalMessage = document.createElement('h2');
+    modalMessage.textContent = message;
+    modalMessage.className = 'text-lg font-medium mb-4 text-center';
+
+    // Create button container
+    const buttonContainer = document.createElement('div');
+    buttonContainer.className = 'flex justify-end space-x-4';
+
+    // Create Cancel button
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.className = 'bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100';
+    cancelButton.onclick = function () {
+        document.body.removeChild(modal);
+        callback(false);
+    };
+
+    // Create OK button
+    const okButton = document.createElement('button');
+    okButton.textContent = 'OK';
+    okButton.className = 'bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100';
+    okButton.onclick = function () {
+        document.body.removeChild(modal);
+        callback(true);
+    };
+
+    // Append elements to their respective containers
+    buttonContainer.appendChild(cancelButton);
+    buttonContainer.appendChild(okButton);
+    modalContent.appendChild(modalMessage);
+    modalContent.appendChild(buttonContainer);
+    modal.appendChild(modalContent);
+    document.body.appendChild(modal);
+}
+
+// Example usage
+// document.getElementById('show-confirm').onclick = function () {
+//     customConfirm('Are you sure you want to proceed?', function (result) {
+//         if (result) {
+//             console.log('User clicked OK');
+//             // Handle OK action
+//         } else {
+//             console.log('User clicked Cancel');
+//             // Handle Cancel action
+//         }
+//     });
+// };
 //------ API Functions -----------------------------------------------------------------
-
+// New Note function
 async function newNote() {
-    if (currentNoteID) { // Check if currentNoteID is truthy (not empty or false)
-        //I want to make a good looking confirmation box but this will do for now...
-        if (confirm("You have a note open, would you still like to create a new note?")) { // Show a confirmation dialog
-            displayText("New Note Created") // Display confirmation text
-        } else {
-            console.log("User chose not to create a new note") // Log a message to the console
-        }
+    if (currentNoteID) {
+        // Check if currentNoteID is truthy (not empty or false)
+        const noteTitle = document.getElementById('noteTitle').value; // Get the value of the element with ID 'noteTitle'
+
+        customConfirm(`You have ${noteTitle} loaded, are you sure you want to create a new one?`, function (result) {
+            if (result) {
+                console.log("User chose to create a new note");
+                displayText("New Note Created"); // Display confirmation text
+                clearFieldsMain(); // Clear text fields and reset currentNoteID
+                currentNoteID = 'false'; // Reset currentNoteID to 'false'
+            } else {
+                console.log("User chose not to create a new note");
+            }
+        });
+    } else {
+        // Add an expression here
+        displayText("New Note Created"); // Display confirmation text
+        clearFieldsMain(); // Clear text fields and reset currentNoteID
+        currentNoteID = 'false'; // Reset currentNoteID to 'false'
     }
 }
+
 
 // Save Note function
 async function saveNote() {
