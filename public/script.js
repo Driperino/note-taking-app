@@ -16,7 +16,7 @@ function displayText(text) {
     const statusText = document.getElementById('noteStatus') // Get the element with ID 'noteStatus'
     statusText.innerHTML = text // Set the innerHTML of the element to the provided text
     setTimeout(function () { statusText.innerHTML = "" }, 5000) // Clear the text after 5 seconds
-    console.log('Status text displayed') // Log a message to the console
+    console.log('Main Status text displayed') // Log a message to the console
 }
 
 function displayTextSettings(text) {
@@ -316,7 +316,7 @@ async function updateUsername() {
         if (response.ok) {
             console.log('Username updated') // Display confirmation text
             loggedInUser = username; // Update the global variable for the username
-            displayTextSettings("Username updated"); // Display confirmation text
+            displayTextSettings(`Username updated to ${loggedInUser}`); // Display confirmation text
         } else {
             throw new Error('Failed to update username') // Throw an error if the response is not ok
         }
@@ -458,21 +458,26 @@ if (saveButton) {
 const deleteButton = document.getElementById('deleteButton')
 if (deleteButton) {
     deleteButton.addEventListener('click', async () => {
-        customConfirm(`Are you sure you want to delete this note?`, async function (result) {
-            if (result) {
-                try {
-                    await deleteNote();
-                    await fetchNotes();
-                    await fetchUserInfo();
-                    clearFieldsMain();
-                } catch {
+        if (currentNoteID === 'false' || currentNoteID === '') {
+            displayText("No note to delete");
+            console.log("No note to delete");
+        } else {
+            customConfirm(`Are you sure you want to delete this note?`, async function (result) {
+                if (result) {
+                    try {
+                        await deleteNote();
+                        await fetchNotes();
+                        await fetchUserInfo();
+                        clearFieldsMain();
+                    } catch {
+                        console.log("User chose not to delete note");
+                    }
+
+                } else {
                     console.log("User chose not to delete note");
                 }
-
-            } else {
-                console.log("User chose not to delete note");
-            }
-        });
+            });
+        }
     });
 }
 
@@ -540,6 +545,7 @@ document.getElementById('updateUsernameButton').addEventListener('click', async 
             try {
                 await updateUsername(); // Call the updateUsername function
                 clearFields(settingsArea); // Call the clearFields function
+                displayTextSettings("Username updated successfully"); // Display confirmation text
             }
             catch (error) {
                 console.error("Error updating username:", error);
@@ -557,6 +563,7 @@ document.getElementById('updateEmailButton').addEventListener('click', async fun
             try {
                 await updateEmail(); // Call the updateEmail function
                 clearFields(settingsArea); // Call the clearFields function
+                displayTextSettings("Email updated successfully"); // Display confirmation text
             }
             catch (error) {
                 console.error("Error updating email:", error);
@@ -574,6 +581,7 @@ document.getElementById('changePasswordButton').addEventListener('click', async 
             try {
                 await updatePassword(); // Call the updatePassword function
                 clearFields(settingsArea); // Call the clearFields function
+                displayTextSettings("Password updated successfully"); // Display confirmation text
             }
             catch (error) {
                 console.error("Error updating password:", error);
