@@ -15,17 +15,26 @@ let loggedInUser = 'false' // Current user, initially set to 'false'
 function displayText(text) {
     const statusText = document.getElementById('noteStatus') // Get the element with ID 'noteStatus'
     statusText.innerHTML = text // Set the innerHTML of the element to the provided text
-    setTimeout(function () { statusText.innerHTML = "" }, 5000) // Clear the text after 3 seconds
+    setTimeout(function () { statusText.innerHTML = "" }, 5000) // Clear the text after 5 seconds
+    console.log('Status text displayed') // Log a message to the console
 }
 
-//Clear text fields and reset currentNoteID
+function displayTextSettings(text) {
+    const statusText = document.getElementById('settingsStatus') // Get the element with ID 'settingsStatus'
+    statusText.innerHTML = text // Set the innerHTML of the element to the provided text
+    setTimeout(function () { statusText.innerHTML = "" }, 5000) // Clear the text after 5 seconds
+
+    console.log('Settings Status text displayed') // Log a message to the console
+}
+//Clear text fields
 function clearFieldsMain() {
     noteTitleArea.value = '' // Clear the value of the element with ID 'noteTitle'
     noteContentTextarea.value = '' // Clear the value of the element with ID 'noteContent'
     noteDateArea.innerHTML = '' // Clear the innerHTML of the element with ID 'noteDate'
+    console.log('Main Fields cleared') // Log a message to the console
 }
 
-// Clear text fields and reset currentNoteID
+// Clear text fields
 function clearFields(container) {
     const inputs = container.querySelectorAll('input, textarea');
 
@@ -33,9 +42,12 @@ function clearFields(container) {
         input.value = '';
         input.innerHTML = '';
     });
+
+    console.log('Fields cleared');
 }
 // confirmation box function
 function customConfirm(message, callback) {
+    console.log("Creating custom Confirm Box");
     // Select elements
     const overlay = document.getElementById('confirm-overlay');
     const modal = document.getElementById('confirm-modal');
@@ -71,20 +83,13 @@ function customConfirm(message, callback) {
 //------ API Functions -----------------------------------------------------------------
 // New Note function
 async function newNote() {
-    if (currentNoteID) {
-        // Check if currentNoteID is truthy (not empty or false)
-        const noteTitle = document.getElementById('noteTitle').value; // Get the value of the element with ID 'noteTitle'
+    if (currentNoteID) { // Check if currentNoteID is truthy (not empty or false)
 
-        customConfirm(`You have ${noteTitle} loaded, are you sure you want to create a new one?`, function (result) {
-            if (result) {
-                console.log("User chose to create a new note");
-                displayText("New Note Created"); // Display confirmation text
-                clearFieldsMain(); // Clear text fields and reset currentNoteID
-                currentNoteID = 'false'; // Reset currentNoteID to 'false'
-            } else {
-                console.log("User chose not to create a new note");
-            }
-        });
+        console.log("User chose to create a new note");
+        displayText("New Note Created"); // Display confirmation text
+        clearFieldsMain(); // Clear text fields and reset currentNoteID
+        currentNoteID = 'false'; // Reset currentNoteID to 'false'
+
     } else {
         // Add an expression here
         displayText("New Note Created"); // Display confirmation text
@@ -92,7 +97,6 @@ async function newNote() {
         currentNoteID = 'false'; // Reset currentNoteID to 'false'
     }
 }
-
 
 // Save Note function
 async function saveNote() {
@@ -285,10 +289,11 @@ async function selectNote(event) {
 fetchUserInfo(); // Fetch user info when the page loads
 fetchNotes();  // Fetch notes when the page loads
 
-// Settings Menu 
+// Settings Menu -----------------------------------------------------------------
 // Update Username function
 async function updateUsername() {
     const username = document.getElementById('updateUsername').value; // Get the value of the element with ID 'username'
+
     try {
         if (!username) {
             throw new Error('Username cannot be empty') // Throw an error if the username is empty
@@ -311,7 +316,7 @@ async function updateUsername() {
         if (response.ok) {
             console.log('Username updated') // Display confirmation text
             loggedInUser = username; // Update the global variable for the username
-            //TODO Add a confirmation message
+            displayTextSettings("Username updated"); // Display confirmation text
         } else {
             throw new Error('Failed to update username') // Throw an error if the response is not ok
         }
@@ -319,6 +324,7 @@ async function updateUsername() {
         console.error('Error updating username:', error) // Log an error message to the console
     }
 }
+
 
 // Update Password function
 async function updatePassword() {
@@ -348,7 +354,6 @@ async function updatePassword() {
 
         if (response.ok) {
             console.log('Password updated') // Display confirmation text
-            //TODO Add a confirmation message
         } else {
             throw new Error('Failed to update password') // Throw an error if the response is not ok
         }
@@ -373,7 +378,6 @@ async function updateEmail() {
 
         if (response.ok) {
             console.log('Email updated') // Display confirmation text
-            //TODO Add a confirmation message
         } else {
             throw new Error('Failed to update email') // Throw an error if the response is not ok
         }
@@ -385,8 +389,6 @@ async function updateEmail() {
 // Delete User function
 async function deleteUser() {
     try {
-
-        //TODO Wrap this in a confirmation box!!!!
         const response = await fetch('/auth/user', { // Send a DELETE request to the API endpoint for deleting the user
             method: 'DELETE',
             headers: {
@@ -396,7 +398,6 @@ async function deleteUser() {
 
         if (response.ok) {
             console.log('User deleted') // Display confirmation text
-            //TODO Add a confirmation message
             await logout(); // Call the logout function
         } else {
             throw new Error('Failed to delete user') // Throw an error if the response is not ok
@@ -407,16 +408,33 @@ async function deleteUser() {
 }
 
 //--------------------------------------------------------------------------------------------
-//Buttons
 
+//Buttons and Event Listeners
 // New Note button
 const newButton = document.getElementById('newButton')
 if (newButton) {
     newButton.addEventListener('click', async () => {
-        await newNote();
-        await fetchNotes();
-        await fetchUserInfo();
-        clearFieldsMain();
+        if (noteTitleArea.value || noteContentTextarea.value) {
+            customConfirm(`Are you sure you want to create a new note?`, async function (result) {
+                if (result) {
+                    console.log("User chose to create a new note");
+                    newButton.addEventListener('click', async () => {
+                        await newNote();
+                        await fetchNotes();
+                        await fetchUserInfo();
+                        clearFieldsMain();
+                    });
+                } else {
+                    console.log("User chose not to create a new note");
+                }
+            });
+        } else {
+            console.log("User chose to create a new note");
+            await newNote();
+            await fetchNotes();
+            await fetchUserInfo();
+            clearFieldsMain();
+        }
     });
 }
 
@@ -440,10 +458,21 @@ if (saveButton) {
 const deleteButton = document.getElementById('deleteButton')
 if (deleteButton) {
     deleteButton.addEventListener('click', async () => {
-        await deleteNote();
-        await fetchNotes();
-        await fetchUserInfo();
-        clearFieldsMain();
+        customConfirm(`Are you sure you want to delete this note?`, async function (result) {
+            if (result) {
+                try {
+                    await deleteNote();
+                    await fetchNotes();
+                    await fetchUserInfo();
+                    clearFieldsMain();
+                } catch {
+                    console.log("User chose not to delete note");
+                }
+
+            } else {
+                console.log("User chose not to delete note");
+            }
+        });
     });
 }
 
@@ -451,12 +480,18 @@ if (deleteButton) {
 const logoutButton = document.getElementById('logoutButton')
 if (logoutButton) {
     logoutButton.addEventListener('click', async () => {
-        await logout();
-        console.log('User logged out'); // Log a message to the console
+        customConfirm(`Are you sure you want to log out?`, async function (result) {
+            if (result) {
+                console.log("User chose to log out");
+                await logout();
+            } else {
+                console.log("User chose not to log out");
+            }
+        });
     });
 }
 
-// Expanding menus 
+// Expanding menus -----------------------------------------------------------------
 // Menu button
 document.getElementById('menuButton').addEventListener('click', function () {
     const menu = document.getElementById('menu'); // Get the element with ID 'menu'
@@ -481,11 +516,10 @@ document.getElementById('notesButton').addEventListener('click', function () {
 
 document.getElementById('settingsButton').addEventListener('click', function () {
     const settingsMenu = document.getElementById('settings'); // Get the element with ID 'settingsMenu'
-    const main = document.getElementById('main'); // Get the element with ID 'main'
+
 
     if (settingsMenu.classList.contains('hidden')) { // Check if the element has the class 'hidden'
-        settingsMenu.classList.remove('hidden'); // Remove the class 'hidden' from the element
-        main.classList.add('hidden'); // Add the class 'hidden' to the element
+        settingsMenu.classList.toggle('hidden'); // Remove the class 'hidden' from the element
     }
 });
 
@@ -493,42 +527,78 @@ document.getElementById('settingsButton').addEventListener('click', function () 
 
 document.getElementById('closeSettings').addEventListener('click', function () {
     const settingsMenu = document.getElementById('settings'); // Get the element with ID 'settingsMenu'
-    const main = document.getElementById('main'); // Get the element with ID 'main'
 
-    if (main.classList.contains('hidden')) { // Check if the element has the class 'hidden'
-        settingsMenu.classList.add('hidden'); // Remove the class 'hidden' from the element
-        main.classList.remove('hidden'); // Add the class 'hidden' to the element
-    }
+    settingsMenu.classList.toggle('hidden'); // Remove the class 'hidden' from the element
 });
 
-// Settings Page buttons
+// Settings Page buttons ---------------------------------------------------------------
 
 // Update Username button
 document.getElementById('updateUsernameButton').addEventListener('click', async function () {
-    //TODO: Add a confirmation message
-    await updateUsername(); // Call the updateUsername function
-    clearFields(settingsArea); // Call the clearFields function
-
+    customConfirm(`Are you sure you want to update your username?`, async function (result) {
+        if (result) { // Proceed if the user confirms
+            try {
+                await updateUsername(); // Call the updateUsername function
+                clearFields(settingsArea); // Call the clearFields function
+            }
+            catch (error) {
+                console.error("Error updating username:", error);
+            }
+        } else {
+            console.log("User chose not to update username");
+        }
+    });
 });
 
 // Update email button
 document.getElementById('updateEmailButton').addEventListener('click', async function () {
-    //TODO: Add a confirmation message
-    await updateEmail(); // Call the updateEmail function
-    clearFields(settingsArea); // Call the clearFields function
+    customConfirm(`Are you sure you want to update your email?`, async function (result) {
+        if (result) { // Proceed if the user confirms
+            try {
+                await updateEmail(); // Call the updateEmail function
+                clearFields(settingsArea); // Call the clearFields function
+            }
+            catch (error) {
+                console.error("Error updating email:", error);
+            }
+        } else {
+            console.log("User chose not to update email");
+        }
+    });
 });
 
 // Update Password button
 document.getElementById('changePasswordButton').addEventListener('click', async function () {
-    //TODO: Add a confirmation message
-    await updatePassword(); // Call the updatePassword function
-    clearFields(settingsArea); // Call the clearFields function
+    customConfirm(`Are you sure you want to change your password?`, async function (result) {
+        if (result) { // Proceed if the user confirms
+            try {
+                await updatePassword(); // Call the updatePassword function
+                clearFields(settingsArea); // Call the clearFields function
+            }
+            catch (error) {
+                console.error("Error updating password:", error);
+            }
+        } else {
+            console.log("User chose not to change password");
+        }
+    });
 });
 
 // Delete User button
 document.getElementById('confirmDeleteButton').addEventListener('click', async function () {
-    //TODO: Add a confirmation message
-    await deleteUser(); // Call the deleteUser function
-    clearFields(settingsArea); // Call the clearFields function
+    customConfirm(`Are you sure you want to delete your account?`, async function (result) {
+        if (result) { // Proceed if the user confirms
+            try {
+                await deleteUser(); // Call the deleteUser function
+                clearFields(settingsArea); // Call the clearFields function
+            }
+            catch (error) {
+                console.error("Error deleting user:", error);
+            }
+        } else {
+            console.log("User chose not to delete account");
+        }
+    });
 });
+
 //---------------------------------------------------------------------------------------------
