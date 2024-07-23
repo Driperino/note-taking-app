@@ -1,15 +1,14 @@
+// Global variables
 const API_URL = "http://localhost:3000" // API URL for the backend server
-
 const notesMenu = document.getElementById('notesMenu') // Get the element with ID 'notesMenu'
 const noteContentTextarea = document.getElementById('noteContent') // Get the element with ID 'noteContent'
 const noteTitleArea = document.getElementById('noteTitle') // Get the element with ID 'noteTitle'
 const noteDateArea = document.getElementById('noteDate') // Get the element with ID 'noteDate'
 const settingsArea = document.getElementById('settings') // Get the element with ID 'settings'
 const infoBoxUsername = document.getElementById('infoBoxUsername') // Get the element with ID 'infoBoxUsername'
-
-// This Variable NEEDS to be set BEFORE saving a note, otherwise it will not work, not sure why yet.. //TODO Fix this
-let currentNoteID = 'false' // Current note ID, initially set to 'false'
-let loggedInUser = 'false' // Current user, initially set to 'false'
+let currentNoteID = '' // Current note ID, initially set to 'false'
+let loggedInUser = '' // Current user, initially set to 'false'
+//--------------------------------------------------------------------------------------------
 
 // Display *temporary* confirmation text function
 function displayText(text) {
