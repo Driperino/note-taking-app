@@ -9,24 +9,20 @@ const infoBoxUsername = document.getElementById('infoBoxUsername') // Get the el
 
 // This Variable NEEDS to be set BEFORE saving a note, otherwise it will not work, not sure why yet.. //TODO Fix this
 let currentNoteID = 'false' // Current note ID, initially set to 'false'
-
 let loggedInUser = 'false' // Current user, initially set to 'false'
 
 // Display *temporary* confirmation text function
 function displayText(text) {
     const statusText = document.getElementById('noteStatus') // Get the element with ID 'noteStatus'
     statusText.innerHTML = text // Set the innerHTML of the element to the provided text
-    setTimeout(function () { statusText.innerHTML = "" }, 3000) // Clear the text after 3 seconds
+    setTimeout(function () { statusText.innerHTML = "" }, 5000) // Clear the text after 3 seconds
 }
 
 //Clear text fields and reset currentNoteID
 function clearFieldsMain() {
-    document.getElementById('noteTitle').value = '' // Clear the value of the element with ID 'noteTitle'
-    document.getElementById('noteContent').value = '' // Clear the value of the element with ID 'noteContent'
-    currentNoteID = '' // Reset currentNoteID to an empty string
-    document.getElementById('noteID').innerHTML = '' // Clear the innerHTML of the element with ID 'noteID'
-    document.getElementById('noteID').dataset.noteId = '' // Clear the data attribute 'noteId' of the element with ID 'noteID'
-    document.getElementById('noteDate').innerHTML = '' // Clear the innerHTML of the element with ID 'noteDate'
+    noteTitleArea.value = '' // Clear the value of the element with ID 'noteTitle'
+    noteContentTextarea.value = '' // Clear the value of the element with ID 'noteContent'
+    noteDateArea.innerHTML = '' // Clear the innerHTML of the element with ID 'noteDate'
 }
 
 // Clear text fields and reset currentNoteID
@@ -40,64 +36,38 @@ function clearFields(container) {
 }
 // confirmation box function
 function customConfirm(message, callback) {
-    // Create modal container
-    const modal = document.createElement('div');
-    modal.id = 'confirm-modal';
-    modal.className = 'fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-85 z-50';
+    // Select elements
+    const overlay = document.getElementById('confirm-overlay');
+    const modal = document.getElementById('confirm-modal');
+    const modalMessage = document.getElementById('modal-message');
+    const cancelButton = document.getElementById('cancel-button');
+    const okButton = document.getElementById('ok-button');
 
-    // Create modal content
-    const modalContent = document.createElement('div');
-    modalContent.className = 'bg-white rounded-lg shadow-lg p-6';
-    modalContent.style.width = '33%'; // Equivalent to Tailwind's w-1/3
-
-    // Create modal message
-    const modalMessage = document.createElement('h2');
+    // Set message
     modalMessage.textContent = message;
-    modalMessage.className = 'text-lg font-medium mb-4 text-center';
 
-    // Create button container
-    const buttonContainer = document.createElement('div');
-    buttonContainer.className = 'flex justify-end space-x-4';
+    // Show the modal and overlay
+    overlay.classList.remove('hidden');
+    modal.classList.remove('hidden');
 
-    // Create Cancel button
-    const cancelButton = document.createElement('button');
-    cancelButton.textContent = 'Cancel';
-    cancelButton.className = 'bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100';
+    // Add blur effect to main content
+    document.body.classList.add('modal-open');
+
+    // Event listeners for buttons
     cancelButton.onclick = function () {
-        document.body.removeChild(modal);
+        overlay.classList.add('hidden');
+        modal.classList.add('hidden');
+        document.body.classList.remove('modal-open');
         callback(false);
     };
 
-    // Create OK button
-    const okButton = document.createElement('button');
-    okButton.textContent = 'OK';
-    okButton.className = 'bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100';
     okButton.onclick = function () {
-        document.body.removeChild(modal);
+        overlay.classList.add('hidden');
+        modal.classList.add('hidden');
+        document.body.classList.remove('modal-open');
         callback(true);
     };
-
-    // Append elements to their respective containers
-    buttonContainer.appendChild(cancelButton);
-    buttonContainer.appendChild(okButton);
-    modalContent.appendChild(modalMessage);
-    modalContent.appendChild(buttonContainer);
-    modal.appendChild(modalContent);
-    document.body.appendChild(modal);
 }
-
-// Example usage
-// document.getElementById('show-confirm').onclick = function () {
-//     customConfirm('Are you sure you want to proceed?', function (result) {
-//         if (result) {
-//             console.log('User clicked OK');
-//             // Handle OK action
-//         } else {
-//             console.log('User clicked Cancel');
-//             // Handle Cancel action
-//         }
-//     });
-// };
 //------ API Functions -----------------------------------------------------------------
 // New Note function
 async function newNote() {
