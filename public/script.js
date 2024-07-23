@@ -3,15 +3,11 @@ const API_URL = "http://localhost:3000" // API URL for the backend server
 const notesMenu = document.getElementById('notesMenu') // Get the element with ID 'notesMenu'
 const noteContentTextarea = document.getElementById('noteContent') // Get the element with ID 'noteContent'
 const noteTitleArea = document.getElementById('noteTitle') // Get the element with ID 'noteTitle'
-const noteidArea = document.getElementById('noteID') // Get the element with ID 'noteID'
 const noteDateArea = document.getElementById('noteDate') // Get the element with ID 'noteDate'
-const useridArea = document.getElementById('userID') // Get the element with ID 'userID'
-const sessionIDArea = document.getElementById('sessionID') // Get the element with ID 'sessionID'
 const settingsArea = document.getElementById('settings') // Get the element with ID 'settings'
+const infoBoxUsername = document.getElementById('infoBoxUsername') // Get the element with ID 'infoBoxUsername'
 
-
-
-// This Variable NEEDS to be set BEFORE saving a note, otherwise it will not work
+// This Variable NEEDS to be set BEFORE saving a note, otherwise it will not work, not sure why yet.. //TODO Fix this
 let currentNoteID = 'false' // Current note ID, initially set to 'false'
 let loggedInUser = 'false' // Current user, initially set to 'false'
 
@@ -85,25 +81,33 @@ async function createNote() {
     const noteTitle = document.getElementById('noteTitle').value;
     const noteContent = document.getElementById('noteContent').value;
 
-    const response = await fetch(`${API_URL}/notes`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            title: noteTitle,
-            content: noteContent
-        }),
-        credentials: 'include' // Ensure credentials are included
-    });
+    try {
+        const response = await fetch(`${API_URL}/notes`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                title: noteTitle,
+                content: noteContent
+            }),
+            credentials: 'include' // Ensure credentials are included
+        });
 
-    if (response.ok) {
-        const note = await response.json();
-        console.log('Note created:', note);
-        displayText(`${note.title} created`);
-    } else {
-        console.error('Failed to create note:', response.status, response.statusText);
-        displayText('Failed to create note');
+        if (response.ok) {
+            const note = await response.json();
+            console.log('Note created:', note);
+            displayText(`${note.title} created`);
+            // Assign the ID of the created note to currentNoteID
+            currentNoteID = note._id;
+            console.log('Updated Note ID:', currentNoteID);
+        } else {
+            console.error('Failed to create note:', response.status, response.statusText);
+            displayText('Failed to create note');
+        }
+    } catch (error) {
+        console.error('Error creating note:', error);
+        displayText('Error creating note');
     }
 }
 
@@ -155,9 +159,6 @@ async function logout() {
     }
 }
 
-
-//------------------------------------------------------------------------------
-
 // Function to load User info
 async function fetchUserInfo() {
     try {
@@ -168,11 +169,8 @@ async function fetchUserInfo() {
         const user = await response.json(); // Parse the response as JSON
 
         loggedInUser = user.username; // Store the username in a global variable
-        useridArea.innerHTML = user.id; // Display user ID in ID area
-        sessionIDArea.innerHTML = user.sessionID; // Display session ID in session ID area
-        if (user.email) {
-            document.getElementById('userEmail').innerHTML = user.email; // Display email in email area
-        }
+        infoBoxUsername.innerHTML = user.username; // Display username in username area
+
     } catch (error) {
         console.error('Error fetching user info:', error); // Log an error message to the console
         displayText("Error fetching user info"); // Display error message
@@ -227,11 +225,9 @@ async function selectNote(event) {
         // Assuming these elements are defined correctly in your HTML or script
         noteTitleArea.value = note.title; // Display note title in title area
         noteContentTextarea.value = note.content; // Display note content in textarea
-        noteidArea.dataset.noteId = note._id; // Store note ID as a data attribute
-        noteidArea.innerHTML = note._id; // Display note ID in ID area
-        currentNoteID = note._id; // Update current note ID
         console.log(`noteId: ${noteId}`, note); // Log note details (optional)
 
+        currentNoteID = note._id; // Update current note ID
         // Date manipulation
         const date = new Date(note.createDate); // Convert note creation date to Date object
         const localDate = date.toLocaleDateString(); // Display note creation date in date area
@@ -241,7 +237,8 @@ async function selectNote(event) {
         console.error('Error fetching note details:', error); // Log an error message to the console
     }
 }
-
+//------------------------------------------------------------------------------
+//On page load functions //TODO find a better way to do this
 fetchUserInfo(); // Fetch user info when the page loads
 fetchNotes();  // Fetch notes when the page loads
 
