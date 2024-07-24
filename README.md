@@ -1,5 +1,19 @@
 Note-Taking App
 
+## Navigation
+
+- [Overview](#overview)
+- [Features](#features)
+- [Getting Started](#getting-started)
+- [Running the Application](#running-the-application)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [API Endpoints](#api-endpoints)
+  - [Notes](#notes)
+  - [User Authentication](#user-authentication)
+- [Contributing](#contributing)
+- [Dependencies](#dependencies)
+
 # Overview
 
 This is a note-taking application built using Node.js, Express, and MongoDB. It features user authentication, CRUD operations for notes, and a UI styled with Tailwind CSS.
@@ -265,4 +279,4 @@ on, and user management.
 - app: Instance of the Express application.
 - port: Port on which the server will listen for incoming requests. Defaults to 3000 if not set by the environment.
 
-port: Port on which the server will listen for incoming requests. Defaults to 3000 if not set by the environment.
+- port: Port on which the server will listen for incoming requests. Defaults to 3000 if not set by the environment.
