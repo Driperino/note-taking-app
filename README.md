@@ -1,6 +1,6 @@
 # Note-Taking App
 
-## Navigation
+## Index
 
 - [Overview](#overview)
 - [Features](#features)
