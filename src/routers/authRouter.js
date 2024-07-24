@@ -4,6 +4,7 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const crypto = require('crypto');
 const session = require("express-session");
+const { create } = require("domain");
 
 const router = express.Router();
 
@@ -39,7 +40,10 @@ passport.serializeUser((user, cb) => {
         return cb(null, {
             id: user._id,
             username: user.username,
-            lastLogin: user.lastLogin
+            lastLogin: user.lastLogin,
+            email: user.email,
+            theme: user.theme,
+            createDate: user.createDate
         })
     });
 });
@@ -122,17 +126,20 @@ router.post("/register", async (req, res, next) => {
 // Get user info ----------------------------------------------
 router.get("/user", (req, res) => {
     if (req.isAuthenticated()) {
+        console.log('User data:', req.user); // Log the user data to check the fields
         return res.status(200).json({
-            id: req.user.id, // Use req.user._id for MongoDB _id
+            id: req.user.id,
             username: req.user.username,
             lastLogin: req.user.lastLogin,
             sessionID: req.sessionID,
-            email: req.user.email
+            email: req.user.email, // Ensure this field is included
+            theme: req.user.theme
         });
     } else {
         return res.status(401).send("Unauthorized");
     }
 });
+
 
 // Patch Username ---------------------------------------------
 router.patch("/username", async (req, res) => {
@@ -244,7 +251,26 @@ router.patch("/email", async (req, res) => {
     return res.status(401).send("Unauthorized");
 });
 
-// Logout route
+//patch theme ------------------------------------------------
+router.patch("/theme", async (req, res) => {
+    if (req.isAuthenticated()) {
+        if (req.body.theme) {
+            try {
+                const user = await User.findById(req.user.id);
+                user.theme = req.body.theme;
+                await user.save();
+                return res.status(200).json({ message: "Theme updated successfully" });
+            } catch (error) {
+                return res.status(500).json({ message: "Server error", error: error.message });
+            }
+        }
+        return res.status(400).json({ message: "Please provide a new theme" });
+    }
+    return res.status(401).send("Unauthorized");
+});
+
+
+// Logout route ----------------------------------------------
 router.post("/logout", (req, res, next) => {
     req.logout(function (err) {
         if (err) {

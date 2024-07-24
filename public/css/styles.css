@@ -23,3 +23,34 @@
     border-color: white;
     outline: none;
 }
+
+/* Custom styles for the toggle switch */
+.toggle-background {
+    background-color: rgba(var(--accent));
+    transition: background-color 0.3s;
+}
+
+.toggle-dot {
+    background-color: rgba(var(--primary));
+    transition: transform 0.3s;
+    transform: translateX(0);
+    z-index: 1;
+    /* Ensure the dot appears on top of the background */
+}
+
+/* Dark mode specific styles */
+[data-theme="dark"] .toggle-background {
+    background-color: rgba(var(--primary));
+}
+
+[data-theme="dark"] .toggle-dot {
+    background-color: rgba(var(--accent));
+    transform: translateX(1.75rem);
+    /* Adjust based on the size of the toggle switch */
+}
+
+[data-theme="dark"] .toggle-dot.login {
+    background-color: rgba(var(--accent));
+    transform: translateX(0.75rem);
+    /* Adjust based on the size of the toggle switch */
+}
