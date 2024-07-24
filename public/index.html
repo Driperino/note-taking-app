@@ -67,22 +67,24 @@
     </div>
 
     <!-- Main content -->
-    <div id='main' class="z-0 ml-64 flex-1 p-4 flex flex-col h-screen overflow-hidden">
-        <main class="grid grid-cols-4 grid-rows-24 overflow-hidden">
+    <div id='main' class="w-19/20 mb-8 mt-8 z-0 ml-64 flex-1 p-4 flex flex-col h-screen overflow-hidden">
+        <main class="grid grid-cols-4 grid-rows-[auto,auto,1fr] overflow-hidden flex-1 mr-6">
+            <!-- Note Info Box -->
+            <div class="col-span-4 bg-background border border-primary/10 p-1 mb-2">
+                <p class="font-bold text-text">Note Info</p>
+                <p>Creation Date: <span id="noteDate"></span></p>
+            </div>
 
-            <div class="col-span-2 row-span-1 flex items-center">
-                <!-- Input for Note Title -->
-                <input type="text" id="noteTitle" name="title" placeholder="Title"
-                    class="rounded-sm w-full border-primary/10 border m-2 py-2 px-4 bg-primary/5 placeholder-text focus:outline-none">
-
-                <!-- Buttons for New, Save, and Delete -->
-                <div class="col-start-3 flex ml-2 space-x-1 col-span-1">
+            <!-- Buttons for New, Save, and Delete and status text -->
+            <div class="col-span-4 flex items-center h-20 mb-2">
+                <div class="ml-2 space-x-2 flex items-center w-full">
+                    <p class="text-error text-center flex-grow" id="noteStatus"></p>
                     <button id="newButton"
                         class="rounded-md bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none focus:border-primary">
                         New
                     </button>
                     <button id="saveButton"
-                        class="rounded-md bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none focus:border-primary">
+                        class="rounded-md bg-primary/50 border-primary/10 border hover:bg-primary font-bold  py-2 px-4 focus:outline-none focus:border-primary">
                         Save
                     </button>
                     <button id="deleteButton"
@@ -90,31 +92,26 @@
                         Delete
                     </button>
                 </div>
-
-            </div>
-            <div class="col-start-3 col-span-1 mt-4 text-center">
-                <p class="text-error" id="noteStatus"></p>
-            </div>
-            <!-- note info Box  -->
-            <div class="col-start-4 col-span-1 row-span-3 bg-background border border-primary/10 p-1 ml-4">
-                <p class="font-bold text-text">Note Info</p>
-                <p>Creation Date: <span id="noteDate"></span></p>
             </div>
 
-            <!-- User Info Box -->
-            <div
-                class="col-start-4 col-span-1 row-start-4 row-span-3 bg-background border border-primary/10 p-1 ml-4 mt-4">
-                <p class="font-bold text-text">User Info</p>
-                <p>Logged in as: <span id="infoBoxUsername"></span></p>
+            <!-- Note Title and Content -->
+            <div id="texContainer" class="h-13/14 col-span-4 flex flex-col">
+                <!-- Container for Input and Textarea -->
+                <div class="p-2 flex flex-col flex-1">
+                    <!-- Input for Note Title -->
+                    <input type="text" id="noteTitle" name="title" placeholder="Title"
+                        class="rounded-sm w-full border-primary/10 border py-2 px-4 bg-primary/5 placeholder-text focus:outline-none">
+                    <!-- Textarea for Note Content -->
+                    <textarea id="noteContent" name="note" placeholder="Note"
+                        class="rounded-sm w-full flex-1 border-primary/10 border py-1 px-4 resize-none bg-primary/5 placeholder-text focus:outline-none mt-2"></textarea>
+                </div>
             </div>
 
-            <!-- Textarea for Note Content -->
-            <div class="col-span-3 row-span-22">
-                <textarea id="noteContent" name="note" placeholder="Note"
-                    class="rounded-sm w-full h-full border-primary/10 border py-1 m-2 px-4 resize-none bg-primary/5 placeholder-text focus:outline-none"></textarea>
-            </div>
         </main>
     </div>
+
+
+
 
     <!-- Settings Panel -->
     <div id="settings"
