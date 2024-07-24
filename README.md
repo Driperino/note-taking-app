@@ -1,4 +1,4 @@
-Note-Taking App
+# Note-Taking App
 
 ## Navigation
 
