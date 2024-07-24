@@ -9,33 +9,33 @@
     <title>Login</title>
 </head>
 
-<body class="bg-gray-100 min-h-screen flex flex-col justify-center items-center">
+<body class="bg-background/95 min-h-screen flex flex-col justify-center items-center">
     <!--Login of register selection-->
     <div id="main"
-        class="  rounded-sm pr-4 mr-4 border-purple-400 bg-green-100 flex flex-col items-center my-auto text-purple-800">
+        class="  rounded-sm pr-4 mr-4 border border-dark bg-background flex flex-col items-center my-auto text-text">
         <header class="flex items-center">
             <h1 class="text-3xl mt-6 font-bold">Notes</h1>
         </header>
         <!--Dividing line-->
         <div class="w-64">
-            <hr class="ml-4 my-3  border-gray-500">
+            <hr class="ml-4 my-3  border-dark">
         </div>
         <div class="flex flex-col items-center mt-2">
             <div class="w-64">
                 <button id="registerSelectButton" type="submit"
-                    class="w-full p-2 m-2 bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                    class="w-full p-2 m-2 rounded-sm bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none">
                     Register
                 </button>
             </div>
             <div class="w-64">
                 <button id="loginSelectButton" type="submit"
-                    class="w-full p-2 m-2 mb-4 bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                    class="w-full p-2 m-2 rounded-sm bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none">
                     Login
                 </button>
             </div>
             <!--Dividing line-->
             <div class="w-64">
-                <hr class="ml-4 mt- mb-4 border-gray-500">
+                <hr class="ml-4 mt-4 mb-4 border-dark">
             </div>
         </div>
     </div>
@@ -43,45 +43,45 @@
 
     <!-- Login Form -->
     <div id="login"
-        class=" hidden rounded-sm pr-4 mr-4 border-purple-400 bg-green-100 flex flex-col items-center my-auto text-purple-800">
+        class=" hidden rounded-sm pr-4 mr-4 border border-dark bg-background flex flex-col items-center my-auto text-text">
         <header class="flex items-center">
             <h1 class="text-3xl mt-6 mb-4 font-bold">Login</h1>
         </header>
         <!--Dividing line-->
         <div class="w-64">
-            <hr class="ml-4 my-1 border-gray-500">
+            <hr class="ml-4 my-1 border-dark">
         </div>
         <!--Login fields-->
         <div class="flex flex-col items-center mt-4">
             <div class="w-64">
                 <input id="loginUsername" type="text" placeholder="Username"
-                    class="w-full p-2 m-2 border bg-gray-500 rounded-sm focus:outline-none placeholder-purple-700 focus:border-purple-500">
+                    class="w-full p-2 m-2 rounded-sm border-dark border bg-primary/25 placeholder-text focus:outline-none">
             </div>
             <!--Password field-->
             <div class="w-64">
                 <input id="loginPassword" type="password" placeholder="Password"
-                    class="w-full p-2 m-2 border bg-gray-500 rounded-sm focus:outline-none placeholder-purple-700 focus:border-purple-500">
+                    class="w-full p-2 m-2 rounded-sm border-dark border bg-primary/25 placeholder-text focus:outline-none">
             </div>
             <!--Login Submit button-->
             <div class="w-64">
                 <button id="loginButton" type="submit"
-                    class="w-full p-2 m-2 bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                    class="w-full p-2 m-2 rounded-sm bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none">
                     Login
                 </button>
             </div>
             <!--Error message-->
             <div class="w-64">
-                <p id="loginError" class="ml-4 flex text-center justify-center text-purple-400 drop-shadow-md"></p>
+                <p id="loginError" class="ml-4 flex text-center justify-center text-error drop-shadow-md"></p>
             </div>
             <!--Dividing line-->
             <div class="w-64">
-                <hr class="ml-4 my-4 border-gray-500">
+                <hr class="ml-4 my-4 border-dark">
             </div>
             <!--Social Media login Buttons-->
             <!--Google Button-->
             <div class="ml-4 w-64 mb-2 flex justify-center items-center">
                 <button id="loginGoogleButton" type="submit"
-                    class="w-full p-2 border font-bold border-gray-500 bg-purple-100 hover:bg-purple-300 rounded-sm focus:outline-none focus:border-purple-500 flex items-center justify-center">
+                    class="w-full p-2 m-2 rounded-sm bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none flex items-center justify-center">
                     <img class="w-4 h-4 mr-2" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy"
                         alt="google logo">
                     <span class="mr-2 drop-shadow-lg">
@@ -92,7 +92,7 @@
             <!--Github Button-->
             <div class="ml-4 w-64 mb-2 flex justify-center items-center">
                 <button id="loginGithubButton" type="submit"
-                    class="w-full p-2 border font-bold border-gray-500 bg-purple-100 hover:bg-purple-300 rounded-sm focus:outline-none focus:border-purple-500 flex items-center justify-center">
+                    class="w-full p-2 m-2 rounded-sm bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none flex items-center justify-center">
                     <img class="w-4 h-4 mr-2" src="https://www.svgrepo.com/show/217753/github.svg" loading="lazy"
                         alt="github logo">
                     <span class="mr-2 drop-shadow-lg">
@@ -102,12 +102,12 @@
             </div>
             <!--Dividing line-->
             <div class="w-64">
-                <hr class="ml-4 my-4 border-gray-500">
+                <hr class="ml-4 my-4 border-dark">
             </div>
             <!--Back Button-->
             <div class="w-32">
                 <button id="backButton" type="submit"
-                    class="w-full p-2 m-2 bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                    class="w-full p-2 m-2 rounded-sm bg-secondary/50 border-secondary/10 border hover:bg-secondary font-bold py-2 px-4 focus:outline-none">
                     Back
                 </button>
             </div>
@@ -115,44 +115,44 @@
     </div>
     <!--Register Form -->
     <div id="register"
-        class=" hidden rounded-sm pr-4 mr-4 border-purple-400 bg-green-100 flex flex-col items-center my-auto text-purple-800">
+        class=" hidden rounded-sm pr-4 mr-4 border border-dark bg-background flex flex-col items-center my-auto text-text">
         <header class="flex items-center">
             <h1 class="text-3xl mt-6 mb-4 font-bold">Register</h1>
         </header>
         <!--Dividing line-->
         <div class="w-64">
-            <hr class="ml-4 my-2 border-gray-500">
+            <hr class="ml-4 my-2 border-dark">
         </div>
         <!--Register fields-->
         <div class="flex flex-col items-center mt-4">
             <div class="w-64">
                 <input id="registerUsername" type="text" placeholder="Username"
-                    class="w-full p-2 m-2 border bg-gray-500 rounded-sm focus:outline-none placeholder-purple-700 focus:border-purple-500">
+                    class="w-full p-2 m-2 rounded-sm border-dark border bg-primary/25 placeholder-text focus:outline-none">
             </div>
             <div class="w-64">
                 <input id="registerPassword" type="password" placeholder="Password"
-                    class="w-full p-2 m-2 border bg-gray-500 rounded-sm focus:outline-none placeholder-purple-700 focus:border-purple-500">
+                    class="w-full p-2 m-2 rounded-sm border-dark border bg-primary/25 placeholder-text focus:outline-none">
             </div>
             <!--Submit button-->
             <div class="w-64">
                 <button id="registerButton" type="submit"
-                    class="w-full p-2 m-2 bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                    class="w-full p-2 m-2 rounded-sm bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none">
                     Register
                 </button>
             </div>
             <!--Error message-->
             <div class="w-64">
-                <p id="registerError" class="ml-4 flex text-center justify-center text-purple-400 drop-shadow-md"></p>
+                <p id="registerError" class="ml-4 flex text-center justify-center text-error drop-shadow-md"></p>
             </div>
             <!--Dividing line-->
             <div class="w-64">
-                <hr class="ml-4 my-4 border-gray-500">
+                <hr class="ml-4 my-4 border-dark">
             </div>
             <!--Social Media Register Buttons-->
             <!--Google Button-->
             <div class="ml-4 w-64 mb-2 flex justify-center items-center">
                 <button id="registerGoogleButton" type="submit"
-                    class="w-full p-2 border font-bold border-gray-500 bg-purple-100 hover:bg-purple-300 rounded-sm focus:outline-none focus:border-purple-500 flex items-center justify-center">
+                    class="w-full p-2 m-2 rounded-sm bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none flex items-center justify-center">
                     <img class="w-4 h-4 mr-2" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy"
                         alt="google logo">
                     <span class="mr-2 drop-shadow-lg">
@@ -163,7 +163,7 @@
             <!--Github Button-->
             <div class="ml-4 w-64 mb-2 flex justify-center items-center">
                 <button id="registerGithubButton" type="submit"
-                    class="w-full p-2 border font-bold border-gray-500 bg-purple-100 hover:bg-purple-300 rounded-sm focus:outline-none focus:border-purple-500 flex items-center justify-center">
+                    class="w-full p-2 m-2 rounded-sm bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none flex items-center justify-center">
                     <img class="w-4 h-4 mr-2" src="https://www.svgrepo.com/show/217753/github.svg" loading="lazy"
                         alt="github logo">
                     <span class="mr-2 drop-shadow-lg">
@@ -173,12 +173,12 @@
             </div>
             <!--Dividing line-->
             <div class="w-64">
-                <hr class="ml-4 my-4 border-gray-500">
+                <hr class="ml-4 my-4 border-dark">
             </div>
             <!-- Back Button-->
             <div class="w-32">
                 <button id="backButtonTwo" type="submit"
-                    class="w-full p-2 m-2 bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                    class="w-full p-2 m-2 rounded-sm bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none">
                     Back
                 </button>
             </div>
@@ -186,7 +186,20 @@
     </div>
     <script src="login.js"></script>
     <footer class="mt-auto mb-4">
-        <p class="text-sm text-gray-500">© 2024 Vincent Winkler</p>
+        <p class="text-sm text-text">© 2024 Vincent Winkler</p>
+        <!-- Change Theme -->
+        <div class="flex justify-center items-center">
+            <label for="dark-toggle" class="flex items-center cursor-pointer">
+                <div class="relative w-7 h-4">
+                    <input type="checkbox" id="dark-toggle" class="hidden">
+                    <div class="block w-full h-full border rounded-full toggle-background"></div>
+                    <div class="absolute top-0.5 left-0.5 w-3 h-3 rounded-full login toggle-dot"></div>
+                </div>
+                <span class="ml-2 text-text font-medium">Theme</span>
+            </label>
+        </div>
+
+
     </footer>
 </body>
 

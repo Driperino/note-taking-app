@@ -1,3 +1,49 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Default (light) theme */
+:root {
+    --bg: 251, 255, 241;
+    --text: 12, 12, 12;
+    --primary: 255, 226, 209;
+    --secondary: 132, 226, 150;
+    --accent: 255, 226, 209;
+    --dark: 255, 126, 51;
+    --error: 239, 45, 86;
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+    --bg: 12, 12, 12;
+    --text: 251, 255, 241;
+    --primary: 177, 156, 217;
+    --secondary: 4, 139, 168;
+    --accent: 255, 226, 209;
+    --dark: 18, 11, 30;
+    --error: 239, 45, 86;
+}
+
+/* Apply the color scheme based on the user's system preference */
+/* @media (prefers-color-scheme: dark) {
+    :root {
+        --bg: 12, 12, 12;
+        --text: 251, 255, 241;
+        --primary: 177, 156, 217;
+        --secondary: 4, 139, 168;
+        --accent: 255, 226, 209;
+        --dark: 18, 11, 30;
+        --error: 239, 45, 86;
+    }
+} */
+
+
+/* :root {
+    --white: 251, 255, 241;
+    --black: 12, 12, 12;
+    --purple: 177, 156, 217;
+    --blue: 4, 139, 168;
+    --orange: 255, 226, 209;
+    --green: 90, 113, 106;
+    --error: 239, 45, 86;
+} */

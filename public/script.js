@@ -6,9 +6,23 @@ const noteTitleArea = document.getElementById('noteTitle') // Get the element wi
 const noteDateArea = document.getElementById('noteDate') // Get the element with ID 'noteDate'
 const settingsArea = document.getElementById('settings') // Get the element with ID 'settings'
 const infoBoxUsername = document.getElementById('infoBoxUsername') // Get the element with ID 'infoBoxUsername'
+const loggedInEmailArea = document.getElementById('userEmail') // Get the element with ID 'loggedInEmail';
+const loggedInUserSettingsArea = document.getElementById('userCurrentUser') // Get the element with ID 'loggedInUserSettings'
+const themeToggle = document.getElementById('dark-toggle');// Get the element with ID 'dark-toggle'
 let currentNoteID = '' // Current note ID, initially set to 'false'
 let loggedInUser = '' // Current user, initially set to 'false'
+let loggedInEmail = '' // Current email, initially set to 'false'
+let preferredTheme = localStorage.getItem('theme') || 'light' // Get the preferred theme from local storage or set to 'light'
+document.documentElement.setAttribute('data-theme', preferredTheme) // Set the theme based on the preferred theme
+themeToggle.checked = preferredTheme === 'dark' // Set the theme toggle based on the preferred theme
 //--------------------------------------------------------------------------------------------
+
+// Check if the user has a preferred color scheme 
+// if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+//     preferredTheme = 'dark';
+// } else {
+//     preferredTheme = 'light';
+// }
 
 // Display *temporary* confirmation text function
 function displayText(text) {
@@ -205,23 +219,36 @@ async function logout() {
     }
 }
 
-// Function to load User info
+// Function to load User info - Username, Theme, Email
 async function fetchUserInfo() {
     try {
         const response = await fetch('/auth/user'); // Send a GET request to the API endpoint for fetching user info
+        console.log(`fetching user info`);
         if (!response.ok) {
             throw new Error('Failed to fetch user info'); // Throw an error if the response is not ok
         }
         const user = await response.json(); // Parse the response as JSON
+        if (user) {
+            console.log(`user info fetched`);
+            console.log(user); // Log user info
+            loggedInUser = user.username; // Store the username in a global variable
+            infoBoxUsername.innerHTML = user.username; // Display username in username area
+            loggedInUserSettingsArea.innerHTML = user.username; // Display username in settings area
+            preferredTheme = user.theme; // Store the theme in a global variable
+            if (user.email) {
+                loggedInEmail = user.email; // Store the email in a global variable
+                loggedInEmailArea.innerHTML = user.email; // Display email in email area
+                console.log(`User Email fetched ${loggedInEmail}`); // Log user info
+            }
+        }
 
-        loggedInUser = user.username; // Store the username in a global variable
-        infoBoxUsername.innerHTML = user.username; // Display username in username area
 
     } catch (error) {
         console.error('Error fetching user info:', error); // Log an error message to the console
         displayText("Error fetching user info"); // Display error message
     }
 }
+
 
 // Function to fetch notes from backend and populate notesMenu
 async function fetchNotes() {
@@ -236,7 +263,7 @@ async function fetchNotes() {
         if (!notes) {
             console.log('No notes found') // Log notes
             throw new Error('No notes found', error) // Throw an error if no notes are found
-            displayText("No notes found") // Display error message
+            //displayText("No notes found") // Display error message UNREACHABLE //TODO FIX
         }
 
         // Clear notesMenu before populating it
@@ -247,7 +274,7 @@ async function fetchNotes() {
             li.classList.add('mb-2') // Add the class 'mb-2' to the <li> element
             const a = document.createElement('a') // Create a new <a> element
             a.href = '#' // Set the href attribute of the <a> element to '#'
-            a.classList.add('block', 'text-purple-900', 'bg-darkGray-100', 'hover:text-purple-300') // Add classes to the <a> element
+            a.classList.add('block', 'text-text', 'bg-background', 'hover:text-secondary') // Add classes to the <a> element
             a.textContent = note.title // Set the text content of the <a> element to the note title
             a.dataset.noteId = note._id // Store note ID as a data attribute
             a.addEventListener('click', selectNote) // Add a click event listener to the <a> element
@@ -284,9 +311,26 @@ async function selectNote(event) {
     }
 }
 //------------------------------------------------------------------------------
-//On page load functions //TODO find a better way to do this
-fetchUserInfo(); // Fetch user info when the page loads
-fetchNotes();  // Fetch notes when the page loads
+//On page load functions
+document.addEventListener('DOMContentLoaded', function () {
+
+    fetchUserInfo(); // Fetch user info when the page loads
+    fetchNotes();  // Fetch notes when the page loads
+
+    // Set the theme based on the user's preference
+    if (preferredTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.getElementById('dark-toggle').checked = true;
+        console.log('Theme set to:', preferredTheme);
+    } else if (preferredTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.getElementById('dark-toggle').checked = false;
+        console.log('Theme set to:', preferredTheme);
+    }
+});
+
+
+
 
 // Settings Menu -----------------------------------------------------------------
 // Update Username function
@@ -403,6 +447,30 @@ async function deleteUser() {
         }
     } catch (error) {
         console.error('Error deleting user:', error) // Log an error message to the console
+    }
+}
+
+//save theme function
+async function saveTheme() {
+    try {
+        const response = await fetch('/auth/theme', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                theme: preferredTheme
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const result = await response.json();
+        console.log(result.message);
+    } catch (error) {
+        console.error('Error updating theme:', error);
     }
 }
 
@@ -607,5 +675,18 @@ document.getElementById('confirmDeleteButton').addEventListener('click', async f
         }
     });
 });
+// theme switcher
+themeToggle.addEventListener('change', async (event) => {
+    if (event.target.checked) {
+        preferredTheme = 'dark';
+    } else {
+        preferredTheme = 'light';
+    }
 
+    document.documentElement.setAttribute('data-theme', preferredTheme);
+    localStorage.setItem('theme', preferredTheme);
+
+    // Save the theme to the server
+    await saveTheme();
+});
 //---------------------------------------------------------------------------------------------

@@ -100,6 +100,20 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('loginPassword').value = '';
         });
     }
+    // Theme toggle Button
+    const toggle = document.getElementById('dark-toggle');
+
+    // Load the preferred theme from localStorage or default to 'light'
+    const preferredTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', preferredTheme);
+    toggle.checked = preferredTheme === 'dark';
+
+    // Handle the theme toggle switch
+    toggle.addEventListener('change', (event) => {
+        const newTheme = event.target.checked ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+    });
 });
 //API----------------------------------------------------------------------------------------------------------------
 const API_URL = 'http://localhost:3000';
@@ -156,27 +170,6 @@ document.getElementById('registerButton').addEventListener('click', async (event
         }
     }
 });
-
-
-
-// const response = await fetch(`${API_URL}/auth/register`, {
-//     method: 'POST',
-//     headers: {
-//         'Content-Type': 'application/json'
-//     },
-//     body: JSON.stringify({ username, password })
-// });
-
-// if (response.redirected) {
-//     window.location.href = response.url;
-// }
-
-// if (response.status >= 400) {
-//     const data = await response.text();
-//     console.log(data);
-// } else {
-//     console.log("User registered successfully");
-// }
 
 //Login Button API
 document.getElementById('loginButton').addEventListener('click', async (event) => {

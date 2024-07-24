@@ -9,19 +9,19 @@
     <link href="./css/styles.css" rel="stylesheet">
 </head>
 
-<body class="bg-gray-100 min-h-screen flex overflow-hidden text-purple-800">
+<body class="bg-background min-h-screen flex overflow-hidden text-text">
     <!-- Sidebar -->
     <div
-        class="w-64 bg-gray-100 border-r border-gray-500 h-screen overflow-y-auto scrollbar-hidden fixed flex flex-col justify-between">
+        class="w-64 bg-background border-r border-primary/25 h-screen overflow-y-auto scrollbar-hidden fixed flex flex-col justify-between">
         <div>
-            <header class="text-5xl p-4 border-b border-gray-500">
+            <header class="text-5xl p-4 border-b border-primary/25">
                 <h1 class="flex justify-center">Notes</h1>
             </header>
 
             <!-- Dropdown Navigation Menu -->
-            <nav class="bg-gray-100 p-4">
+            <nav class="bg-background p-4">
                 <button id="menuButton"
-                    class="w-full flex items-center justify-between p-2 bg-gray-100 hover:text-purple-300 focus:outline-none border-b border-gray-500">
+                    class="w-full flex items-center justify-between p-2 bg-background hover:text-secondary focus:outline-none border-b border-primary/10">
                     Menu
                     <svg class="ml-auto h-8 w-8" width="24" height="24" viewBox="0 0 32 32" stroke-width="2"
                         stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -35,15 +35,15 @@
                 </button>
 
                 <ul id="menu" class="hidden mt-1">
-                    <li><button id="settingsButton" class="block hover:text-purple-300">Settings</button></li>
-                    <li class="mb-2"><button id="logoutButton" class="block hover:text-purple-300">Logout</button></li>
+                    <li><button id="settingsButton" class="block hover:text-secondary">Settings</button></li>
+                    <li class="mb-2"><button id="logoutButton" class="block hover:text-secondary">Logout</button></li>
                 </ul>
             </nav>
 
             <!-- Expandable Notes Menu -->
-            <div class="bg-gray-100 p-4">
+            <div class="bg-background p-4">
                 <button id="notesButton"
-                    class="w-full flex items-center justify-between p-2 bg-gray-100 hover:text-purple-300 focus:outline-none border-b border-gray-500">
+                    class="w-full flex items-center justify-between p-2 bg-background hover:text-secondary focus:outline-none border-b border-primary/10">
                     Notes
                     <svg class="ml-auto h-8 w-8" width="24" height="24" viewBox="0 0 32 32" stroke-width="2"
                         stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -61,7 +61,7 @@
         </div>
 
         <!-- Footer -->
-        <footer class="py-4 text-center border-t border-gray-500">
+        <footer class="py-4 text-center border-t border-primary/10">
             <p>&copy; 2024 Vincent Winkler</p>
         </footer>
     </div>
@@ -73,124 +73,145 @@
             <div class="col-span-2 row-span-1 flex items-center">
                 <!-- Input for Note Title -->
                 <input type="text" id="noteTitle" name="title" placeholder="Title"
-                    class="rounded-sm w-full border-gray-500 border m-2 py-2 px-4 bg-gray-500 placeholder-purple-700 focus:outline-none">
+                    class="rounded-sm w-full border-primary/10 border m-2 py-2 px-4 bg-primary/5 placeholder-text focus:outline-none">
 
                 <!-- Buttons for New, Save, and Delete -->
                 <div class="col-start-3 flex ml-2 space-x-1 col-span-1">
                     <button id="newButton"
-                        class="bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                        class="bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none focus:border-primary">
                         New
                     </button>
                     <button id="saveButton"
-                        class="bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                        class="bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none focus:border-primary">
                         Save
                     </button>
                     <button id="deleteButton"
-                        class="bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none focus:border-purple-100">
+                        class="bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none focus:border-primary">
                         Delete
                     </button>
                 </div>
 
             </div>
             <div class="col-start-3 col-span-1 mt-4 text-center">
-                <p id="noteStatus"></p>
+                <p class="text-error" id="noteStatus"></p>
             </div>
             <!-- note info Box  -->
-            <div class="col-start-4 col-span-1 row-span-3 bg-gray-100 border border-gray-500 p-1 ml-4">
-                <p class="font-bold text-purple-800">Note Info</p>
+            <div class="col-start-4 col-span-1 row-span-3 bg-background border border-primary/10 p-1 ml-4">
+                <p class="font-bold text-text">Note Info</p>
                 <p>Creation Date: <span id="noteDate"></span></p>
             </div>
 
             <!-- User Info Box -->
-            <div class="col-start-4 col-span-1 row-start-4 row-span-3 bg-gray-100 border border-gray-500 p-1 ml-4 mt-4">
-                <p class="font-bold text-purple-800">User Info</p>
+            <div
+                class="col-start-4 col-span-1 row-start-4 row-span-3 bg-background border border-primary/10 p-1 ml-4 mt-4">
+                <p class="font-bold text-text">User Info</p>
                 <p>Logged in as: <span id="infoBoxUsername"></span></p>
             </div>
 
             <!-- Textarea for Note Content -->
             <div class="col-span-3 row-span-22">
                 <textarea id="noteContent" name="note" placeholder="Note"
-                    class="rounded-sm w-full h-full border-gray-500 border py-1 m-2 px-4 resize-none bg-gray-500 placeholder-purple-700 focus:outline-none"></textarea>
+                    class="rounded-sm w-full h-full border-primary/10 border py-1 m-2 px-4 resize-none bg-primary/5 placeholder-text focus:outline-none"></textarea>
             </div>
         </main>
     </div>
 
     <!-- Settings Panel -->
     <div id="settings"
-        class="fixed inset-0 bg-gray-100 bg-opacity-50 backdrop-blur-sm z-20 hidden flex items-center justify-center overflow-auto">
-        <div class="bg-gray-100 rounded-lg shadow-lg p-6 w-full max-w-lg">
+        class="fixed inset-0 bg-primary/10 bg-opacity-50 backdrop-blur-sm z-20 hidden flex items-center justify-center overflow-auto">
+        <div class="bg-background rounded-lg shadow-lg p-6 w-full max-w-lg">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-3xl">Settings</h2>
                 <div class="col-start-3 col-span-1 mt-4 text-center">
-                    <p id="settingsStatus"></p>
+                    <p class="text-error" id="settingsStatus"></p>
                 </div>
                 <button id="closeSettings"
-                    class="bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none">Back</button>
+                    class="rounded-sm bg-secondary/50 border-secondary/10 border hover:bg-secondary font-bold py-2 px-4 focus:outline-non">Back</button>
             </div>
 
-            <div class="border-t border-gray-500 mb-4"></div>
+            <div class="border-t border-dark mb-4"></div>
 
             <!-- Update Username and Email -->
             <div class="mb-4">
-                <p class="text-left mb-2">Username</p>
+                <div class="flex items-center mb-2">
+                    <p class="mr-2">Current Username: </p>
+                    <div class="text-text" id="userCurrentUser"></div>
+                </div>
                 <input type="text" id="updateUsername" name="username" placeholder="Username"
-                    class="mb-2 rounded-sm border-gray-500 border py-2 px-4 bg-gray-500 placeholder-purple-700 focus:outline-none">
+                    class="mb-2 rounded-sm border-dark border py-2 px-4 bg-primary/25 placeholder-text focus:outline-none">
                 <button id="updateUsernameButton"
-                    class="mb-2 bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none">Update
+                    class="mb-2 rounded-sm bg-secondary/50 border-secondary/10 border hover:bg-secondary font-bold py-2 px-4 focus:outline-none">Update
                     Username</button>
             </div>
-
             <div class="mb-4">
-                <p class="text-left mb-2">Email</p>
+                <div class="flex items-center mb-2">
+                    <p class="mr-2">Current Email: </p>
+                    <div class="text-text" id="userEmail"></div>
+                </div>
                 <input type="email" id="updateEmail" name="email" placeholder="Email"
-                    class="mb-2 rounded-sm border-gray-500 border py-2 px-4 bg-gray-500 placeholder-purple-700 focus:outline-none">
+                    class="mb-2 rounded-sm border-dark border py-2 px-4 bg-primary/25 placeholder-text focus:outline-none">
                 <button id="updateEmailButton"
-                    class="mb-2 bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none">Update
+                    class="mb-2 rounded-sm bg-secondary/50 border-secondary/10 border hover:bg-secondary font-bold py-2 px-4 focus:outline-none">Update
                     Email</button>
             </div>
 
-            <div class="border-t border-gray-500 mb-4"></div>
+
+            <div class="border-t border-dark mb-4"></div>
 
             <!-- Change Password -->
             <div class="mb-4">
                 <p class="text-left mb-2">Change Password</p>
                 <input type="password" id="oldPassword" name="oldPassword" placeholder="Old Password"
-                    class="mb-2 rounded-sm border-gray-500 border py-2 px-4 bg-gray-500 placeholder-purple-700 focus:outline-none">
+                    class="mb-2 rounded-sm border-dark border py-2 px-4 bg-primary/25 placeholder-text focus:outline-none">
                 <input type="password" id="newPassword" name="newPassword" placeholder="New Password"
-                    class="mb-2 rounded-sm border-gray-500 border py-2 px-4 bg-gray-500 placeholder-purple-700 focus:outline-none">
+                    class="mb-2 rounded-sm border-dark border py-2 px-4 bg-primary/25 placeholder-text focus:outline-none">
                 <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm New Password"
-                    class="mb-2 rounded-sm border-gray-500 border py-2 px-4 bg-gray-500 placeholder-purple-700 focus:outline-none">
+                    class="mb-2 rounded-sm border-dark border py-2 px-4 bg-primary/25 placeholder-text focus:outline-none">
                 <button id="changePasswordButton"
-                    class="mb-2 bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none">Change
+                    class="mb-2 rounded-sm bg-secondary/50 border-secondary/10 border hover:bg-secondary font-bold py-2 px-4 focus:outline-non">Change
                     Password</button>
             </div>
 
-            <div class="border-t border-gray-500 mb-4"></div>
+            <div class="border-t border-dark mb-4"></div>
 
             <!-- Delete Account -->
             <div class="mb-4">
                 <p class="text-left mb-2">Delete Account</p>
                 <input type="password" id="confirmDeletePassword" name="confirmPassword" placeholder="Confirm Password"
-                    class="mb-2 rounded-sm border-gray-500 border py-2 px-4 bg-gray-500 placeholder-purple-700 focus:outline-none">
+                    class="mb-2 rounded-sm border-dark border py-2 px-4 bg-primary/25 placeholder-text focus:outline-none">
                 <button id="confirmDeleteButton"
-                    class="mb-2 bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none">Delete
+                    class="mb-2 rounded-sm bg-secondary/50 border-secondary/10 border hover:bg-secondary font-bold py-2 px-4 focus:outline-non">Delete
                     Account</button>
+            </div>
+
+            <div class="border-t border-primary/25 mb-4"></div>
+
+            <!-- Change Theme -->
+            <div class="flex justify-center items-center">
+                <label for="dark-toggle" class="flex items-center cursor-pointer">
+                    <div class="relative">
+                        <input type="checkbox" id="dark-toggle" class="hidden">
+                        <div class="block w-14 h-8 border rounded-full toggle-background"></div>
+                        <div class="dot absolute left-1 top-1 w-6 h-6 rounded-full toggle-dot"></div>
+                    </div>
+                    <span class="ml-3 text-text font-medium">Dark Mode</span>
+                </label>
             </div>
         </div>
     </div>
 
     <!-- Modal and Overlay -->
-    <div id="confirm-overlay" class="fixed inset-0 bg-gray-100 bg-opacity-50 backdrop-blur-sm z-30 hidden"></div>
+    <div id="confirm-overlay" class="fixed inset-0 bg-background/10 bg-opacity-50 backdrop-blur-sm z-30 hidden"></div>
     <div id="confirm-modal" class="fixed inset-0 flex items-center justify-center z-40 hidden">
-        <div class="bg-green-100 rounded-lg shadow-lg p-6 w-1/3">
+        <div class="bg-background rounded-lg shadow-lg p-6 w-1/3">
             <h2 id="modal-message" class="text-lg font-medium mb-4 text-center">
                 placeholder
             </h2>
             <div class="flex justify-center space-x-4">
                 <button id="cancel-button"
-                    class="bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none">Cancel</button>
+                    class="rounded-sm bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none">Cancel</button>
                 <button id="ok-button"
-                    class="bg-purple-100 border-gray-500 border hover:bg-purple-300 font-bold py-2 px-4 focus:outline-none">OK</button>
+                    class="rounded-sm bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none">OK</button>
             </div>
         </div>
     </div>
