@@ -12,16 +12,16 @@
 <body class="bg-background min-h-screen flex overflow-hidden text-text">
     <!-- Sidebar -->
     <div
-        class="w-64 bg-background border-r border-primary/25 h-screen overflow-y-auto scrollbar-hidden fixed flex flex-col justify-between">
+        class="w-64 bg-background border-r border-primary/75 h-screen overflow-y-auto scrollbar-hidden fixed flex flex-col justify-between">
         <div>
-            <header class="text-5xl p-4 border-b border-primary/25">
+            <header class="text-5xl p-4 border-b border-primary">
                 <h1 class="flex justify-center">Notes</h1>
             </header>
 
             <!-- Dropdown Navigation Menu -->
             <nav class="bg-background p-4">
                 <button id="menuButton"
-                    class="w-full flex items-center justify-between p-2 bg-background hover:text-secondary focus:outline-none border-b border-primary/10">
+                    class="w-full flex items-center justify-between p-2 bg-background hover:text-secondary focus:outline-none border-b border-primary/75">
                     Menu
                     <svg class="ml-auto h-8 w-8" width="24" height="24" viewBox="0 0 32 32" stroke-width="2"
                         stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -43,7 +43,7 @@
             <!-- Expandable Notes Menu -->
             <div class="bg-background p-4">
                 <button id="notesButton"
-                    class="w-full flex items-center justify-between p-2 bg-background hover:text-secondary focus:outline-none border-b border-primary/10">
+                    class="w-full flex items-center justify-between p-2 bg-background hover:text-secondary focus:outline-none border-b border-primary/75">
                     Notes
                     <svg class="ml-auto h-8 w-8" width="24" height="24" viewBox="0 0 32 32" stroke-width="2"
                         stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -78,15 +78,15 @@
                 <!-- Buttons for New, Save, and Delete -->
                 <div class="col-start-3 flex ml-2 space-x-1 col-span-1">
                     <button id="newButton"
-                        class="bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none focus:border-primary">
+                        class="rounded-md bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none focus:border-primary">
                         New
                     </button>
                     <button id="saveButton"
-                        class="bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none focus:border-primary">
+                        class="rounded-md bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none focus:border-primary">
                         Save
                     </button>
                     <button id="deleteButton"
-                        class="bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none focus:border-primary">
+                        class="rounded-md bg-primary/50 border-primary/10 border hover:bg-primary font-bold py-2 px-4 focus:outline-none focus:border-primary">
                         Delete
                     </button>
                 </div>
@@ -119,7 +119,7 @@
     <!-- Settings Panel -->
     <div id="settings"
         class="fixed inset-0 bg-primary/10 bg-opacity-50 backdrop-blur-sm z-20 hidden flex items-center justify-center overflow-auto">
-        <div class="bg-background rounded-lg shadow-lg p-6 w-full max-w-lg">
+        <div class="bg-background border border-dark rounded-lg shadow-lg p-6 w-full max-w-lg">
             <div class="flex items-center justify-between mb-4">
                 <h2 class="text-3xl">Settings</h2>
                 <div class="col-start-3 col-span-1 mt-4 text-center">

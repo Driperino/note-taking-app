@@ -329,45 +329,44 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-
-
-
 // Settings Menu -----------------------------------------------------------------
 // Update Username function
 async function updateUsername() {
-    const username = document.getElementById('updateUsername').value; // Get the value of the element with ID 'username'
+    const username = document.getElementById('updateUsername').value;
 
     try {
         if (!username) {
-            throw new Error('Username cannot be empty') // Throw an error if the username is empty
+            throw new Error('Username cannot be empty');
         } else if (username.length < 3) {
-            throw new Error('Username must be at least 3 characters') // Throw an error if the username is less than 3 characters
+            throw new Error('Username must be at least 3 characters');
         } else if (username === loggedInUser) {
-            throw new Error('Username must be different from current username') // Throw an error if the username is the same as the current username
+            throw new Error('Username must be different from current username');
         }
 
-        const response = await fetch('/auth/username', { // Send a PATCH request to the API endpoint for updating the username
+        const response = await fetch('/auth/username', {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                username
-            })
-        })
+            body: JSON.stringify({ username })
+        });
 
-        if (response.ok) {
-            console.log('Username updated') // Display confirmation text
-            loggedInUser = username; // Update the global variable for the username
-            displayTextSettings(`Username updated to ${loggedInUser}`); // Display confirmation text
-        } else {
-            throw new Error('Failed to update username') // Throw an error if the response is not ok
+        if (response.status === 200) {
+            console.log('Username updated');
+            loggedInUser = username;
+            infoBoxUsername.innerHTML = username;
+            loggedInUserSettingsArea.innerHTML = username;
+            displayTextSettings(`Username updated to ${loggedInUser}`);
+        }
+        if (response.status === 400) {
+            console.log('Username already exists');
+            displayTextSettings('Username already exists');
         }
     } catch (error) {
-        console.error('Error updating username:', error) // Log an error message to the console
+        console.error('Error updating username:', error.message);
+        displayTextSettings(error.message);
     }
 }
-
 
 // Update Password function
 async function updatePassword() {
@@ -421,6 +420,8 @@ async function updateEmail() {
 
         if (response.ok) {
             console.log('Email updated') // Display confirmation text
+            loggedInEmail = email; // Update the global variable for the email
+            loggedInEmailArea.innerHTML = email; // Display the updated email in the email area
         } else {
             throw new Error('Failed to update email') // Throw an error if the response is not ok
         }
@@ -612,7 +613,6 @@ document.getElementById('updateUsernameButton').addEventListener('click', async 
             try {
                 await updateUsername(); // Call the updateUsername function
                 clearFields(settingsArea); // Call the clearFields function
-                displayTextSettings("Username updated successfully"); // Display confirmation text
             }
             catch (error) {
                 console.error("Error updating username:", error);

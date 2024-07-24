@@ -32,10 +32,17 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(passport.authenticate('session'));
 
+// Middleware to log session ID
+app.use((req, res, next) => {
+    console.log(`Session ID:`, req.sessionID);
+    next();
+});
+//--------------------------------------------------------------------------------------------
 
+// Serving static files from the 'public' directory
+app.use('/app', express.static('../public')); // Serving static files from the 'public' directory
 
 //Assinging routes to routers------------------------------------------------------------------
-app.use('/app', express.static('../public')); // Serving static files from the 'public' directory
 app.use('/auth', authRouter); // Using authRouter for handling authentication routes
 app.use('/', noteRouter); // Using noteRouter for handling note routes
 //--------------------------------------------------------------------------------------------
@@ -45,14 +52,6 @@ app.use((err, req, res, next) => {
     console.error(err);
     res.status(err.status ?? 500).send(err);
 });
-
-
-// Middleware to log session ID
-app.use((req, res, next) => {
-    console.log(`Session ID:`, req.sessionID);
-    next();
-});
-//--------------------------------------------------------------------------------------------
 
 // Starting the server
 const start = async () => {

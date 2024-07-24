@@ -146,11 +146,26 @@ router.patch("/username", async (req, res) => {
     if (req.isAuthenticated()) {
         if (req.body.username) {
             try {
+                const newUsername = req.body.username;
+
+                // Check if the new username already exists
+                const existingUser = await User.findOne({ username: newUsername });
+                if (existingUser && existingUser._id.toString() !== req.user.id.toString()) {
+                    return res.status(400).json({ message: "Username already taken" });
+                }
+
+                // Proceed with the update if the username does not already exist
                 const user = await User.findById(req.user.id);
-                user.username = req.body.username;
+                if (!user) {
+                    return res.status(404).json({ message: "User not found" });
+                }
+
+                user.username = newUsername;
                 await user.save();
                 return res.status(200).json({ message: "Username updated successfully" });
+
             } catch (error) {
+                console.error("Error updating username:", error);
                 return res.status(500).json({ message: "Server error", error: error.message });
             }
         }
@@ -158,6 +173,7 @@ router.patch("/username", async (req, res) => {
     }
     return res.status(401).send("Unauthorized");
 });
+
 
 // Patch password ---------------------------------------------
 router.patch("/password", async (req, res) => {
