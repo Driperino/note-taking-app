@@ -19,7 +19,7 @@ Follow these steps to set up and run the application:
 1. Clone the repository:
 
 ```
-git clone https://github.com/driperino/note-taking-app.git
+git clone https://github.com/Driperino/note-taking-app.git
 ```
 
 2. Navigate to the project directory:
