@@ -9,12 +9,26 @@
     <link href="./css/styles.css" rel="stylesheet">
 </head>
 
-<body class="bg-background min-h-screen flex overflow-hidden text-text">
+<body class="bg-background min-h-screen flex flex-col md:flex-row overflow-hidden text-text">
+    <!-- Mobile Dropdown Button -->
+    <div class="md:hidden p-4 flex justify-between items-center bg-background border-b border-primary">
+        <h1 class="text-5xl">Notes</h1>
+        <button id="mobileMenuButton" class="p-2 focus:outline-none">
+            <svg class="h-8 w-8" width="24" height="24" viewBox="0 0 32 32" stroke-width="2" stroke="currentColor"
+                fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" />
+                <line x1="4" y1="6" x2="28" y2="6" />
+                <line x1="4" y1="12" x2="28" y2="12" />
+                <line x1="4" y1="18" x2="28" y2="18" />
+            </svg>
+        </button>
+    </div>
+
     <!-- Sidebar -->
-    <div
-        class="w-64 bg-background border-r border-primary/75 h-screen overflow-y-auto scrollbar-hidden fixed flex flex-col justify-between">
+    <div id="sidebar"
+        class="w-full md:w-64 bg-background border-r border-primary/75 md:h-screen overflow-y-auto scrollbar-hidden md:fixed flex flex-col justify-between hidden md:flex">
         <div>
-            <header class="text-5xl p-4 border-b border-primary">
+            <header class="hidden md:block text-5xl p-4 border-b border-primary">
                 <h1 class="flex justify-center">Notes</h1>
             </header>
 
@@ -61,22 +75,22 @@
         </div>
 
         <!-- Footer -->
-        <footer class="py-4 text-center border-t border-primary/10">
+        <footer class="py-4 text-center border-t border-primary/10 hidden md:block">
             <p>&copy; 2024 Vincent Winkler</p>
         </footer>
     </div>
 
     <!-- Main content -->
-    <div id='main' class="w-19/20 mb-8 mt-8 z-0 ml-64 flex-1 p-4 flex flex-col h-screen overflow-hidden">
-        <main class="grid grid-cols-4 grid-rows-[auto,auto,1fr] overflow-hidden flex-1 mr-6">
+    <div id='main' class="w-full md:w-19/20 mb-8 mt-8 z-0 md:ml-64 flex-1 p-4 flex flex-col h-screen overflow-hidden">
+        <main class="grid grid-cols-1 md:grid-cols-4 grid-rows-[auto,auto,1fr] overflow-hidden flex-1">
             <!-- Note Info Box -->
-            <div class="col-span-4 bg-background border border-primary/10 p-1 mb-2">
+            <div class="col-span-1 md:col-span-4 bg-background border border-primary/10 p-1 mb-2">
                 <p class="font-bold text-text">Note Info</p>
                 <p>Creation Date: <span id="noteDate"></span></p>
             </div>
 
             <!-- Buttons for New, Save, and Delete and status text -->
-            <div class="col-span-4 flex items-center h-20 mb-2">
+            <div class="col-span-1 md:col-span-4 flex items-center h-20 mb-2">
                 <div class="ml-2 space-x-2 flex items-center w-full">
                     <p class="text-error text-center flex-grow" id="noteStatus"></p>
                     <button id="newButton"
@@ -95,7 +109,7 @@
             </div>
 
             <!-- Note Title and Content -->
-            <div id="texContainer" class="h-13/14 col-span-4 flex flex-col">
+            <div id="texContainer" class="h-13/14 col-span-1 md:col-span-4 flex flex-col">
                 <!-- Container for Input and Textarea -->
                 <div class="p-2 flex flex-col flex-1">
                     <!-- Input for Note Title -->
@@ -106,12 +120,8 @@
                         class="rounded-sm w-full flex-1 border-primary/10 border py-1 px-4 resize-none bg-primary/5 placeholder-text focus:outline-none mt-2"></textarea>
                 </div>
             </div>
-
         </main>
     </div>
-
-
-
 
     <!-- Settings Panel -->
     <div id="settings"
@@ -123,7 +133,7 @@
                     <p class="text-error" id="settingsStatus"></p>
                 </div>
                 <button id="closeSettings"
-                    class="rounded-sm bg-secondary/50 border-secondary/10 border hover:bg-secondary font-bold py-2 px-4 focus:outline-non">Back</button>
+                    class="rounded-sm bg-secondary/50 border-secondary/10 border hover:bg-secondary font-bold py-2 px-4 focus:outline-none">Back</button>
             </div>
 
             <div class="border-t border-dark mb-4"></div>
@@ -152,7 +162,6 @@
                     Email</button>
             </div>
 
-
             <div class="border-t border-dark mb-4"></div>
 
             <!-- Change Password -->
@@ -165,7 +174,7 @@
                 <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm New Password"
                     class="mb-2 rounded-sm border-dark border py-2 px-4 bg-primary/25 placeholder-text focus:outline-none">
                 <button id="changePasswordButton"
-                    class="mb-2 rounded-sm bg-secondary/50 border-secondary/10 border hover:bg-secondary font-bold py-2 px-4 focus:outline-non">Change
+                    class="mb-2 rounded-sm bg-secondary/50 border-secondary/10 border hover:bg-secondary font-bold py-2 px-4 focus:outline-none">Change
                     Password</button>
             </div>
 
@@ -177,7 +186,7 @@
                 <input type="password" id="confirmDeletePassword" name="confirmPassword" placeholder="Confirm Password"
                     class="mb-2 rounded-sm border-dark border py-2 px-4 bg-primary/25 placeholder-text focus:outline-none">
                 <button id="confirmDeleteButton"
-                    class="mb-2 rounded-sm bg-secondary/50 border-secondary/10 border hover:bg-secondary font-bold py-2 px-4 focus:outline-non">Delete
+                    class="mb-2 rounded-sm bg-secondary/50 border-secondary/10 border hover:bg-secondary font-bold py-2 px-4 focus:outline-none">Delete
                     Account</button>
             </div>
 
@@ -215,5 +224,6 @@
 
     <script src="script.js"></script>
 </body>
+
 
 </html>

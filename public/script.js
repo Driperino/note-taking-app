@@ -58,6 +58,24 @@ function clearFields(container) {
 
     console.log('Fields cleared');
 }
+
+// Close all dropdowns
+function closeAllDropdowns() {
+    const menu = document.getElementById('menu'); // Get the element with ID 'menu'
+    const notesMenu = document.getElementById('notesMenu'); // Get the element with ID 'notesMenu'
+    const settingsMenu = document.getElementById('settings'); // Get the element with ID 'settings'
+
+    if (!menu.classList.contains('hidden')) { // Check if 'menu' element does not have the class 'hidden'
+        menu.classList.add('hidden'); // Add the class 'hidden' to the 'menu' element
+    }
+    if (!notesMenu.classList.contains('hidden')) { // Check if 'notesMenu' element does not have the class 'hidden'
+        notesMenu.classList.add('hidden'); // Add the class 'hidden' to the 'notesMenu' element
+    }
+    if (!settingsMenu.classList.contains('hidden')) { // Check if 'settingsMenu' element does not have the class 'hidden'
+        settingsMenu.classList.add('hidden'); // Add the class 'hidden' to the 'settingsMenu' element
+    }
+}
+
 // confirmation box function
 function customConfirm(message, callback) {
     console.log("Creating custom Confirm Box");
@@ -232,22 +250,26 @@ async function fetchUserInfo() {
             console.log(`user info fetched`);
             console.log(user); // Log user info
             loggedInUser = user.username; // Store the username in a global variable
-            infoBoxUsername.innerHTML = user.username; // Display username in username area
             loggedInUserSettingsArea.innerHTML = user.username; // Display username in settings area
             preferredTheme = user.theme; // Store the theme in a global variable
+
+            // Set the theme based on the user's preference from the database
+            document.documentElement.setAttribute('data-theme', preferredTheme);
+            themeToggle.checked = preferredTheme === 'dark';
+            localStorage.setItem('theme', preferredTheme);
+
             if (user.email) {
                 loggedInEmail = user.email; // Store the email in a global variable
                 loggedInEmailArea.innerHTML = user.email; // Display email in email area
                 console.log(`User Email fetched ${loggedInEmail}`); // Log user info
             }
         }
-
-
     } catch (error) {
         console.error('Error fetching user info:', error); // Log an error message to the console
         displayText("Error fetching user info"); // Display error message
     }
 }
+
 
 
 // Function to fetch notes from backend and populate notesMenu
@@ -294,40 +316,23 @@ async function selectNote(event) {
             throw new Error(`Error fetching response from /notes/${noteId}`); // Throw an error if the response is not ok
         }
         const note = await response.json(); // Parse the response as JSON
-
-        // Assuming these elements are defined correctly in your HTML or script
         noteTitleArea.value = note.title; // Display note title in title area
         noteContentTextarea.value = note.content; // Display note content in textarea
         console.log(`noteId: ${noteId}`, note); // Log note details (optional)
 
         currentNoteID = note._id; // Update current note ID
-        // Date manipulation
         const date = new Date(note.createDate); // Convert note creation date to Date object
         const localDate = date.toLocaleDateString(); // Display note creation date in date area
         const localTime = date.toLocaleTimeString(); // Display note creation time in date area
         noteDateArea.innerHTML = `${localDate} at ${localTime}`; // Display note creation date in date area
+
+        // Close all dropdown menus
+        closeAllDropdowns();
     } catch (error) {
         console.error('Error fetching note details:', error); // Log an error message to the console
     }
 }
-//------------------------------------------------------------------------------
-//On page load functions
-document.addEventListener('DOMContentLoaded', function () {
 
-    fetchUserInfo(); // Fetch user info when the page loads
-    fetchNotes();  // Fetch notes when the page loads
-
-    // Set the theme based on the user's preference
-    if (preferredTheme === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        document.getElementById('dark-toggle').checked = true;
-        console.log('Theme set to:', preferredTheme);
-    } else if (preferredTheme === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-        document.getElementById('dark-toggle').checked = false;
-        console.log('Theme set to:', preferredTheme);
-    }
-});
 
 // Settings Menu -----------------------------------------------------------------
 // Update Username function
@@ -474,42 +479,46 @@ async function saveTheme() {
         console.error('Error updating theme:', error);
     }
 }
-
 //--------------------------------------------------------------------------------------------
+// Event Listeners
 
-//Buttons and Event Listeners
-// New Note button
-const newButton = document.getElementById('newButton')
-if (newButton) {
-    newButton.addEventListener('click', async () => {
+document.addEventListener('DOMContentLoaded', () => {
+    fetchUserInfo();
+    fetchNotes();
+
+    // Set the theme based on the user's preference
+    if (preferredTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        document.getElementById('dark-toggle').checked = true;
+        console.log('Theme set to:', preferredTheme);
+    } else if (preferredTheme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+        document.getElementById('dark-toggle').checked = false;
+        console.log('Theme set to:', preferredTheme);
+    }
+
+    // Event Listeners for Buttons
+    document.getElementById('newButton').addEventListener('click', async () => {
         if (noteTitleArea.value || noteContentTextarea.value) {
             customConfirm(`Are you sure you want to create a new note?`, async function (result) {
                 if (result) {
-                    console.log("User chose to create a new note");
-                    newButton.addEventListener('click', async () => {
-                        await newNote();
-                        await fetchNotes();
-                        await fetchUserInfo();
-                        clearFieldsMain();
-                    });
+                    await newNote();
+                    await fetchNotes();
+                    await fetchUserInfo();
+                    clearFieldsMain();
                 } else {
                     console.log("User chose not to create a new note");
                 }
             });
         } else {
-            console.log("User chose to create a new note");
             await newNote();
             await fetchNotes();
             await fetchUserInfo();
             clearFieldsMain();
         }
     });
-}
 
-// Save Note button
-const saveButton = document.getElementById('saveButton')
-if (saveButton) {
-    saveButton.addEventListener('click', async () => {
+    document.getElementById('saveButton').addEventListener('click', async () => {
         if (currentNoteID === 'false' || currentNoteID === '') {
             await createNote();
             await fetchNotes();
@@ -520,173 +529,142 @@ if (saveButton) {
             await fetchUserInfo();
         }
     });
-}
 
-// Delete Note button
-const deleteButton = document.getElementById('deleteButton')
-if (deleteButton) {
-    deleteButton.addEventListener('click', async () => {
+    document.getElementById('deleteButton').addEventListener('click', async () => {
         if (currentNoteID === 'false' || currentNoteID === '') {
             displayText("No note to delete");
             console.log("No note to delete");
         } else {
             customConfirm(`Are you sure you want to delete this note?`, async function (result) {
                 if (result) {
-                    try {
-                        await deleteNote();
-                        await fetchNotes();
-                        await fetchUserInfo();
-                        clearFieldsMain();
-                    } catch {
-                        console.log("User chose not to delete note");
-                    }
-
+                    await deleteNote();
+                    await fetchNotes();
+                    await fetchUserInfo();
+                    clearFieldsMain();
                 } else {
                     console.log("User chose not to delete note");
                 }
             });
         }
     });
-}
 
-// Logout button
-const logoutButton = document.getElementById('logoutButton')
-if (logoutButton) {
-    logoutButton.addEventListener('click', async () => {
+    document.getElementById('logoutButton').addEventListener('click', async () => {
         customConfirm(`Are you sure you want to log out?`, async function (result) {
             if (result) {
-                console.log("User chose to log out");
                 await logout();
             } else {
                 console.log("User chose not to log out");
             }
         });
     });
-}
 
-// Expanding menus -----------------------------------------------------------------
-// Menu button
-document.getElementById('menuButton').addEventListener('click', function () {
-    const menu = document.getElementById('menu'); // Get the element with ID 'menu'
-    if (menu.classList.contains('hidden')) { // Check if the element has the class 'hidden'
-        menu.classList.remove('hidden'); // Remove the class 'hidden' from the element
-    } else {
-        menu.classList.add('hidden'); // Add the class 'hidden' to the element
-    }
-});
+    document.getElementById('menuButton').addEventListener('click', () => {
+        const menu = document.getElementById('menu');
+        menu.classList.toggle('hidden');
+        console.log("Menu button clicked");
+    });
 
-// Notes button
-document.getElementById('notesButton').addEventListener('click', function () {
-    const notesMenu = document.getElementById('notesMenu'); // Get the element with ID 'notesMenu'
-    if (notesMenu.classList.contains('hidden')) { // Check if the element has the class 'hidden'
-        notesMenu.classList.remove('hidden'); // Remove the class 'hidden' from the element
-    } else {
-        notesMenu.classList.add('hidden'); // Add the class 'hidden' to the element
-    }
-});
+    document.getElementById('notesButton').addEventListener('click', () => {
+        const notesMenu = document.getElementById('notesMenu');
+        notesMenu.classList.toggle('hidden');
+        console.log("Notes button clicked");
+    });
 
-// Settings dropdown Menu button
+    document.getElementById('settingsButton').addEventListener('click', () => {
+        const settingsMenu = document.getElementById('settings');
+        settingsMenu.classList.toggle('hidden');
+        console.log("Settings button clicked");
+    });
 
-document.getElementById('settingsButton').addEventListener('click', function () {
-    const settingsMenu = document.getElementById('settings'); // Get the element with ID 'settingsMenu'
+    document.getElementById('closeSettings').addEventListener('click', () => {
+        const settingsMenu = document.getElementById('settings');
+        settingsMenu.classList.toggle('hidden');
+        console.log("Close settings button clicked");
+    });
 
-
-    if (settingsMenu.classList.contains('hidden')) { // Check if the element has the class 'hidden'
-        settingsMenu.classList.toggle('hidden'); // Remove the class 'hidden' from the element
-    }
-});
-
-// Close dropdown Settings Menu button
-
-document.getElementById('closeSettings').addEventListener('click', function () {
-    const settingsMenu = document.getElementById('settings'); // Get the element with ID 'settingsMenu'
-
-    settingsMenu.classList.toggle('hidden'); // Remove the class 'hidden' from the element
-});
-
-// Settings Page buttons ---------------------------------------------------------------
-
-// Update Username button
-document.getElementById('updateUsernameButton').addEventListener('click', async function () {
-    customConfirm(`Are you sure you want to update your username?`, async function (result) {
-        if (result) { // Proceed if the user confirms
-            try {
-                await updateUsername(); // Call the updateUsername function
-                clearFields(settingsArea); // Call the clearFields function
+    document.getElementById('updateUsernameButton').addEventListener('click', async () => {
+        customConfirm(`Are you sure you want to update your username?`, async function (result) {
+            if (result) {
+                await updateUsername();
+                clearFields(settingsArea);
+            } else {
+                console.log("User chose not to update username");
             }
-            catch (error) {
-                console.error("Error updating username:", error);
+        });
+    });
+
+    document.getElementById('updateEmailButton').addEventListener('click', async () => {
+        customConfirm(`Are you sure you want to update your email?`, async function (result) {
+            if (result) {
+                await updateEmail();
+                clearFields(settingsArea);
+                displayTextSettings("Email updated successfully");
+            } else {
+                console.log("User chose not to update email");
+            }
+        });
+    });
+
+    document.getElementById('changePasswordButton').addEventListener('click', async () => {
+        customConfirm(`Are you sure you want to change your password?`, async function (result) {
+            if (result) {
+                await updatePassword();
+                clearFields(settingsArea);
+                displayTextSettings("Password updated successfully");
+            } else {
+                console.log("User chose not to change password");
+            }
+        });
+    });
+
+    document.getElementById('confirmDeleteButton').addEventListener('click', async () => {
+        customConfirm(`Are you sure you want to delete your account?`, async function (result) {
+            if (result) {
+                await deleteUser();
+                clearFields(settingsArea);
+            } else {
+                console.log("User chose not to delete account");
+            }
+        });
+    });
+
+    themeToggle.addEventListener('change', async (event) => {
+        preferredTheme = event.target.checked ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', preferredTheme);
+        localStorage.setItem('theme', preferredTheme);
+        await saveTheme();
+    });
+
+    // Mobile view buttons and responsive behavior
+    const addMobileEventListeners = () => {
+        const screenWidth = window.innerWidth;
+        console.log("Checking screen width:", screenWidth);
+
+        const mobileMenuButton = document.getElementById('mobileMenuButton');
+        const sidebar = document.getElementById('sidebar');
+
+        console.log('mobileMenuButton:', mobileMenuButton);
+        console.log('sidebar:', sidebar);
+
+        const toggleSidebar = () => {
+            sidebar.classList.toggle('hidden');
+            console.log("Mobile menu button clicked");
+        };
+
+        if (screenWidth <= 768) {
+            if (mobileMenuButton && sidebar) {
+                mobileMenuButton.removeEventListener('click', toggleSidebar);
+                mobileMenuButton.addEventListener('click', toggleSidebar);
+                console.log("Event listener added to mobileMenuButton");
             }
         } else {
-            console.log("User chose not to update username");
+            if (sidebar) {
+                sidebar.classList.remove('hidden');
+                console.log("Sidebar shown on larger screens");
+            }
         }
-    });
-});
+    };
 
-// Update email button
-document.getElementById('updateEmailButton').addEventListener('click', async function () {
-    customConfirm(`Are you sure you want to update your email?`, async function (result) {
-        if (result) { // Proceed if the user confirms
-            try {
-                await updateEmail(); // Call the updateEmail function
-                clearFields(settingsArea); // Call the clearFields function
-                displayTextSettings("Email updated successfully"); // Display confirmation text
-            }
-            catch (error) {
-                console.error("Error updating email:", error);
-            }
-        } else {
-            console.log("User chose not to update email");
-        }
-    });
+    addMobileEventListeners();
+    window.addEventListener('resize', addMobileEventListeners);
 });
-
-// Update Password button
-document.getElementById('changePasswordButton').addEventListener('click', async function () {
-    customConfirm(`Are you sure you want to change your password?`, async function (result) {
-        if (result) { // Proceed if the user confirms
-            try {
-                await updatePassword(); // Call the updatePassword function
-                clearFields(settingsArea); // Call the clearFields function
-                displayTextSettings("Password updated successfully"); // Display confirmation text
-            }
-            catch (error) {
-                console.error("Error updating password:", error);
-            }
-        } else {
-            console.log("User chose not to change password");
-        }
-    });
-});
-
-// Delete User button
-document.getElementById('confirmDeleteButton').addEventListener('click', async function () {
-    customConfirm(`Are you sure you want to delete your account?`, async function (result) {
-        if (result) { // Proceed if the user confirms
-            try {
-                await deleteUser(); // Call the deleteUser function
-                clearFields(settingsArea); // Call the clearFields function
-            }
-            catch (error) {
-                console.error("Error deleting user:", error);
-            }
-        } else {
-            console.log("User chose not to delete account");
-        }
-    });
-});
-// theme switcher
-themeToggle.addEventListener('change', async (event) => {
-    if (event.target.checked) {
-        preferredTheme = 'dark';
-    } else {
-        preferredTheme = 'light';
-    }
-
-    document.documentElement.setAttribute('data-theme', preferredTheme);
-    localStorage.setItem('theme', preferredTheme);
-
-    // Save the theme to the server
-    await saveTheme();
-});
-//---------------------------------------------------------------------------------------------
