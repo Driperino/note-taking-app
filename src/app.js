@@ -8,6 +8,7 @@ const passport = require("passport");
 const session = require("express-session");
 const app = express(); // Creating an instance of express
 const port = process.env.PORT || 3000; // Setting the port for the server
+const path = require("path");
 
 require('dotenv').config(); // Loading environment variables
 
@@ -39,8 +40,11 @@ app.use((req, res, next) => {
 });
 //--------------------------------------------------------------------------------------------
 
-// Serving static files from the 'public' directory
-app.use('/app', express.static('../public')); // Serving static files from the 'public' directory
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, '../public')));
+
+// Serve static files from the static directory within public
+app.use('/app', express.static(path.join(__dirname, '../public/static')));
 
 //Assinging routes to routers------------------------------------------------------------------
 app.use('/auth', authRouter); // Using authRouter for handling authentication routes

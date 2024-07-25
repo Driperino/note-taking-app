@@ -5,11 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Note Taking App</title>
-    <link href="./css/output.css" rel="stylesheet">
-    <link href="./css/styles.css" rel="stylesheet">
+    <link href="../css/output.css" rel="stylesheet">
+    <link href="../css/styles.css" rel="stylesheet">
 </head>
 
 <body class="bg-background min-h-screen flex flex-col md:flex-row overflow-hidden text-text">
+
     <!-- Mobile Dropdown Button -->
     <div class="drop-shadow-md md:hidden p-4 flex justify-between items-center bg-background border-b border-primary">
         <h1 class="drop-shadow-md text-5xl">Notes</h1>
@@ -26,8 +27,8 @@
 
     <!-- Sidebar -->
     <div id="sidebar"
-        class="drop-shadow-md w-full md:w-64 bg-background border-r border-primary/75 md:h-screen overflow-y-auto scrollbar-hidden md:fixed flex flex-col justify-between hidden md:flex">
-        <div>
+        class="drop-shadow-md w-full md:w-52 bg-background border-r border-primary/75 md:h-screen md:fixed flex flex-col hidden md:flex relative">
+        <div class="flex flex-col flex-grow overflow-hidden">
             <header class="drop-shadow-md hidden md:block text-5xl p-4 border-b border-primary">
                 <h1 class="text-shad flex justify-center">Notes</h1>
             </header>
@@ -60,7 +61,7 @@
             </nav>
 
             <!-- Expandable Notes Menu -->
-            <div class="bg-background p-4">
+            <div class="bg-background p-4 flex flex-col flex-grow overflow-hidden">
                 <button id="notesButton"
                     class="w-full flex items-center justify-between p-2 bg-background hover:text-secondary focus:outline-none border-b border-primary/75">
                     Notes
@@ -75,20 +76,23 @@
                         <line x1="18" y1="6" x2="18" y2="18" />
                     </svg>
                 </button>
-                <ul id="notesMenu" class="hidden mt-1">
+                <ul id="notesMenu" class="mt-1 flex-grow overflow-y-auto scrollbar-hidden relative md:h-auto">
+                    <!-- Notes will be added here -->
                 </ul>
             </div>
         </div>
 
         <!-- Footer -->
-        <footer class="drop-shadow-md py-4 text-center border-t border-primary/10 hidden md:block" id="sidebarFooter">
+        <footer
+            class="drop-shadow-md py-4 bg-background text-center border-t border-primary/10 hidden md:block absolute bottom-0 left-0 w-full z-10"
+            id="sidebarFooter">
             <p class="drop-shadow-lg">&copy; 2024 Vincent Winkler</p>
         </footer>
     </div>
 
     <!-- Main content -->
     <div id='main'
-        class="drop-shadow-md w-full md:w-19/20 mb-4 mt-4 z-0 md:ml-64 flex-1 p-4 flex flex-col h-screen overflow-hidden">
+        class="drop-shadow-md w-full md:w-19/20 mb-4 mt-4 z-0 md:ml-52 flex-1 p-4 flex flex-col h-screen overflow-hidden">
         <main class="grid grid-cols-1 md:grid-cols-4 grid-rows-[auto,auto,1fr] overflow-hidden flex-1">
             <!-- Note Info Box -->
             <div class="col-span-1 md:col-span-4 bg-background border border-primary/10 p-1 mb-2">
@@ -235,7 +239,7 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="../scripts/index/script.js"></script>
 </body>
 
 </html>

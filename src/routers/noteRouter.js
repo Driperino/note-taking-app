@@ -1,15 +1,10 @@
+const ensureAuthenticated = require('../middleware/auth.js');
+
 const express = require('express');
 const { Note } = require('../models/models.js');
 
 const router = express.Router();
 
-// Middleware to ensure user is authenticated
-const ensureAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    res.status(401).send('Unauthorized');
-};
 
 // Get all notes for the authenticated user
 router.get('/notes', ensureAuthenticated, async (req, res) => {
