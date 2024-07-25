@@ -18,7 +18,7 @@ document.documentElement.setAttribute('data-theme', preferredTheme) // Set the t
 themeToggle.checked = preferredTheme === 'dark' // Set the theme toggle based on the preferred theme
 //--------------------------------------------------------------------------------------------
 
-// Check if the user has a preferred color scheme 
+// Check if the user has a preferred color scheme
 // if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
 //     preferredTheme = 'dark';
 // } else {
