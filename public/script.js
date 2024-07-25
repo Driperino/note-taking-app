@@ -4,6 +4,7 @@ const notesMenu = document.getElementById('notesMenu') // Get the element with I
 const noteContentTextarea = document.getElementById('noteContent') // Get the element with ID 'noteContent'
 const noteTitleArea = document.getElementById('noteTitle') // Get the element with ID 'noteTitle'
 const noteDateArea = document.getElementById('noteDate') // Get the element with ID 'noteDate'
+const noteDateAgeArea = document.getElementById('noteDateAge') // Get the element with ID 'noteDateAge'
 const settingsArea = document.getElementById('settings') // Get the element with ID 'settings'
 const infoBoxUsername = document.getElementById('infoBoxUsername') // Get the element with ID 'infoBoxUsername'
 const loggedInEmailArea = document.getElementById('userEmail') // Get the element with ID 'loggedInEmail';
@@ -64,6 +65,7 @@ function closeAllDropdowns() {
     const menu = document.getElementById('menu'); // Get the element with ID 'menu'
     const notesMenu = document.getElementById('notesMenu'); // Get the element with ID 'notesMenu'
     const settingsMenu = document.getElementById('settings'); // Get the element with ID 'settings'
+    const sidebar = document.getElementById('sidebar'); // Get the element with ID 'sidebar'
 
     if (!menu.classList.contains('hidden')) { // Check if 'menu' element does not have the class 'hidden'
         menu.classList.add('hidden'); // Add the class 'hidden' to the 'menu' element
@@ -74,7 +76,11 @@ function closeAllDropdowns() {
     if (!settingsMenu.classList.contains('hidden')) { // Check if 'settingsMenu' element does not have the class 'hidden'
         settingsMenu.classList.add('hidden'); // Add the class 'hidden' to the 'settingsMenu' element
     }
+    if (!sidebar.classList.contains('hidden')) { // Check if 'sidebar' element does not have the class 'hidden'
+        sidebar.classList.add('hidden'); // Add the class 'hidden' to the 'sidebar' element
+    }
 }
+
 
 // confirmation box function
 function customConfirm(message, callback) {
@@ -111,6 +117,40 @@ function customConfirm(message, callback) {
         callback(true);
     };
 }
+
+// The timeSince function
+function timeSince(date) {
+    const now = new Date();
+    const seconds = Math.floor((now - date) / 1000);
+
+    let interval = Math.floor(seconds / 31536000);
+    if (interval > 1) {
+        return interval + " years ago";
+    }
+
+    interval = Math.floor(seconds / 2592000);
+    if (interval > 1) {
+        return interval + " months ago";
+    }
+
+    interval = Math.floor(seconds / 86400);
+    if (interval > 1) {
+        return interval + " days ago";
+    }
+
+    interval = Math.floor(seconds / 3600);
+    if (interval > 1) {
+        return interval + " hours ago";
+    }
+
+    interval = Math.floor(seconds / 60);
+    if (interval > 1) {
+        return interval + " minutes ago";
+    }
+
+    return Math.floor(seconds) + " seconds ago";
+}
+
 //------ API Functions -----------------------------------------------------------------
 // New Note function
 async function newNote() {
@@ -296,7 +336,7 @@ async function fetchNotes() {
             li.classList.add('mb-2') // Add the class 'mb-2' to the <li> element
             const a = document.createElement('a') // Create a new <a> element
             a.href = '#' // Set the href attribute of the <a> element to '#'
-            a.classList.add('block', 'text-text', 'bg-background', 'hover:text-secondary') // Add classes to the <a> element
+            a.classList.add('block', 'text-text', 'bg-background', 'hover:text-secondary', 'text-shadow-sm') // Add classes to the <a> element
             a.textContent = note.title // Set the text content of the <a> element to the note title
             a.dataset.noteId = note._id // Store note ID as a data attribute
             a.addEventListener('click', selectNote) // Add a click event listener to the <a> element
@@ -325,9 +365,32 @@ async function selectNote(event) {
         const localDate = date.toLocaleDateString(); // Display note creation date in date area
         const localTime = date.toLocaleTimeString(); // Display note creation time in date area
         noteDateArea.innerHTML = `${localDate} at ${localTime}`; // Display note creation date in date area
+        noteDateAgeArea.innerHTML = timeSince(date); // Display note creation time in date area
+    } catch (error) {
+        console.error('Error fetching note details:', error); // Log an error message to the console
+    }
+}
 
-        // Close all dropdown menus
-        closeAllDropdowns();
+//get note by ID
+async function getNoteById(currentNoteID) {
+    try {
+        const response = await fetch(`/notes/${currentNoteID}`); // Send a GET request to fetch a specific note
+        if (!response.ok) {
+            throw new Error(`Error fetching response from /notes/${currentNoteID}`); // Throw an error if the response is not ok
+        }
+        const note = await response.json(); // Parse the response as JSON
+
+        const date = new Date(note.createDate); // Convert note creation date to Date object
+        const localDate = date.toLocaleDateString(); // Display note creation date in date area
+        const localTime = date.toLocaleTimeString(); // Display note creation time in date area
+        const noteDate = document.getElementById('noteDate'); // Ensure this element reference is correct
+        if (noteDate) {
+            noteDate.innerHTML = `${localDate} at ${localTime}`; // Display note creation date in date area
+            noteDateAgeArea.innerHTML = timeSince(date); // Display note creation time in date area
+        } else {
+            console.error('Element noteDate not found');
+        }
+        console.log(`noteId: ${currentNoteID}`, note); // Log note details (optional)
     } catch (error) {
         console.error('Error fetching note details:', error); // Log an error message to the console
     }
@@ -456,17 +519,18 @@ async function deleteUser() {
     }
 }
 
-//save theme function
+// Save theme function
 async function saveTheme() {
     try {
-        const response = await fetch('/auth/theme', {
+        const response = await fetch(`${API_URL}/auth/theme`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 theme: preferredTheme
-            })
+            }),
+            credentials: 'include' // Ensure credentials are included
         });
 
         if (!response.ok) {
@@ -479,8 +543,6 @@ async function saveTheme() {
         console.error('Error updating theme:', error);
     }
 }
-//--------------------------------------------------------------------------------------------
-// Event Listeners
 
 document.addEventListener('DOMContentLoaded', () => {
     fetchUserInfo();
@@ -519,14 +581,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('saveButton').addEventListener('click', async () => {
-        if (currentNoteID === 'false' || currentNoteID === '') {
-            await createNote();
+        try {
+            if (currentNoteID === 'false' || currentNoteID === '') {
+                await createNote();
+            } else {
+                await saveNote();
+            }
+            await getNoteById(currentNoteID);
             await fetchNotes();
             await fetchUserInfo();
-        } else {
-            await saveNote();
-            await fetchNotes();
-            await fetchUserInfo();
+            console.log('Save button clicked, note updated'); // Additional log for debugging
+        } catch (error) {
+            console.error('Error handling save button click:', error); // Log errors if any function fails
         }
     });
 
@@ -635,6 +701,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await saveTheme();
     });
 
+
     // Mobile view buttons and responsive behavior
     const addMobileEventListeners = () => {
         const screenWidth = window.innerWidth;
@@ -642,6 +709,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const mobileMenuButton = document.getElementById('mobileMenuButton');
         const sidebar = document.getElementById('sidebar');
+        const noteButtons = document.querySelectorAll('#notesMenu li a'); // Assuming your note selection buttons are <a> elements within <li> elements inside #notesMenu
 
         console.log('mobileMenuButton:', mobileMenuButton);
         console.log('sidebar:', sidebar);
@@ -651,12 +719,43 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log("Mobile menu button clicked");
         };
 
+        const closeAllDropdowns = () => {
+            const menu = document.getElementById('menu');
+            const notesMenu = document.getElementById('notesMenu');
+            const settingsMenu = document.getElementById('settings');
+
+            if (menu && !menu.classList.contains('hidden')) {
+                menu.classList.add('hidden');
+            }
+            if (notesMenu && !notesMenu.classList.contains('hidden')) {
+                notesMenu.classList.add('hidden');
+            }
+            if (settingsMenu && !settingsMenu.classList.contains('hidden')) {
+                settingsMenu.classList.add('hidden');
+            }
+            if (sidebar && !sidebar.classList.contains('hidden')) {
+                sidebar.classList.add('hidden');
+            }
+        };
+
+        const addNoteButtonListeners = () => {
+            noteButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        closeAllDropdowns();
+                    }
+                });
+            });
+        };
+
         if (screenWidth <= 768) {
             if (mobileMenuButton && sidebar) {
                 mobileMenuButton.removeEventListener('click', toggleSidebar);
                 mobileMenuButton.addEventListener('click', toggleSidebar);
                 console.log("Event listener added to mobileMenuButton");
             }
+
+            addNoteButtonListeners();
         } else {
             if (sidebar) {
                 sidebar.classList.remove('hidden');
