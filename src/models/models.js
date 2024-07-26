@@ -19,6 +19,10 @@ const noteVersionSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
         required: true
+    },
+    vNumber: {
+        type: Number,
+        required: true
     }
 });
 

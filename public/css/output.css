@@ -2359,6 +2359,16 @@ video {
   padding-bottom: 1rem;
 }
 
+.px-14 {
+  padding-left: 3.5rem;
+  padding-right: 3.5rem;
+}
+
+.py-6 {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
 .pr-4 {
   padding-right: 1rem;
 }

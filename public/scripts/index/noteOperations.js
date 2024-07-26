@@ -265,7 +265,7 @@ export async function fetchVersions(noteId) {
             versionItem.className = 'ml-8 px-2 py-1 rounded-sm flex justify-between items-center';
 
             const versionText = document.createElement('span');
-            versionText.textContent = new Date(version.createDate).toLocaleString();
+            versionText.textContent = `${version.vNumber}: ${new Date(version.createDate).toLocaleString()}`;
 
             const restoreButton = document.createElement('button');
             restoreButton.className = 'bg-primary/50 hover:bg-primary text-sm font-bold text-text rounded-md px-3 py-0.5 mr-8';
@@ -283,6 +283,7 @@ export async function fetchVersions(noteId) {
         console.error('Error fetching versions:', error); // Log the error
     }
 }
+
 
 // Restore a specific version
 export async function restoreVersion(versionId) {
