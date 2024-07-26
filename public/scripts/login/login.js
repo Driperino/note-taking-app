@@ -8,6 +8,10 @@ export function initializeLogin() {
     const loginButton = document.getElementById('loginButton');
     const resetSelectorButtonOne = document.getElementById('backButton');
     const resetSelectorButtonTwo = document.getElementById('backButtonTwo');
+    const googleLoginButton = document.getElementById('loginGoogleButton');
+    const githubLoginButton = document.getElementById('loginGithubButton');
+    const registerGoogleButton = document.getElementById('registerGoogleButton');
+    const registerGithubButton = document.getElementById('registerGithubButton');
 
     loginSelectorButton.addEventListener('click', () => {
         view = 'login';
@@ -35,6 +39,15 @@ export function initializeLogin() {
             }
         }
     });
+
+    const handleOAuthLogin = (provider) => {
+        window.location.href = `http://localhost:3000/auth/${provider}`;
+    };
+
+    googleLoginButton.addEventListener('click', () => handleOAuthLogin('google'));
+    registerGoogleButton.addEventListener('click', () => handleOAuthLogin('google'));
+    githubLoginButton.addEventListener('click', () => handleOAuthLogin('github'));
+    registerGithubButton.addEventListener('click', () => handleOAuthLogin('github'));
 
     if (resetSelectorButtonOne) {
         resetSelectorButtonOne.addEventListener('click', () => {
