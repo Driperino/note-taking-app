@@ -47,6 +47,7 @@ export async function fetchUserInfo() {
             loggedInUserSettingsArea.innerHTML = user.username;
             preferredTheme = user.theme;
 
+            // Apply the preferred theme
             document.documentElement.setAttribute('data-theme', preferredTheme);
             themeToggle.checked = preferredTheme === 'dark';
             localStorage.setItem('theme', preferredTheme);
@@ -62,6 +63,7 @@ export async function fetchUserInfo() {
         showErrorModal("Error fetching user info");
     }
 }
+
 
 export async function updateUsername() {
     const username = document.getElementById('updateUsername').value;

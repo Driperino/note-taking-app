@@ -264,25 +264,21 @@ router.patch("/email", async (req, res) => {
     }
     return res.status(401).send("Unauthorized");
 });
+router.patch('/theme', ensureAuthenticated, async (req, res) => {
+    const userId = req.user._id;
+    const { theme } = req.body;
 
-//patch theme ------------------------------------------------
-router.patch("/theme", async (req, res) => {
-    if (req.isAuthenticated()) {
-        if (req.body.theme) {
-            try {
-                const user = await User.findById(req.user.id);
-                user.theme = req.body.theme;
-                await user.save();
-                return res.status(200).json({ message: "Theme updated successfully" });
-            } catch (error) {
-                return res.status(500).json({ message: "Server error", error: error.message });
-            }
-        }
-        return res.status(400).json({ message: "Please provide a new theme" });
+    console.log(`Received request to update theme for user ${userId} to ${theme}`); // Debug statement
+
+    try {
+        await User.findByIdAndUpdate(userId, { theme });
+        console.log(`Theme updated successfully for user ${userId} to ${theme}`); // Debug statement
+        res.status(200).json({ message: 'Theme updated successfully.' });
+    } catch (error) {
+        console.error('Error updating theme:', error);
+        res.status(500).json({ message: 'Failed to update theme.' });
     }
-    return res.status(401).send("Unauthorized");
 });
-
 // Update last loaded note ID
 router.patch('/users/last-loaded-note', ensureAuthenticated, async (req, res) => {
     const userId = req.user.id;
