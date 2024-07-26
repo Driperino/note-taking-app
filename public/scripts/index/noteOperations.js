@@ -252,9 +252,15 @@ export async function fetchVersions(noteId) {
         const versionCountElement = document.getElementById('versionCount');
         versionCountElement.textContent = versions.length;
 
+        let counter = 0;
+
         versions.forEach(version => {
-            versionList.appendChild(document.createElement('hr')).className = 'mx-4 border-primary/50';
+            const hr = document.createElement('hr');
+            hr.className = counter % 2 === 0 ? 'ml-4 border-primary/50' : 'ml-8 border-primary/50';
+            versionList.appendChild(hr);
+
             console.log('Version:', version); // Log each version
+
             const versionItem = document.createElement('div');
             versionItem.className = 'ml-8 px-2 py-1 rounded-sm flex justify-between items-center';
 
@@ -269,7 +275,10 @@ export async function fetchVersions(noteId) {
             versionItem.appendChild(versionText);
             versionItem.appendChild(restoreButton);
             versionList.appendChild(versionItem);
+
+            counter++; // Increment the counter after each iteration
         });
+
     } catch (error) {
         console.error('Error fetching versions:', error); // Log the error
     }
