@@ -304,4 +304,3 @@ export function clearVersionList() {
     const versionCountElement = document.getElementById('versionCount');
     versionCountElement.textContent = '0';
 }
-

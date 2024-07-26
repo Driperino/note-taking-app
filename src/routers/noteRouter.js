@@ -3,7 +3,6 @@ const express = require('express');
 const { Note, NoteVersion } = require('../models/models.js');
 const router = express.Router();
 
-
 // Get all notes for the authenticated user
 router.get('/notes', ensureAuthenticated, async (req, res) => {
     try {
