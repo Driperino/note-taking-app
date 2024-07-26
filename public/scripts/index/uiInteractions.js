@@ -1,20 +1,49 @@
 // uiInteractions.js
 import { noteTitleArea, noteContentTextarea, noteDateAgeArea, noteDateArea } from "./noteOperations.js";
 
+//DEPRICATED
+// export function displayText(text) {
+//     const statusText = document.getElementById('noteStatus');
+//     statusText.innerHTML = text;
+//     setTimeout(function () { statusText.innerHTML = "" }, 5000);
+//     console.log('Main Status text displayed');
+// }
 
-export function displayText(text) {
-    const statusText = document.getElementById('noteStatus');
-    statusText.innerHTML = text;
-    setTimeout(function () { statusText.innerHTML = "" }, 5000);
-    console.log('Main Status text displayed');
+// export function displayTextSettings(text) {
+//     const statusText = document.getElementById('settingsStatus');
+//     statusText.innerHTML = text;
+//     setTimeout(function () { statusText.innerHTML = "" }, 5000);
+//     console.log('Settings Status text displayed');
+// }
+
+let hideTimeout;
+let fadeTimeout;
+
+// Error Modal
+export function showErrorModal(message) {
+    const errorModal = document.getElementById('error-modal');
+    const errorMessage = document.getElementById('error-message');
+
+    // Clear existing timeouts
+    if (hideTimeout) clearTimeout(hideTimeout);
+    if (fadeTimeout) clearTimeout(fadeTimeout);
+
+    // Update message and show modal
+    errorMessage.textContent = message;
+    errorModal.classList.remove('hidden', 'opacity-0');
+    errorModal.classList.add('opacity-100');
+
+    // Set new timeouts
+    fadeTimeout = setTimeout(() => {
+        errorModal.classList.remove('opacity-100');
+        errorModal.classList.add('opacity-0');
+    }, 3000);
+
+    hideTimeout = setTimeout(() => {
+        errorModal.classList.add('hidden');
+    }, 8000);
 }
 
-export function displayTextSettings(text) {
-    const statusText = document.getElementById('settingsStatus');
-    statusText.innerHTML = text;
-    setTimeout(function () { statusText.innerHTML = "" }, 5000);
-    console.log('Settings Status text displayed');
-}
 
 export function clearFieldsMain() {
     noteTitleArea.value = '';

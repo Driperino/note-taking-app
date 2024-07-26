@@ -6,9 +6,12 @@ import {
     deleteNote,
     fetchNotes,
     getNoteById,
+    fetchVersions,
+    clearVersionList,
     currentNoteID,
     noteTitleArea,
-    noteContentTextarea
+    noteContentTextarea,
+    selectNote
 } from './noteOperations.js';
 
 import {
@@ -19,17 +22,15 @@ import {
     updateEmail,
     deleteUser,
     saveTheme,
-    themeToggle,
     preferredTheme
 } from './userAuth.js';
 
 import {
-    displayText,
-    displayTextSettings,
     clearFieldsMain,
     clearFields,
     customConfirm,
-    closeAllDropdowns
+    closeAllDropdowns,
+    showErrorModal
 } from './uiInteractions.js';
 
 // Global variables
@@ -38,21 +39,51 @@ export const notesMenu = document.getElementById('notesMenu');
 export const settingsArea = document.getElementById('settings');
 export const infoBoxUsername = document.getElementById('infoBoxUsername');
 
+// Set initial theme
 document.documentElement.setAttribute('data-theme', preferredTheme);
+const themeToggle = document.getElementById('dark-toggle');
 themeToggle.checked = preferredTheme === 'dark';
 
-document.addEventListener('DOMContentLoaded', () => {
-    fetchUserInfo();
+document.addEventListener('DOMContentLoaded', async () => {
+    await fetchUserInfo();
+    await fetchNotes();
 
-    fetchNotes();
+    // Check if there's a last loaded note ID in local storage
+    let lastLoadedNoteId = localStorage.getItem('lastLoadedNoteId');
+
+    if (!lastLoadedNoteId) {
+        // If no note ID in local storage, check the server
+        const response = await fetch('/users/last-loaded-note');
+        if (response.ok) {
+            const data = await response.json();
+            lastLoadedNoteId = data.lastLoadedNoteId;
+        }
+    }
+
+    if (lastLoadedNoteId) {
+        // Simulate a click event to select the last loaded note
+        const noteElement = document.querySelector(`[data-note-id="${lastLoadedNoteId}"]`);
+        if (noteElement) {
+            noteElement.click();
+        } else {
+            // Fallback to loading the note directly if the element is not found
+            await selectNote({
+                target: {
+                    dataset: {
+                        noteId: lastLoadedNoteId
+                    }
+                }
+            });
+        }
+    }
 
     if (preferredTheme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
-        document.getElementById('dark-toggle').checked = true;
+        themeToggle.checked = true;
         console.log('Theme set to:', preferredTheme);
     } else if (preferredTheme === 'light') {
         document.documentElement.setAttribute('data-theme', 'light');
-        document.getElementById('dark-toggle').checked = false;
+        themeToggle.checked = false;
         console.log('Theme set to:', preferredTheme);
     }
 
@@ -86,6 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
             await getNoteById(currentNoteID);
             await fetchNotes();
             await fetchUserInfo();
+            await fetchVersions(currentNoteID); // Fetch versions after saving
             console.log('Save button clicked, note updated');
         } catch (error) {
             console.error('Error handling save button click:', error);
@@ -94,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('deleteButton').addEventListener('click', async () => {
         if (currentNoteID === 'false' || currentNoteID === '') {
-            displayText("No note to delete");
+            showErrorModal("No note to delete");
             console.log("No note to delete");
         } else {
             customConfirm(`Are you sure you want to delete this note?`, async function (result) {
@@ -142,7 +174,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const settingsMenu = document.getElementById('settings');
         settingsMenu.classList.toggle('hidden');
         const currentTheme = themeToggle.checked ? 'dark' : 'light';
-        await saveTheme(currentTheme);
+        console.log("Saving theme on close settings:", currentTheme); // Debug statement
+        try {
+            await saveTheme(currentTheme);
+            console.log("Theme saved successfully on close settings.");
+        } catch (error) {
+            console.error("Error saving theme on close settings:", error);
+        }
         console.log("Close settings button clicked");
     });
 
@@ -162,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result) {
                 await updateEmail();
                 clearFields(settingsArea);
-                displayTextSettings("Email updated successfully");
+                showErrorModal("Email updated successfully");
             } else {
                 console.log("User chose not to update email");
             }
@@ -174,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result) {
                 await updatePassword();
                 clearFields(settingsArea);
-                displayTextSettings("Password updated successfully");
+                showErrorModal("Password updated successfully");
             } else {
                 console.log("User chose not to change password");
             }
@@ -196,7 +234,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const newTheme = event.target.checked ? 'dark' : 'light';
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
-        await saveTheme(newTheme);
+        console.log("Saving theme on toggle change:", newTheme); // Debug statement
+        try {
+            await saveTheme(newTheme);
+            console.log("Theme saved successfully on toggle change.");
+        } catch (error) {
+            console.error("Error saving theme on toggle change:", error);
+        }
     });
 
     // Mobile menu toggle
