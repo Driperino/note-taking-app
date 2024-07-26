@@ -161,7 +161,7 @@ router.post("/logout", ensureAuthenticated, (req, res, next) => {
     });
 });
 
-// patch route to update last loaded note ---------------------
+// Patch route to update last loaded note
 router.patch('/users/last-loaded-note', ensureAuthenticated, async (req, res) => {
     const userId = req.user.id;
     const { noteId } = req.body;

@@ -7,6 +7,8 @@ export const noteContentTextarea = document.getElementById('noteContent');
 export const noteDateArea = document.getElementById('noteDate');
 export const noteDateAgeArea = document.getElementById('noteDateAge');
 export let currentNoteID = '';
+let originalNoteTitle = '';
+let originalNoteContent = '';
 
 export async function newNote() {
     if (currentNoteID) {
@@ -15,19 +17,29 @@ export async function newNote() {
         clearFieldsMain();
         clearVersionList(); // Clear the version list when creating a new note
         currentNoteID = '';
+        originalNoteTitle = '';
+        originalNoteContent = '';
     } else {
         showErrorModal("New Note Created");
         clearFieldsMain();
         clearVersionList(); // Clear the version list when creating a new note
         currentNoteID = '';
+        originalNoteTitle = '';
+        originalNoteContent = '';
     }
 }
 
 
 export async function saveNote() {
+    const noteTitle = document.getElementById('noteTitle').value;
+    const noteContent = document.getElementById('noteContent').value;
+
+    if (noteTitle === originalNoteTitle && noteContent === originalNoteContent) {
+        showErrorModal("No changes to save");
+        return;
+    }
+
     try {
-        const noteTitle = document.getElementById('noteTitle').value;
-        const noteContent = document.getElementById('noteContent').value;
         const response = await fetch(`${API_URL}/notes/${currentNoteID}`, {
             method: 'PATCH',
             headers: {
@@ -40,9 +52,13 @@ export async function saveNote() {
             })
         });
 
-        currentNoteID = response._id;
-        console.log('Note saved:', response);
+        const savedNote = await response.json(); // Parse the response as JSON
+        currentNoteID = savedNote._id; // Ensure currentNoteID is updated with the correct note ID
+        console.log('Note saved:', savedNote);
         showErrorModal(`${noteTitle} Saved`);
+
+        originalNoteTitle = noteTitle;
+        originalNoteContent = noteContent;
 
         await fetchNotes();
         await fetchVersions(currentNoteID); // Fetch versions after saving
@@ -75,6 +91,10 @@ export async function createNote() {
             showErrorModal(`${note.title} created`);
             currentNoteID = note._id;
             console.log('Updated Note ID:', currentNoteID);
+
+            originalNoteTitle = noteTitle;
+            originalNoteContent = noteContent;
+
             await fetchVersions(currentNoteID); // Fetch versions after creating
         } else {
             console.error('Failed to create note:', response.status, response.statusText);
@@ -163,6 +183,8 @@ export async function selectNote(event) {
         noteTitleArea.value = note.title;
         noteContentTextarea.value = note.content;
         currentNoteID = note._id;
+        originalNoteTitle = note.title;
+        originalNoteContent = note.content;
         const date = new Date(note.createDate);
         const localDate = date.toLocaleDateString();
         const localTime = date.toLocaleTimeString();
@@ -175,7 +197,7 @@ export async function selectNote(event) {
         localStorage.setItem('lastLoadedNoteId', noteId);
 
         // Store the note ID on the server
-        await fetch('/users/last-loaded-note', {
+        await fetch('/auth/users/last-loaded-note', {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
