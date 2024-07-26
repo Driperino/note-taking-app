@@ -1,4 +1,3 @@
-// public/scripts/index/script.js
 import {
     newNote,
     saveNote,
@@ -45,6 +44,11 @@ themeToggle.checked = preferredTheme === 'dark';
 
 document.addEventListener('DOMContentLoaded', async () => {
     await fetchUserInfo();
+
+    // Ensure the theme is set correctly from the backend value
+    document.documentElement.setAttribute('data-theme', preferredTheme);
+    themeToggle.checked = preferredTheme === 'dark';
+
     await fetchNotes();
 
     // Check if there's a last loaded note ID in local storage
@@ -76,15 +80,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    // Apply the preferred theme from user info
     if (preferredTheme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
         document.getElementById('dark-toggle').checked = true;
-        console.log('Theme set to:', preferredTheme);
-    } else if (preferredTheme === 'light') {
+    } else {
         document.documentElement.setAttribute('data-theme', 'light');
         document.getElementById('dark-toggle').checked = false;
-        console.log('Theme set to:', preferredTheme);
     }
+
+    themeToggle.addEventListener('change', async (event) => {
+        const newTheme = event.target.checked ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        await saveTheme(newTheme);
+    });
 
     document.getElementById('newButton').addEventListener('click', async () => {
         if (noteTitleArea.value || noteContentTextarea.value) {
@@ -221,13 +231,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 console.log("User chose not to delete account");
             }
         });
-    });
-
-    themeToggle.addEventListener('change', async (event) => {
-        const newTheme = event.target.checked ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        await saveTheme(newTheme);
     });
 
     // Mobile menu toggle

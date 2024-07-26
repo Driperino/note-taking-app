@@ -186,4 +186,22 @@ router.get('/users/last-loaded-note', ensureAuthenticated, async (req, res) => {
     }
 });
 
+// Patch route to update theme
+router.patch('/theme', ensureAuthenticated, async (req, res) => {
+    try {
+        const { theme } = req.body;
+        const userId = req.user.id;
+
+        await User.findByIdAndUpdate(userId, { theme });
+
+        res.status(200).json({ message: 'Theme updated successfully' });
+        console.log(`Theme updated to ${theme}`);
+    } catch (error) {
+        console.error('Error updating theme:', error);
+        res.status(500).json({ message: 'Failed to update theme', error: error.message });
+    }
+});
+
+
+
 module.exports = router;
