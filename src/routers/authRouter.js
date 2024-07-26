@@ -283,4 +283,29 @@ router.patch("/theme", async (req, res) => {
     return res.status(401).send("Unauthorized");
 });
 
+// Update last loaded note ID
+router.patch('/users/last-loaded-note', ensureAuthenticated, async (req, res) => {
+    const userId = req.user.id;
+    const { noteId } = req.body;
+
+    try {
+        await User.findByIdAndUpdate(userId, { lastLoadedNoteId: noteId });
+        res.status(200).json({ message: 'Last loaded note updated successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to update last loaded note', error: error.message });
+    }
+});
+
+// Get last loaded note ID
+router.get('/users/last-loaded-note', ensureAuthenticated, async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        const user = await User.findById(userId);
+        res.status(200).json({ lastLoadedNoteId: user.lastLoadedNoteId });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to get last loaded note', error: error.message });
+    }
+});
+
 module.exports = router;

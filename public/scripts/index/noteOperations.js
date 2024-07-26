@@ -13,13 +13,16 @@ export async function newNote() {
         console.log("User chose to create a new note");
         showErrorModal("New Note Created");
         clearFieldsMain();
+        clearVersionList(); // Clear the version list when creating a new note
         currentNoteID = '';
     } else {
         showErrorModal("New Note Created");
         clearFieldsMain();
+        clearVersionList(); // Clear the version list when creating a new note
         currentNoteID = '';
     }
 }
+
 
 export async function saveNote() {
     try {
@@ -167,6 +170,18 @@ export async function selectNote(event) {
         noteDateAgeArea.innerHTML = timeSince(date);
 
         await fetchVersions(noteId); // Fetch versions when a note is selected
+
+        // Store the note ID in local storage
+        localStorage.setItem('lastLoadedNoteId', noteId);
+
+        // Store the note ID on the server
+        await fetch('/users/last-loaded-note', {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ noteId })
+        });
     } catch (error) {
         console.error('Error fetching note details:', error);
     }
@@ -198,7 +213,6 @@ export async function getNoteById(noteId) {
 }
 
 // fetchVersions function to fetch versions for a specific note and populate the version list
-// noteOperations.js
 export async function fetchVersions(noteId) {
     console.log(`Fetching versions for note ID: ${noteId}`); // Log the note ID being fetched
     try {
@@ -258,3 +272,14 @@ export async function restoreVersion(versionId) {
         showErrorModal('Error fetching version details');
     }
 }
+
+// clearVersionList function to clear the version list
+export function clearVersionList() {
+    const versionList = document.getElementById('version-list');
+    versionList.innerHTML = ''; // Clear the version list
+
+    // Also clear the version count
+    const versionCountElement = document.getElementById('versionCount');
+    versionCountElement.textContent = '0';
+}
+

@@ -96,6 +96,11 @@ const userSchema = new mongoose.Schema({
     githubId: {
         type: String,
         required: false
+    },
+    lastLoadedNoteId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Note',
+        required: false
     }
 });
 

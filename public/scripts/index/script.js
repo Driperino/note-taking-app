@@ -6,10 +6,12 @@ import {
     deleteNote,
     fetchNotes,
     getNoteById,
-    fetchVersions,  // Importing fetchVersions
+    fetchVersions,
+    clearVersionList,
     currentNoteID,
     noteTitleArea,
-    noteContentTextarea
+    noteContentTextarea,
+    selectNote // Importing selectNote
 } from './noteOperations.js';
 
 import {
@@ -41,10 +43,38 @@ export const infoBoxUsername = document.getElementById('infoBoxUsername');
 document.documentElement.setAttribute('data-theme', preferredTheme);
 themeToggle.checked = preferredTheme === 'dark';
 
-document.addEventListener('DOMContentLoaded', () => {
-    fetchUserInfo();
+document.addEventListener('DOMContentLoaded', async () => {
+    await fetchUserInfo();
+    await fetchNotes();
 
-    fetchNotes();
+    // Check if there's a last loaded note ID in local storage
+    let lastLoadedNoteId = localStorage.getItem('lastLoadedNoteId');
+
+    if (!lastLoadedNoteId) {
+        // If no note ID in local storage, check the server
+        const response = await fetch('/users/last-loaded-note');
+        if (response.ok) {
+            const data = await response.json();
+            lastLoadedNoteId = data.lastLoadedNoteId;
+        }
+    }
+
+    if (lastLoadedNoteId) {
+        // Simulate a click event to select the last loaded note
+        const noteElement = document.querySelector(`[data-note-id="${lastLoadedNoteId}"]`);
+        if (noteElement) {
+            noteElement.click();
+        } else {
+            // Fallback to loading the note directly if the element is not found
+            await selectNote({
+                target: {
+                    dataset: {
+                        noteId: lastLoadedNoteId
+                    }
+                }
+            });
+        }
+    }
 
     if (preferredTheme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
