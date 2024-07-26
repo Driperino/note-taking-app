@@ -1,5 +1,29 @@
 const mongoose = require('mongoose');
 
+// Note version schema
+const noteVersionSchema = new mongoose.Schema({
+    noteId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Note',
+        required: true
+    },
+    title: {
+        type: String,
+        required: true
+    },
+    content: {
+        type: String,
+        required: true
+    },
+    createDate: {
+        type: Date,
+        default: Date.now,
+        required: true
+    }
+});
+
+const NoteVersion = mongoose.model('NoteVersion', noteVersionSchema);
+
 // Note schema
 const noteSchema = new mongoose.Schema({
     title: {
@@ -24,7 +48,7 @@ const noteSchema = new mongoose.Schema({
 
 const Note = mongoose.model('Note', noteSchema);
 
-// User schema
+// User Schema
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -33,11 +57,15 @@ const userSchema = new mongoose.Schema({
     },
     passwordSalt: {
         type: String,
-        required: true
+        required: function () {
+            return !this.googleId && !this.githubId; // Required if not using OAuth
+        }
     },
     passwordHash: {
         type: String,
-        required: true
+        required: function () {
+            return !this.googleId && !this.githubId; // Required if not using OAuth
+        }
     },
     createDate: {
         type: Date,
@@ -60,10 +88,22 @@ const userSchema = new mongoose.Schema({
     theme: {
         type: String,
         required: false
+    },
+    googleId: {
+        type: String,
+        required: false
+    },
+    githubId: {
+        type: String,
+        required: false
+    },
+    lastLoadedNoteId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Note',
+        required: false
     }
-
 });
 
 const User = mongoose.model('User', userSchema);
 
-module.exports = { Note, User };
+module.exports = { Note, NoteVersion, User };
