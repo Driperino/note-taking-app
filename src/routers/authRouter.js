@@ -2,40 +2,21 @@ const ensureAuthenticated = require('../middleware/auth.js');
 const express = require("express");
 const { User, Note } = require("../models/models.js");
 const passport = require("passport");
-const LocalStrategy = require("passport-local");
+const localStrategy = require('../config/localStrategy');
+const googleStrategy = require('../config/googleStrategy');
+const githubStrategy = require('../config/githubStrategy');
 const crypto = require('crypto');
 
 const router = express.Router();
 
 // Configure Passport ----------------------------------------
-passport.use(new LocalStrategy(async function verify(username, password, cb) {
-    try {
-        const user = await User.findOne({ username });
-
-        if (!user) {
-            return cb(null, false, { message: "Incorrect username or password." })
-        }
-
-        crypto.pbkdf2(password, Buffer.from(user.passwordSalt, 'base64'), 310000, 32, 'sha256', function (err, hashedPassword) {
-            if (err) {
-                return cb(err);
-            }
-
-            if (!crypto.timingSafeEqual(Buffer.from(user.passwordHash, 'base64'), hashedPassword)) {
-                return cb(null, false, {
-                    message: "Incorrect username or password."
-                });
-            }
-            return cb(null, user);
-        });
-    } catch (error) {
-        return cb(error);
-    }
-}));
+passport.use(localStrategy);
+passport.use(googleStrategy);
+passport.use(githubStrategy);
 
 // Configure Session Management-------------------------------
 passport.serializeUser((user, cb) => {
-    process.nextTick(function () {
+    process.nextTick(() => {
         return cb(null, {
             id: user._id,
             username: user.username,
@@ -43,21 +24,33 @@ passport.serializeUser((user, cb) => {
             email: user.email,
             theme: user.theme,
             createDate: user.createDate
-        })
+        });
     });
 });
 
-passport.deserializeUser(function (user, cb) {
-    process.nextTick(function () {
+passport.deserializeUser((user, cb) => {
+    process.nextTick(() => {
         return cb(null, user);
     });
+});
+// -----------------------------------------------------------
+// GitHub auth routes
+router.get('/github', passport.authenticate('github', { scope: ['user:email'] }));
+router.get('/github/callback', passport.authenticate('github', { failureRedirect: '/login' }), (req, res) => {
+    res.redirect('/app');
+});
+
+// Google auth routes
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
+    res.redirect('/app');
 });
 
 // Login route------------------------------------------------
 router.post('/login', (req, res, next) => {
     passport.authenticate('local', async (err, user, info) => {
         if (err) {
-            console.log(`Error while Authenticathing login in: ${err}`);
+            console.log(`Error while Authenticating login in: ${err}`);
             return next(err);
         }
         req.login(user, async (err) => {
@@ -95,7 +88,7 @@ router.post("/register", async (req, res, next) => {
 
     const salt = crypto.randomBytes(16);
 
-    crypto.pbkdf2(req.body.password, Buffer.from(salt, 'base64'), 310000, 32, 'sha256', async function (err, hashedPassword) {
+    crypto.pbkdf2(req.body.password, Buffer.from(salt, 'base64'), 310000, 32, 'sha256', async (err, hashedPassword) => {
         if (err) {
             return next(`error while creating password hash: ${err}`);
         }
@@ -110,7 +103,7 @@ router.post("/register", async (req, res, next) => {
                 next({ status: 500, message: "Failed to create user" });
             }
 
-            req.login(user, function (err) {
+            req.login(user, (err) => {
                 if (err) {
                     return next(`Error while logging in: ${err}`);
                 }
@@ -118,10 +111,22 @@ router.post("/register", async (req, res, next) => {
             });
         } catch (error) {
             return next({ status: 500, message: "Failed to create user", error: error.message });
-        };
-
+        }
     });
 });
+
+// Google auth routes ----------------------------------------
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), (req, res) => {
+    res.redirect('/app');
+});
+
+// GitHub auth routes ----------------------------------------
+router.get('/github', passport.authenticate('github', { scope: ['user:email'] }));
+router.get('/github/callback', passport.authenticate('github', { failureRedirect: '/login' }), (req, res) => {
+    res.redirect('/app');
+});
+
 // Get user info ----------------------------------------------
 router.get("/user", ensureAuthenticated, (req, res) => {
     console.log('User data:', req.user); // Log the user data to check the fields
@@ -135,135 +140,9 @@ router.get("/user", ensureAuthenticated, (req, res) => {
     });
 });
 
-
-// Patch Username ---------------------------------------------
-router.patch("/username", ensureAuthenticated, async (req, res) => {
-    if (req.body.username) {
-        try {
-            const newUsername = req.body.username;
-
-            // Check if the new username already exists
-            const existingUser = await User.findOne({ username: newUsername });
-            if (existingUser && existingUser._id.toString() !== req.user.id.toString()) {
-                return res.status(400).json({ message: "Username already taken" });
-            }
-
-            // Proceed with the update if the username does not already exist
-            const user = await User.findById(req.user.id);
-            if (!user) {
-                return res.status(404).json({ message: "User not found" });
-            }
-
-            user.username = newUsername;
-            await user.save();
-            return res.status(200).json({ message: "Username updated successfully" });
-
-        } catch (error) {
-            console.error("Error updating username:", error);
-            return res.status(500).json({ message: "Server error", error: error.message });
-        }
-    }
-    return res.status(400).json({ message: "Please provide a new username" });
-});
-
-
-// Patch password ---------------------------------------------
-router.patch("/password", ensureAuthenticated, async (req, res) => {
-    if (req.body.password) {
-        const salt = crypto.randomBytes(16);
-
-        crypto.pbkdf2(req.body.password, Buffer.from(salt, 'base64'), 310000, 32, 'sha256', async function (err, hashedPassword) {
-            if (err) {
-                return next(`error while creating password hash: ${err}`);
-            }
-            try {
-                const user = await User.findById(req.user.id);
-                user.passwordSalt = salt.toString('base64');
-                user.passwordHash = hashedPassword.toString('base64');
-                await user.save();
-                res.status(200).json({ message: "Password updated successfully" });
-            } catch (error) {
-                res.status(500).json({ message: "Server error", error: error.message });
-            }
-        });
-    } else {
-        res.status(400).json({ message: "Please provide a new password" });
-    }
-});
-
-// Delete user $$ Notes----------------------------------------
-router.delete("/user", ensureAuthenticated, async (req, res) => {
-    try {
-        // Delete all notes associated with the user
-        await Note.deleteMany({ user: req.user.id });
-
-        // Delete the user account
-        await User.findByIdAndDelete(req.user.id);
-
-        // Log out the user
-        req.logout(function (err) {
-            if (err) {
-                console.log(`Error while logging out: ${err}`);
-                return res.status(500).json({ message: "Error while logging out", error: err.message });
-            }
-
-            return res.status(200).json({ message: "User and associated notes deleted successfully" });
-        });
-    } catch (error) {
-        return res.status(500).json({ message: "Server error", error: error.message });
-    }
-});
-
-
-// Put email ------------------------------------------------
-router.put("/email", ensureAuthenticated, async (req, res) => {
-    if (req.body.email) {
-        try {
-            const user = await User.findById(req.user.id);
-            user.email = req.body.email;
-            await user.save();
-            return res.status(200).json({ message: "Email updated successfully" });
-        } catch (error) {
-            return res.status(500).json({ message: "Server error", error: error.message });
-        }
-    }
-    return res.status(400).json({ message: "Please provide a new email" });
-});
-
-// Patch email -----------------------------------------------
-router.patch("/email", ensureAuthenticated, async (req, res) => {
-    if (req.body.email) {
-        try {
-            const user = await User.findById(req.user.id);
-            user.email = req.body.email;
-            await user.save();
-            return res.status(200).json({ message: "Email updated successfully" });
-        } catch (error) {
-            return res.status(500).json({ message: "Server error", error: error.message });
-        }
-    }
-    return res.status(400).json({ message: "Please provide a new email" });
-});
-
-//patch theme ------------------------------------------------
-router.patch("/theme", ensureAuthenticated, async (req, res) => {
-    if (req.body.theme) {
-        try {
-            const user = await User.findById(req.user.id);
-            user.theme = req.body.theme;
-            await user.save();
-            return res.status(200).json({ message: "Theme updated successfully" });
-        } catch (error) {
-            return res.status(500).json({ message: "Server error", error: error.message });
-        }
-    }
-    return res.status(400).json({ message: "Please provide a new theme" });
-});
-
-
 // Logout route ----------------------------------------------
 router.post("/logout", ensureAuthenticated, (req, res, next) => {
-    req.logout(function (err) {
+    req.logout((err) => {
         if (err) {
             console.log(`Error while logging out: ${err}`);
             return next(err);
@@ -273,6 +152,5 @@ router.post("/logout", ensureAuthenticated, (req, res, next) => {
         return res.redirect('/app/login.html');
     });
 });
-
 
 module.exports = router;

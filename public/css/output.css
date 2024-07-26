@@ -663,8 +663,16 @@ video {
   inset: 0px;
 }
 
+.bottom-0 {
+  bottom: 0px;
+}
+
 .end-1 {
   inset-inline-end: 0.25rem;
+}
+
+.left-0 {
+  left: 0px;
 }
 
 .left-0\.5 {
@@ -683,14 +691,6 @@ video {
   top: 0.25rem;
 }
 
-.bottom-0 {
-  bottom: 0px;
-}
-
-.left-0 {
-  left: 0px;
-}
-
 .isolate {
   isolation: isolate;
 }
@@ -703,6 +703,10 @@ video {
   z-index: 0;
 }
 
+.z-10 {
+  z-index: 10;
+}
+
 .z-20 {
   z-index: 20;
 }
@@ -713,10 +717,6 @@ video {
 
 .z-40 {
   z-index: 40;
-}
-
-.z-10 {
-  z-index: 10;
 }
 
 .col-span-1 {
@@ -997,14 +997,6 @@ video {
 
 .h-screen {
   height: 100vh;
-}
-
-.max-h-full {
-  max-height: 100%;
-}
-
-.max-h-60 {
-  max-height: 15rem;
 }
 
 .min-h-screen {
@@ -2213,38 +2205,6 @@ video {
   background-origin: content-box;
 }
 
-.fill-secondary {
-  fill: rgba(var(--secondary));
-}
-
-.stroke-secondary {
-  stroke: rgba(var(--secondary));
-}
-
-.stroke-accent {
-  stroke: rgba(var(--accent));
-}
-
-.stroke-dark {
-  stroke: rgba(var(--dark));
-}
-
-.stroke-dark\/50 {
-  stroke: rgba(var(--dark), 0.5);
-}
-
-.stroke-dark\/75 {
-  stroke: rgba(var(--dark), 0.75);
-}
-
-.stroke-dark\/10 {
-  stroke: rgba(var(--dark), 0.1);
-}
-
-.stroke-primary {
-  stroke: rgba(var(--primary));
-}
-
 .object-contain {
   -o-object-fit: contain;
      object-fit: contain;
@@ -3003,10 +2963,6 @@ video {
   background-color: rgba(var(--secondary));
 }
 
-.hover\:stroke-primary\/50:hover {
-  stroke: rgba(var(--primary), 0.5);
-}
-
 .hover\:font-bold:hover {
   font-weight: 700;
 }
@@ -3057,18 +3013,6 @@ video {
     grid-column: span 4 / span 4;
   }
 
-  .md\:ml-64 {
-    margin-left: 16rem;
-  }
-
-  .md\:ml-48 {
-    margin-left: 12rem;
-  }
-
-  .md\:ml-44 {
-    margin-left: 11rem;
-  }
-
   .md\:ml-52 {
     margin-left: 13rem;
   }
@@ -3085,12 +3029,12 @@ video {
     display: none;
   }
 
-  .md\:h-screen {
-    height: 100vh;
-  }
-
   .md\:h-auto {
     height: auto;
+  }
+
+  .md\:h-screen {
+    height: 100vh;
   }
 
   .md\:w-1\/3 {
@@ -3099,10 +3043,6 @@ video {
 
   .md\:w-19\/20 {
     width: 95%;
-  }
-
-  .md\:w-64 {
-    width: 16rem;
   }
 
   .md\:w-52 {
