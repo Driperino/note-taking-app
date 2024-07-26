@@ -6,6 +6,7 @@ import {
     deleteNote,
     fetchNotes,
     getNoteById,
+    fetchVersions,  // Importing fetchVersions
     currentNoteID,
     noteTitleArea,
     noteContentTextarea
@@ -24,12 +25,11 @@ import {
 } from './userAuth.js';
 
 import {
-    displayText,
-    displayTextSettings,
     clearFieldsMain,
     clearFields,
     customConfirm,
-    closeAllDropdowns
+    closeAllDropdowns,
+    showErrorModal
 } from './uiInteractions.js';
 
 // Global variables
@@ -86,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
             await getNoteById(currentNoteID);
             await fetchNotes();
             await fetchUserInfo();
+            await fetchVersions(currentNoteID); // Fetch versions after saving
             console.log('Save button clicked, note updated');
         } catch (error) {
             console.error('Error handling save button click:', error);
@@ -94,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('deleteButton').addEventListener('click', async () => {
         if (currentNoteID === 'false' || currentNoteID === '') {
-            displayText("No note to delete");
+            showErrorModal("No note to delete");
             console.log("No note to delete");
         } else {
             customConfirm(`Are you sure you want to delete this note?`, async function (result) {
@@ -162,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result) {
                 await updateEmail();
                 clearFields(settingsArea);
-                displayTextSettings("Email updated successfully");
+                showErrorModal("Email updated successfully");
             } else {
                 console.log("User chose not to update email");
             }
@@ -174,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (result) {
                 await updatePassword();
                 clearFields(settingsArea);
-                displayTextSettings("Password updated successfully");
+                showErrorModal("Password updated successfully");
             } else {
                 console.log("User chose not to change password");
             }

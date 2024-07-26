@@ -1,5 +1,5 @@
 // noteOperations.js
-import { timeSince, displayText, displayTextSettings, clearFieldsMain } from "./uiInteractions.js";
+import { timeSince, clearFieldsMain, showErrorModal } from "./uiInteractions.js";
 import { API_URL, notesMenu } from "./script.js";
 
 export const noteTitleArea = document.getElementById('noteTitle');
@@ -11,11 +11,11 @@ export let currentNoteID = '';
 export async function newNote() {
     if (currentNoteID) {
         console.log("User chose to create a new note");
-        displayText("New Note Created");
+        showErrorModal("New Note Created");
         clearFieldsMain();
         currentNoteID = '';
     } else {
-        displayText("New Note Created");
+        showErrorModal("New Note Created");
         clearFieldsMain();
         currentNoteID = '';
     }
@@ -38,11 +38,14 @@ export async function saveNote() {
         });
 
         currentNoteID = response._id;
-        displayText(`${noteTitle} Saved`);
+        console.log('Note saved:', response);
+        showErrorModal(`${noteTitle} Saved`);
+
         await fetchNotes();
+        await fetchVersions(currentNoteID); // Fetch versions after saving
     } catch (error) {
         console.error(`Error saving Note ${noteTitle}`, error);
-        displayText("Error saving note");
+        showErrorModal("Error saving note");
     }
 }
 
@@ -66,16 +69,17 @@ export async function createNote() {
         if (response.ok) {
             const note = await response.json();
             console.log('Note created:', note);
-            displayText(`${note.title} created`);
+            showErrorModal(`${note.title} created`);
             currentNoteID = note._id;
             console.log('Updated Note ID:', currentNoteID);
+            await fetchVersions(currentNoteID); // Fetch versions after creating
         } else {
             console.error('Failed to create note:', response.status, response.statusText);
-            displayText('Failed to create note');
+            showErrorModal('Failed to create note');
         }
     } catch (error) {
         console.error('Error creating note:', error);
-        displayText('Error creating note');
+        showErrorModal('Error creating note');
     }
 }
 
@@ -95,13 +99,15 @@ export async function deleteNote() {
                     content: noteContent
                 })
             });
-            displayText(`${noteTitle} deleted`);
+            console.log('Note deleted:', response);
+            showErrorModal(`${noteTitle} deleted`);
+
         } catch (error) {
             console.error(`Error deleting Note ${noteTitle}`, error);
-            displayText("Error deleting note");
+            showErrorModal("Error deleting note");
         }
     } else {
-        displayText("No note to delete");
+        showErrorModal("No note to delete");
         console.log("No note to delete");
     }
 }
@@ -119,7 +125,6 @@ export async function fetchNotes() {
         if (!notes) {
             console.log('No notes found') // Log notes
             throw new Error('No notes found', error) // Throw an error if no notes are found
-            //displayText("No notes found") // Display error message UNREACHABLE //TODO FIX
         }
 
         // Clear notesMenu before populating it
@@ -144,7 +149,31 @@ export async function fetchNotes() {
 
 // Select Note from List
 export async function selectNote(event) {
-    const noteId = event.target.dataset.noteId; // Get the note ID from the data attribute of the clicked element
+    const noteId = event.target.dataset.noteId;
+    console.log(`Selecting note ID: ${noteId}`); // Log the selected note ID
+    try {
+        const response = await fetch(`/notes/${noteId}`);
+        if (!response.ok) {
+            throw new Error(`Error fetching response from /notes/${noteId}`);
+        }
+        const note = await response.json();
+        noteTitleArea.value = note.title;
+        noteContentTextarea.value = note.content;
+        currentNoteID = note._id;
+        const date = new Date(note.createDate);
+        const localDate = date.toLocaleDateString();
+        const localTime = date.toLocaleTimeString();
+        noteDateArea.innerHTML = `${localDate} at ${localTime}`;
+        noteDateAgeArea.innerHTML = timeSince(date);
+
+        await fetchVersions(noteId); // Fetch versions when a note is selected
+    } catch (error) {
+        console.error('Error fetching note details:', error);
+    }
+}
+
+// Fetch versions for a note
+export async function getNoteById(noteId) {
     try {
         const response = await fetch(`/notes/${noteId}`); // Send a GET request to fetch a specific note
         if (!response.ok) {
@@ -161,33 +190,71 @@ export async function selectNote(event) {
         const localTime = date.toLocaleTimeString(); // Display note creation time in date area
         noteDateArea.innerHTML = `${localDate} at ${localTime}`; // Display note creation date in date area
         noteDateAgeArea.innerHTML = timeSince(date); // Display note creation time in date area
+
+        await fetchVersions(noteId); // Fetch versions when a note is selected
     } catch (error) {
         console.error('Error fetching note details:', error); // Log an error message to the console
     }
 }
 
-
-//get note by ID
-export async function getNoteById(currentNoteID) {
+// fetchVersions function to fetch versions for a specific note and populate the version list
+// noteOperations.js
+export async function fetchVersions(noteId) {
+    console.log(`Fetching versions for note ID: ${noteId}`); // Log the note ID being fetched
     try {
-        const response = await fetch(`/notes/${currentNoteID}`); // Send a GET request to fetch a specific note
+        const response = await fetch(`/notes/${noteId}/versions`);
         if (!response.ok) {
-            throw new Error(`Error fetching response from /notes/${currentNoteID}`); // Throw an error if the response is not ok
+            throw new Error('Failed to Fetch Versions');
         }
-        const note = await response.json(); // Parse the response as JSON
+        const versions = await response.json();
+        console.log('Versions:', versions); // Log the versions received
 
-        const date = new Date(note.createDate); // Convert note creation date to Date object
-        const localDate = date.toLocaleDateString(); // Display note creation date in date area
-        const localTime = date.toLocaleTimeString(); // Display note creation time in date area
-        const noteDate = document.getElementById('noteDate'); // Ensure this element reference is correct
-        if (noteDate) {
-            noteDate.innerHTML = `${localDate} at ${localTime}`; // Display note creation date in date area
-            noteDateAgeArea.innerHTML = timeSince(date); // Display note creation time in date area
-        } else {
-            console.error('Element noteDate not found');
-        }
-        console.log(`noteId: ${currentNoteID}`, note); // Log note details (optional)
+        const versionList = document.getElementById('version-list');
+        versionList.innerHTML = ''; // Clear the version list
+
+        // Update the version count
+        const versionCountElement = document.getElementById('versionCount');
+        versionCountElement.textContent = versions.length;
+
+        versions.forEach(version => {
+            versionList.appendChild(document.createElement('hr')).className = 'mx-4 border-primary/50';
+            console.log('Version:', version); // Log each version
+            const versionItem = document.createElement('div');
+            versionItem.className = 'ml-8 px-2 py-1 rounded-sm flex justify-between items-center';
+
+            const versionText = document.createElement('span');
+            versionText.textContent = new Date(version.createDate).toLocaleString();
+
+            const restoreButton = document.createElement('button');
+            restoreButton.className = 'bg-primary/50 hover:bg-primary text-sm font-bold text-text rounded-md px-3 py-0.5 mr-8';
+            restoreButton.textContent = 'Restore';
+            restoreButton.onclick = () => restoreVersion(version._id);
+
+            versionItem.appendChild(versionText);
+            versionItem.appendChild(restoreButton);
+            versionList.appendChild(versionItem);
+        });
     } catch (error) {
-        console.error('Error fetching note details:', error); // Log an error message to the console
+        console.error('Error fetching versions:', error); // Log the error
+    }
+}
+
+// Restore a specific version
+export async function restoreVersion(versionId) {
+    console.log(`Restoring version ID: ${versionId}`); // Add this line for debugging
+    try {
+        const response = await fetch(`/notes/versions/${versionId}`);
+        if (!response.ok) {
+            throw new Error(`Error fetching response from /notes/versions/${versionId}`);
+            showErrorModal('Failed to fetch version details');
+        }
+        const version = await response.json();
+        noteTitleArea.value = version.title;
+        noteContentTextarea.value = version.content;
+        console.log(`versionId: ${versionId}`, version); // Log version details (optional)
+        showErrorModal(`Version restored: ${version.title}`);
+    } catch (error) {
+        console.error('Error fetching version details:', error); // Log an error message to the console
+        showErrorModal('Error fetching version details');
     }
 }

@@ -1,5 +1,29 @@
 const mongoose = require('mongoose');
 
+// Note version schema
+const noteVersionSchema = new mongoose.Schema({
+    noteId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Note',
+        required: true
+    },
+    title: {
+        type: String,
+        required: true
+    },
+    content: {
+        type: String,
+        required: true
+    },
+    createDate: {
+        type: Date,
+        default: Date.now,
+        required: true
+    }
+});
+
+const NoteVersion = mongoose.model('NoteVersion', noteVersionSchema);
+
 // Note schema
 const noteSchema = new mongoose.Schema({
     title: {
@@ -24,6 +48,7 @@ const noteSchema = new mongoose.Schema({
 
 const Note = mongoose.model('Note', noteSchema);
 
+// User Schema
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -76,4 +101,4 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-module.exports = { Note, User };
+module.exports = { Note, NoteVersion, User };

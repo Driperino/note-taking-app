@@ -54,3 +54,8 @@
     transform: translateX(0.75rem);
     /* Adjust based on the size of the toggle switch */
 }
+
+/* Custom transition class */
+.transition-opacity {
+    transition: opacity 5s;
+}

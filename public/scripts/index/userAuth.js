@@ -1,6 +1,6 @@
 // userAuth.js
 
-import { displayText, displayTextSettings } from './uiInteractions.js';
+import { showErrorModal } from './uiInteractions.js';
 import { API_URL } from './script.js';
 
 export const loggedInUserSettingsArea = document.getElementById('userCurrentUser');
@@ -28,7 +28,7 @@ export async function logout() {
 
     } catch (error) {
         console.error('Error logging out', error);
-        displayText("Error logging out");
+        showErrorModal("Error logging out");
     }
 }
 
@@ -59,7 +59,7 @@ export async function fetchUserInfo() {
         }
     } catch (error) {
         console.error('Error fetching user info:', error);
-        displayText("Error fetching user info");
+        showErrorModal("Error fetching user info");
     }
 }
 
@@ -87,15 +87,15 @@ export async function updateUsername() {
             console.log('Username updated');
             loggedInUser = username;
             loggedInUserSettingsArea.innerHTML = username;
-            displayTextSettings(`Username updated to ${loggedInUser}`);
+            showErrorModalSettings(`Username updated to ${loggedInUser}`);
         }
         if (response.status === 400) {
             console.log('Username already exists');
-            displayTextSettings('Username already exists');
+            showErrorModalSettings('Username already exists');
         }
     } catch (error) {
         console.error('Error updating username:', error.message);
-        displayTextSettings(error.message);
+        showErrorModalSettings(error.message);
     }
 }
 
@@ -130,7 +130,7 @@ export async function updatePassword() {
         }
     } catch (error) {
         console.error('Error updating password:', error);
-        displayTextSettings(error.message);
+        showErrorModalSettings(error.message);
     }
 }
 
@@ -151,13 +151,13 @@ export async function updateEmail() {
             console.log('Email updated');
             loggedInEmail = email;
             loggedInEmailArea.innerHTML = email;
-            displayTextSettings("Email updated successfully");
+            showErrorModalSettings("Email updated successfully");
         } else {
             throw new Error('Failed to update email');
         }
     } catch (error) {
         console.error('Error updating email:', error);
-        displayTextSettings(error.message);
+        showErrorModalSettings(error.message);
     }
 }
 
@@ -178,7 +178,7 @@ export async function deleteUser() {
         }
     } catch (error) {
         console.error('Error deleting user:', error);
-        displayTextSettings(error.message);
+        showErrorModalSettings(error.message);
     }
 }
 
