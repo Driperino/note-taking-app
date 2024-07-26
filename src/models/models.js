@@ -24,6 +24,7 @@ const noteSchema = new mongoose.Schema({
 
 const Note = mongoose.model('Note', noteSchema);
 
+// User schema
 const userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -32,15 +33,11 @@ const userSchema = new mongoose.Schema({
     },
     passwordSalt: {
         type: String,
-        required: function () {
-            return !this.googleId && !this.githubId; // Required if not using OAuth
-        }
+        required: true
     },
     passwordHash: {
         type: String,
-        required: function () {
-            return !this.googleId && !this.githubId; // Required if not using OAuth
-        }
+        required: true
     },
     createDate: {
         type: Date,
@@ -63,15 +60,8 @@ const userSchema = new mongoose.Schema({
     theme: {
         type: String,
         required: false
-    },
-    googleId: {
-        type: String,
-        required: false
-    },
-    githubId: {
-        type: String,
-        required: false
     }
+
 });
 
 const User = mongoose.model('User', userSchema);
