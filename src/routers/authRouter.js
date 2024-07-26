@@ -123,7 +123,7 @@ router.get("/user", ensureAuthenticated, (req, res) => {
         username: req.user.username,
         lastLogin: req.user.lastLogin,
         sessionID: req.sessionID,
-        email: req.user.email, // Ensure this field is included
+        email: req.user.email,
         theme: req.user.theme
     });
 });

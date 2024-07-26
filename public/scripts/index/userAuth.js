@@ -184,7 +184,6 @@ export async function deleteUser() {
     }
 }
 
-
 export async function saveTheme(theme) {
     try {
         const response = await fetch(`${API_URL}/auth/theme`, {
@@ -192,9 +191,7 @@ export async function saveTheme(theme) {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                theme
-            }),
+            body: JSON.stringify({ theme }),
             credentials: 'include'
         });
 
