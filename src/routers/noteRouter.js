@@ -1,8 +1,6 @@
 const ensureAuthenticated = require('../middleware/auth.js');
-
 const express = require('express');
-const { Note } = require('../models/models.js');
-
+const { Note, NoteVersion } = require('../models/models.js');
 const router = express.Router();
 
 
@@ -52,7 +50,7 @@ router.post('/notes', ensureAuthenticated, async (req, res) => {
     }
 });
 
-// Update an existing note
+// Update an existing note and save a version
 router.patch('/notes/:id', ensureAuthenticated, async (req, res) => {
     const { id } = req.params;
     const { title, content } = req.body;
@@ -72,12 +70,43 @@ router.patch('/notes/:id', ensureAuthenticated, async (req, res) => {
             return res.status(404).json({ message: 'Note not found' });
         }
 
+        // Save the version
+        await NoteVersion.create({
+            noteId: id,
+            title: note.title,
+            content: note.content,
+            createDate: new Date()
+        });
+
         res.status(200).json(note);
     } catch (error) {
         res.status(500).json({ message: 'Failed to update note', error: error.message });
     }
 });
 
+// Get all versions for a specific note
+router.get('/notes/:id/versions', ensureAuthenticated, async (req, res) => {
+    const { id } = req.params;
+    try {
+        const versions = await NoteVersion.find({ noteId: id }).sort({ createDate: -1 });
+        res.status(200).json(versions);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+});
+// get a specific version by ID
+router.get('/notes/versions/:versionId', async (req, res) => {
+    const { versionId } = req.params;
+    try {
+        const version = await NoteVersion.findById(versionId);
+        if (!version) {
+            return res.status(404).json({ message: 'Version not found' });
+        }
+        res.status(200).json(version);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+});
 // Delete a note
 router.delete('/notes/:id', ensureAuthenticated, async (req, res) => {
     const { id } = req.params;

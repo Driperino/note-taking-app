@@ -128,17 +128,25 @@ router.get('/github/callback', passport.authenticate('github', { failureRedirect
 });
 
 // Get user info ----------------------------------------------
-router.get("/user", ensureAuthenticated, (req, res) => {
+router.get("/user", ensureAuthenticated, async (req, res) => {
     console.log('User data:', req.user); // Log the user data to check the fields
-    return res.status(200).json({
-        id: req.user.id,
-        username: req.user.username,
-        lastLogin: req.user.lastLogin,
-        sessionID: req.sessionID,
-        email: req.user.email, // Ensure this field is included
-        theme: req.user.theme
-    });
+    try {
+        const user = await User.findById(req.user.id).select('lastLoadedNoteId');
+        return res.status(200).json({
+            id: req.user.id,
+            username: req.user.username,
+            lastLogin: req.user.lastLogin,
+            sessionID: req.sessionID,
+            email: req.user.email, // Ensure this field is included
+            theme: req.user.theme,
+            lastLoadedNoteId: user.lastLoadedNoteId // Include lastLoadedNoteId in the response
+        });
+    } catch (error) {
+        console.error('Error fetching user info:', error);
+        return res.status(500).json({ message: 'Failed to fetch user info', error: error.message });
+    }
 });
+
 
 // Logout route ----------------------------------------------
 router.post("/logout", ensureAuthenticated, (req, res, next) => {
@@ -151,6 +159,31 @@ router.post("/logout", ensureAuthenticated, (req, res, next) => {
         console.log(`session ID ${req.sessionID}`);
         return res.redirect('/app/login.html');
     });
+});
+
+// patch route to update last loaded note ---------------------
+router.patch('/users/last-loaded-note', ensureAuthenticated, async (req, res) => {
+    const userId = req.user.id;
+    const { noteId } = req.body;
+
+    try {
+        await User.findByIdAndUpdate(userId, { lastLoadedNoteId: noteId });
+        res.status(200).json({ message: 'Last loaded note updated successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to update last loaded note', error: error.message });
+    }
+});
+
+// Get last loaded note ID
+router.get('/users/last-loaded-note', ensureAuthenticated, async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        const user = await User.findById(userId);
+        res.status(200).json({ lastLoadedNoteId: user.lastLoadedNoteId });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to get last loaded note', error: error.message });
+    }
 });
 
 module.exports = router;

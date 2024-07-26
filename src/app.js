@@ -1,5 +1,5 @@
 require('dotenv').config(); // Load environment variables
-
+const MongoStore = require('connect-mongo');
 const mongoose = require("mongoose");
 const express = require("express");
 const cors = require("cors");
@@ -18,18 +18,22 @@ app.use(express.json()); // Parsing incoming JSON data
 app.use(express.urlencoded({ extended: true })); // Parsing URL-encoded data
 app.use(express.json({ limit: '50mb' })); // Limiting the size of incoming JSON data
 
-// Session middleware configuration-----------------------------------------------------------
+// Session middleware configuration
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGODB_URI,
+        collectionName: 'sessions'
+    }),
     cookie: {
-        secure: false,
-        maxAge: 604800000 // 1 week
-    } // change secure to true if using HTTPS
+        secure: false, // Change to true if using HTTPS
+        maxAge: 7 * 24 * 60 * 60 * 1000 // 1 week
+    }
 }));
 
-// Passport middleware initialization - must come after session middleware---------------------
+// Passport middleware initialization - must come after session middleware
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(passport.authenticate('session'));
@@ -39,7 +43,6 @@ app.use((req, res, next) => {
     console.log(`Session ID:`, req.sessionID);
     next();
 });
-//--------------------------------------------------------------------------------------------
 
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, '../public')));
@@ -47,10 +50,9 @@ app.use(express.static(path.join(__dirname, '../public')));
 // Serve static files from the static directory within public
 app.use('/app', express.static(path.join(__dirname, '../public/static')));
 
-// Assigning routes to routers------------------------------------------------------------------
-app.use('/auth', authRouter); // Using authRouter for handling authentication routes
-app.use('/', noteRouter); // Using noteRouter for handling note routes
-//--------------------------------------------------------------------------------------------
+// Assigning routes to routers
+app.use('/auth', authRouter); // Use authRouter for handling authentication routes
+app.use('/', noteRouter); // Use noteRouter for handling note routes
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -61,7 +63,7 @@ app.use((err, req, res, next) => {
 // Starting the server
 const start = async () => {
     try {
-        await mongoose.connect('mongodb://localhost:27017/note-taking-app'); // Connecting to MongoDB
+        await mongoose.connect(process.env.MONGODB_URI); // Connecting to MongoDB
 
         app.listen(port, () => {
             console.log(`Server is up on port ${port}`); // Starting the server
@@ -72,4 +74,4 @@ const start = async () => {
     }
 };
 
-start(); // Calling the start function to start the server
+start(); // Call the start function to start the server
