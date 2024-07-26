@@ -11,7 +11,7 @@ import {
     currentNoteID,
     noteTitleArea,
     noteContentTextarea,
-    selectNote
+    selectNote // Importing selectNote
 } from './noteOperations.js';
 
 import {
@@ -22,6 +22,7 @@ import {
     updateEmail,
     deleteUser,
     saveTheme,
+    themeToggle,
     preferredTheme
 } from './userAuth.js';
 
@@ -39,9 +40,7 @@ export const notesMenu = document.getElementById('notesMenu');
 export const settingsArea = document.getElementById('settings');
 export const infoBoxUsername = document.getElementById('infoBoxUsername');
 
-// Set initial theme
 document.documentElement.setAttribute('data-theme', preferredTheme);
-const themeToggle = document.getElementById('dark-toggle');
 themeToggle.checked = preferredTheme === 'dark';
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -79,11 +78,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (preferredTheme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
-        themeToggle.checked = true;
+        document.getElementById('dark-toggle').checked = true;
         console.log('Theme set to:', preferredTheme);
     } else if (preferredTheme === 'light') {
         document.documentElement.setAttribute('data-theme', 'light');
-        themeToggle.checked = false;
+        document.getElementById('dark-toggle').checked = false;
         console.log('Theme set to:', preferredTheme);
     }
 
@@ -174,13 +173,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const settingsMenu = document.getElementById('settings');
         settingsMenu.classList.toggle('hidden');
         const currentTheme = themeToggle.checked ? 'dark' : 'light';
-        console.log("Saving theme on close settings:", currentTheme); // Debug statement
-        try {
-            await saveTheme(currentTheme);
-            console.log("Theme saved successfully on close settings.");
-        } catch (error) {
-            console.error("Error saving theme on close settings:", error);
-        }
+        await saveTheme(currentTheme);
         console.log("Close settings button clicked");
     });
 
@@ -234,13 +227,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const newTheme = event.target.checked ? 'dark' : 'light';
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('theme', newTheme);
-        console.log("Saving theme on toggle change:", newTheme); // Debug statement
-        try {
-            await saveTheme(newTheme);
-            console.log("Theme saved successfully on toggle change.");
-        } catch (error) {
-            console.error("Error saving theme on toggle change:", error);
-        }
+        await saveTheme(newTheme);
     });
 
     // Mobile menu toggle

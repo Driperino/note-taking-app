@@ -7,6 +7,8 @@ export const noteContentTextarea = document.getElementById('noteContent');
 export const noteDateArea = document.getElementById('noteDate');
 export const noteDateAgeArea = document.getElementById('noteDateAge');
 export let currentNoteID = '';
+let originalNoteTitle = '';
+let originalNoteContent = '';
 
 export async function newNote() {
     if (currentNoteID) {
@@ -15,19 +17,29 @@ export async function newNote() {
         clearFieldsMain();
         clearVersionList(); // Clear the version list when creating a new note
         currentNoteID = '';
+        originalNoteTitle = '';
+        originalNoteContent = '';
     } else {
         showErrorModal("New Note Created");
         clearFieldsMain();
         clearVersionList(); // Clear the version list when creating a new note
         currentNoteID = '';
+        originalNoteTitle = '';
+        originalNoteContent = '';
     }
 }
 
 
 export async function saveNote() {
+    const noteTitle = document.getElementById('noteTitle').value;
+    const noteContent = document.getElementById('noteContent').value;
+
+    if (noteTitle === originalNoteTitle && noteContent === originalNoteContent) {
+        showErrorModal("No changes to save");
+        return;
+    }
+
     try {
-        const noteTitle = document.getElementById('noteTitle').value;
-        const noteContent = document.getElementById('noteContent').value;
         const response = await fetch(`${API_URL}/notes/${currentNoteID}`, {
             method: 'PATCH',
             headers: {
@@ -40,9 +52,13 @@ export async function saveNote() {
             })
         });
 
-        currentNoteID = response._id;
-        console.log('Note saved:', response);
+        const savedNote = await response.json(); // Parse the response as JSON
+        currentNoteID = savedNote._id; // Ensure currentNoteID is updated with the correct note ID
+        console.log('Note saved:', savedNote);
         showErrorModal(`${noteTitle} Saved`);
+
+        originalNoteTitle = noteTitle;
+        originalNoteContent = noteContent;
 
         await fetchNotes();
         await fetchVersions(currentNoteID); // Fetch versions after saving
@@ -75,6 +91,10 @@ export async function createNote() {
             showErrorModal(`${note.title} created`);
             currentNoteID = note._id;
             console.log('Updated Note ID:', currentNoteID);
+
+            originalNoteTitle = noteTitle;
+            originalNoteContent = noteContent;
+
             await fetchVersions(currentNoteID); // Fetch versions after creating
         } else {
             console.error('Failed to create note:', response.status, response.statusText);
@@ -163,6 +183,8 @@ export async function selectNote(event) {
         noteTitleArea.value = note.title;
         noteContentTextarea.value = note.content;
         currentNoteID = note._id;
+        originalNoteTitle = note.title;
+        originalNoteContent = note.content;
         const date = new Date(note.createDate);
         const localDate = date.toLocaleDateString();
         const localTime = date.toLocaleTimeString();
@@ -175,7 +197,7 @@ export async function selectNote(event) {
         localStorage.setItem('lastLoadedNoteId', noteId);
 
         // Store the note ID on the server
-        await fetch('/users/last-loaded-note', {
+        await fetch('/auth/users/last-loaded-note', {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -230,12 +252,9 @@ export async function fetchVersions(noteId) {
         const versionCountElement = document.getElementById('versionCount');
         versionCountElement.textContent = versions.length;
 
-        let counter = 0;
-
         versions.forEach(version => {
-
+            versionList.appendChild(document.createElement('hr')).className = 'mx-4 border-primary/50';
             console.log('Version:', version); // Log each version
-
             const versionItem = document.createElement('div');
             versionItem.className = 'ml-8 px-2 py-1 rounded-sm flex justify-between items-center';
 
@@ -250,13 +269,7 @@ export async function fetchVersions(noteId) {
             versionItem.appendChild(versionText);
             versionItem.appendChild(restoreButton);
             versionList.appendChild(versionItem);
-
-            const hr = document.createElement('hr');
-            hr.className = counter % 2 === 0 ? 'mx-8 border-primary/50' : 'mx-4 border-primary/50';
-            versionList.appendChild(hr);
-            counter++; // Increment the counter after each iteration
         });
-
     } catch (error) {
         console.error('Error fetching versions:', error); // Log the error
     }
@@ -291,4 +304,3 @@ export function clearVersionList() {
     const versionCountElement = document.getElementById('versionCount');
     versionCountElement.textContent = '0';
 }
-

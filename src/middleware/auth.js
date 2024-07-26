@@ -1,9 +1,10 @@
 // Middleware to ensure user is authenticated
-const ensureAuthenticated = (req, res, next) => {
+function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
+    } else {
+        res.redirect('/login.html'); // Redirect to login page if not authenticated
     }
-    res.status(401).send('Unauthorized');
-};
+}
 
 module.exports = ensureAuthenticated;
