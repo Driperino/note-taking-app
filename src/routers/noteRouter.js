@@ -48,8 +48,7 @@ router.post('/notes', ensureAuthenticated, async (req, res) => {
         console.log(`Error creating note in router: ${error}`);
     }
 });
-
-// Update an existing note and save a version
+// Update an existing note and save a version with incremented version number
 router.patch('/notes/:id', ensureAuthenticated, async (req, res) => {
     const { id } = req.params;
     const { title, content } = req.body;
@@ -69,12 +68,17 @@ router.patch('/notes/:id', ensureAuthenticated, async (req, res) => {
             return res.status(404).json({ message: 'Note not found' });
         }
 
+        // Get the latest version number
+        const latestVersion = await NoteVersion.findOne({ noteId: id }).sort({ vNumber: -1 });
+        const newVersionNumber = latestVersion ? latestVersion.vNumber + 1 : 1;
+
         // Save the version
         await NoteVersion.create({
             noteId: id,
             title: note.title,
             content: note.content,
-            createDate: new Date()
+            createDate: new Date(),
+            vNumber: newVersionNumber
         });
 
         res.status(200).json(note);

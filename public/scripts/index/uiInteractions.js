@@ -1,21 +1,6 @@
 // uiInteractions.js
 import { noteTitleArea, noteContentTextarea, noteDateAgeArea, noteDateArea } from "./noteOperations.js";
 
-//DEPRICATED
-// export function displayText(text) {
-//     const statusText = document.getElementById('noteStatus');
-//     statusText.innerHTML = text;
-//     setTimeout(function () { statusText.innerHTML = "" }, 5000);
-//     console.log('Main Status text displayed');
-// }
-
-// export function displayTextSettings(text) {
-//     const statusText = document.getElementById('settingsStatus');
-//     statusText.innerHTML = text;
-//     setTimeout(function () { statusText.innerHTML = "" }, 5000);
-//     console.log('Settings Status text displayed');
-// }
-
 let hideTimeout;
 let fadeTimeout;
 

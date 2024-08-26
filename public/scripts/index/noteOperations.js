@@ -158,7 +158,7 @@ export async function fetchNotes() {
             li.classList.add('mb-2') // Add the class 'mb-2' to the <li> element
             const a = document.createElement('a') // Create a new <a> element
             a.href = '#' // Set the href attribute of the <a> element to '#'
-            a.classList.add('block', 'text-text', 'bg-background', 'hover:text-secondary', 'text-shadow-sm') // Add classes to the <a> element
+            a.classList.add('block', 'text-text', 'bg-background', 'hover:text-accent', 'text-shadow-sm') // Add classes to the <a> element
             a.textContent = note.title // Set the text content of the <a> element to the note title
             a.dataset.noteId = note._id // Store note ID as a data attribute
             a.addEventListener('click', selectNote) // Add a click event listener to the <a> element
@@ -252,14 +252,20 @@ export async function fetchVersions(noteId) {
         const versionCountElement = document.getElementById('versionCount');
         versionCountElement.textContent = versions.length;
 
+        let counter = 0;
+
         versions.forEach(version => {
-            versionList.appendChild(document.createElement('hr')).className = 'mx-4 border-primary/50';
+            const hr = document.createElement('hr');
+            hr.className = counter % 2 === 0 ? 'ml-4 border-primary/50' : 'ml-8 border-primary/50';
+            versionList.appendChild(hr);
+
             console.log('Version:', version); // Log each version
+
             const versionItem = document.createElement('div');
             versionItem.className = 'ml-8 px-2 py-1 rounded-sm flex justify-between items-center';
 
             const versionText = document.createElement('span');
-            versionText.textContent = new Date(version.createDate).toLocaleString();
+            versionText.textContent = `${version.vNumber}: ${new Date(version.createDate).toLocaleString()}`;
 
             const restoreButton = document.createElement('button');
             restoreButton.className = 'bg-primary/50 hover:bg-primary text-sm font-bold text-text rounded-md px-3 py-0.5 mr-8';
@@ -269,11 +275,15 @@ export async function fetchVersions(noteId) {
             versionItem.appendChild(versionText);
             versionItem.appendChild(restoreButton);
             versionList.appendChild(versionItem);
+
+            counter++; // Increment the counter after each iteration
         });
+
     } catch (error) {
         console.error('Error fetching versions:', error); // Log the error
     }
 }
+
 
 // Restore a specific version
 export async function restoreVersion(versionId) {

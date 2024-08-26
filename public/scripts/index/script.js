@@ -1,4 +1,3 @@
-// public/scripts/index/script.js
 import {
     newNote,
     saveNote,
@@ -45,6 +44,11 @@ themeToggle.checked = preferredTheme === 'dark';
 
 document.addEventListener('DOMContentLoaded', async () => {
     await fetchUserInfo();
+
+    // Ensure the theme is set correctly from the backend value
+    document.documentElement.setAttribute('data-theme', preferredTheme);
+    themeToggle.checked = preferredTheme === 'dark';
+
     await fetchNotes();
 
     // Check if there's a last loaded note ID in local storage
@@ -76,15 +80,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    // Apply the preferred theme from user info
     if (preferredTheme === 'dark') {
         document.documentElement.setAttribute('data-theme', 'dark');
         document.getElementById('dark-toggle').checked = true;
-        console.log('Theme set to:', preferredTheme);
-    } else if (preferredTheme === 'light') {
+    } else {
         document.documentElement.setAttribute('data-theme', 'light');
         document.getElementById('dark-toggle').checked = false;
-        console.log('Theme set to:', preferredTheme);
     }
+
+    themeToggle.addEventListener('change', async (event) => {
+        const newTheme = event.target.checked ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        await saveTheme(newTheme);
+    });
 
     document.getElementById('newButton').addEventListener('click', async () => {
         if (noteTitleArea.value || noteContentTextarea.value) {
@@ -158,7 +168,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     document.getElementById('notesButton').addEventListener('click', () => {
-        const notesMenu = document.getElementById('notesMenu');
         notesMenu.classList.toggle('hidden');
         console.log("Notes button clicked");
     });
@@ -223,11 +232,33 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 
-    themeToggle.addEventListener('change', async (event) => {
-        const newTheme = event.target.checked ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        await saveTheme(newTheme);
+    // Note Info Dropdown
+    const noteInfoButton = document.getElementById('noteInfoButton');
+    const noteInfoMenu = document.getElementById('noteInfoMenu');
+
+    noteInfoButton.addEventListener('click', () => {
+        noteInfoMenu.classList.toggle('hidden');
+        console.log("Note Info button clicked");
+    });
+
+    // Version History Dropdown
+    const versionHistoryButton = document.getElementById('versionHistoryButton');
+    const versionHistoryMenu = document.getElementById('versionHistoryMenu');
+
+    versionHistoryButton.addEventListener('click', () => {
+        versionHistoryMenu.classList.toggle('hidden');
+        console.log("Version History button clicked");
+    });
+
+    // Close other dropdowns when one is opened
+    document.querySelectorAll('#menuButton, #notesButton, #noteInfoButton, #versionHistoryButton').forEach(button => {
+        button.addEventListener('click', (event) => {
+            document.querySelectorAll('#menu, #notesMenu, #noteInfoMenu, #versionHistoryMenu').forEach(menu => {
+                if (!menu.contains(event.target) && !menu.previousElementSibling.contains(event.target)) {
+                    menu.classList.add('hidden');
+                }
+            });
+        });
     });
 
     // Mobile menu toggle

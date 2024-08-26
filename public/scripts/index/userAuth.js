@@ -1,4 +1,4 @@
-// userAuth.js
+export let preferredTheme = localStorage.getItem('theme') || 'light';
 
 import { showErrorModal } from './uiInteractions.js';
 import { API_URL } from './script.js';
@@ -11,7 +11,6 @@ export let loggedInEmail = '';
 
 export const loggedInEmailArea = document.getElementById('userEmail');
 
-export let preferredTheme = localStorage.getItem('theme') || 'light';
 
 export async function logout() {
     try {
@@ -201,6 +200,7 @@ export async function saveTheme(theme) {
 
         const result = await response.json();
         console.log(result.message);
+        showErrorModal(`Preferred theme updated to ${theme}`);
     } catch (error) {
         console.error('Error updating theme:', error);
     }
